@@ -1,0 +1,533 @@
+body{
+  min-height:100vh;
+  display: flex;
+  flex-direction: column;
+  .main-content{
+    flex-grow: 1;
+  }
+}
+/*Custom css breadcrumb*/
+.wrap-breadcrumb {
+  padding: 15px 0;
+  @include px2rem(14);
+  background: var(--bg-block-color);
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    nav.woocommerce-breadcrumb {
+      margin: 0;
+    }
+  }
+
+  .sublimeplus-separator {
+    font-style: normal;
+    font-size: 65%;
+    margin: 0 5px;
+    color: var(--breadcrumb-color);
+
+    &:before {
+      font-family: 'cleversoft';
+      content: $icon_arrow_right;
+    }
+  }
+
+  color: var(--breakcrumb-active-color);
+
+  span {
+    &.sublimeplus-breadcrumb-separator {
+      color: inherit;
+    }
+  }
+
+  a {
+    color: var(--breadcrumb-color);
+
+    &:hover {
+      color: var(--breakcrumb-active-color);
+    }
+  }
+}
+
+/*End Custom css breadcrumb*/
+.single, .archive {
+  .footer-main {
+    padding-top: 0
+  }
+}
+
+/*End Custom css of theme*/
+
+/* Contact form */
+.wpcf7-form {
+  .text-field, input[type="text"],
+  input[type="search"],
+  input[type="password"],
+  textarea, input[type="email"],
+  input[type="tel"] {
+    height: 40px;
+    line-height: 40px;
+  }
+
+  .text-field,
+  input[type="text"],
+  input[type="search"],
+  input[type="password"],
+  textarea,
+  input[type="email"],
+  input[type="tel"] {
+    padding: 5px 15px;
+    background: var(--white-color);
+    margin-bottom: 20px;
+  }
+
+  textarea {
+    height: 158px;
+  }
+
+  .align-center {
+    text-align: center;
+  }
+
+  .wpcf7-submit {
+    width: 100%;
+
+    &:hover {
+      background: $sec_accent_color;
+    }
+  }
+}
+
+.notify-form {
+  .wpcf7-form > p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .wpcf7-text {
+      margin: 0
+    }
+
+    .wpcf7-submit {
+      border: none;
+      background: var(--black-color);
+      color: var(--white-color);
+      margin: 0;
+
+      &:hover {
+        background: var(--accent-color);
+        color: var(--white-color)
+      }
+    }
+  }
+}
+
+/*End Contact form */
+
+/*Login Popup*/
+.login-form-popup {
+  .button {
+    width: 100%;
+  }
+}
+
+.woocommerce-form {
+  display: flex;
+  flex-wrap: wrap;
+
+  .form-row, .lost_password {
+    width: 100%;
+  }
+
+  .wc-social-login {
+    order: 999;
+    width: 100%;
+
+    .ywsl-label {
+      margin: 0;
+      padding: 20px 0;
+      text-transform: uppercase;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &:before, &:after {
+        content: "";
+        flex: 1 0 0;
+        border-bottom: 1px solid $border-color;
+      }
+
+      &:before {
+        margin-right: 20px;
+      }
+
+      &:after {
+        margin-left: 20px;
+      }
+    }
+
+    .socials-list {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 0;
+
+      a.ywsl-social {
+        width: 100%;
+        display: block;
+        text-align: center;
+        color: #fff;
+        position: relative;
+        margin: 0 0 5px;
+        height: 42px;
+        opacity: .9;
+
+        img {
+          width: 0;
+          height: 0;
+        }
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .ywsl-facebook {
+        background: #3b5998;
+
+        &:before {
+          content: "\c234";
+          font-size: 22px;
+          font-family: cleversoft;
+          position: absolute;
+          top: 50%;
+          left: 15px;
+          z-index: 1;
+          -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
+
+        &:after {
+          content: "FACEBOOK";
+          position: absolute;
+          @include px2rem(14);
+          top: 50%;
+          left: 50%;
+          z-index: 1;
+          -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      .ywsl-twitter {
+        background: #4099ff;
+
+        &:before {
+          content: "\c238";
+          font-size: 22px;
+          font-family: cleversoft;
+          position: absolute;
+          top: 50%;
+          left: 15px;
+          z-index: 1;
+          -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
+
+        &:after {
+          content: "TWITTER";
+          position: absolute;
+          @include px2rem(14);
+          top: 50%;
+          left: 50%;
+          z-index: 1;
+          -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      .ywsl-google {
+        background: #d34836;
+
+        &:before {
+          content: "\c233";
+          font-size: 22px;
+          font-family: cleversoft;
+          position: absolute;
+          top: 50%;
+          left: 15px;
+          z-index: 1;
+          -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
+
+        &:after {
+          content: "GOOGLE";
+          position: absolute;
+          @include px2rem(14);
+          top: 50%;
+          left: 50%;
+          z-index: 1;
+          -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+  }
+}
+
+/*End Login Popup*/
+/*Light box subscription */
+.popmake-content {
+  .mc4wp-form-fields {
+    & > span {
+      display: none;
+    }
+
+    input[type=email] {
+      border: none;
+      border-bottom: 1px solid $border-color;
+      padding: 0;
+      width: 100% !important;
+      @include transition(all 300ms);
+
+      &:focus {
+        border-bottom-color: var(--black-color);
+      }
+    }
+
+    input[type=submit] {
+      position: absolute;
+      right: 0;
+      opacity: 0;
+    }
+  }
+
+  .wrap-subcription-field {
+    position: relative;
+
+    &:after {
+      content: '\c139';
+      font-family: cleversoft;
+      position: absolute;
+      color: var(--black-color);
+      right: 0;
+      top: 10px
+    }
+  }
+}
+
+.pum-container .popmake-close {
+  width: 40px !important;
+  height: 40px !important;
+  display: block;
+  overflow: hidden;
+  font-size: 0 !important;
+
+  &:before {
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    content: '\c213';
+    font-size: 1.6rem !important;
+    font-family: cleversoft;
+    top: 0;
+    right: 0;
+    line-height: 40px;
+  }
+}
+
+/*End Light box subscription */
+
+.page {
+  .wrap-pagination.inpost-pagination {
+    padding-top: 30px
+  }
+
+  .comments .title-block, .comment-reply-title {
+    text-align: center;
+  }
+}
+
+@media(max-width: 992px) {
+  .page {
+    .wrap-comment-form #reply-title, .wrap-comment-form .comment-notes {
+      padding: 0
+    }
+  }
+}
+
+/*Fix css for fire fox and IE 11*/
+@-moz-document url-prefix() {
+  .main-content {
+    overflow: hidden;
+  }
+}
+
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .main-content {
+    overflow: hidden;
+  }
+}
+
+.cafe-posts {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.cafe-pagination .cafe_pagination-item {
+  padding: 14px 10px;
+  min-width: 50px;
+  height: 50px;
+  line-height: 20px;
+  margin: 0 5px;
+  border: 1px solid var(--border-color);
+}
+
+.wpcf7-form {
+  input:not(.wpcf7-submit), textarea {
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+  }
+}
+
+.cafe-account-modal {
+  padding: 40px;
+
+  .heading-account-modal {
+    display: inline-block;
+    font-weight: 500;
+
+    .lb-login {
+      text-transform: capitalize;
+      color: var(--title-color);
+      @include px2rem(20)
+    }
+  }
+
+  .close-cafe-account-modal {
+    position: absolute;
+    cursor: pointer;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    display: block;
+    padding:7px;
+  }
+}
+
+.woocommerce-form {
+  .before-button-login {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    p {
+      margin-bottom: 15px;
+    }
+  }
+
+  .lost_password {
+    text-align: right;
+  }
+
+  .woocommerce-button.woocommerce-form-login__submit {
+    margin-bottom: 20px;
+  }
+
+  p.aligncenter {
+    margin-bottom: 0;
+  }
+}
+.cafe-words-wrapper b{
+  font-weight: inherit;
+}
+.cafe-banner:not(.cafe-overlay-content){
+  &.style-1{
+    .cafe-wrap-content{
+      position: relative;
+    }
+    .cafe-wrap-extend-content{
+      width: 100%;
+      position: absolute;
+      top: 30px;
+      left: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 300ms;
+    }
+    .cafe-banner-title{
+      transition: all 300ms;
+    }
+    &:hover{
+      .cafe-banner-title{
+        opacity: 0;
+        visibility: hidden;
+      }
+      .cafe-wrap-extend-content{
+        top: 0;
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+}
+.elementor-widget-clever-multi-banner .cafe-carousel img{
+  border-radius: 8px;
+  box-shadow: 0 40px 60px -40px $black_transparent_2;
+}
+.cafe-slide-btn, .cafe-button{
+  display: inline-flex;
+  align-items: center;
+  i{
+    margin-left: 25px;
+
+    &.clever-icon-arrow-right-4{
+      font-size: 200%;
+    }
+  }
+}
+.cafe-banner.roxy.cafe-overlay-content{
+  .cafe-wrap-content{
+    transition:all 300ms;
+  }
+}
+/*Testimonial*/
+.style-1{
+  .cafe-testimonial-content::after{
+    transform: translateX(-50%);
+    left:50%
+  }
+  .cafe-wrap-testimonial-info{
+  flex-direction: column;
+  align-items: center;
+}
+  &.cafe-testimonial.cafe-carousel ul.slick-dots li{
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    &.slick-active{
+      width: 12px;
+    }
+  }
+}
+@media(min-width: 768px){
+  .cafe-banner.roxy.cafe-overlay-content{
+    .cafe-wrap-content{
+      opacity: 0;
+    }
+    &:hover{
+      .cafe-wrap-content{
+        opacity: 1;
+      }
+    }
+  }
+}
+.cafe-slider-wrapper .cafe-slider-slides .slick-dots li button{
+  padding:0;
+}

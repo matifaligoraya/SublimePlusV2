@@ -1,0 +1,180 @@
+@import "../global/variables.scss";
+
+[class^="sublimeplus-icon"]:before {
+  font-family: $font_icon_family;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="sublimeplus-icon"] {
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+}
+
+.sublimeplus-icon-menu:before {
+  content: $icon_menu;
+}
+
+.sublimeplus-icon-cart:before {
+  content: $icon_cart;
+}
+
+.sublimeplus-icon-heart:before {
+  content: $icon_heart;
+}
+
+.sublimeplus-icon-heart-o:before {
+  content: $icon_heart_o;
+}
+
+.sublimeplus-icon-refresh:before {
+  content: $icon_refresh;
+}
+
+.sublimeplus-icon-user:before {
+  content: $icon_user;
+}
+
+.sublimeplus-icon-search:before {
+  content: $icon_search;
+}
+
+.sublimeplus-icon-filter:before {
+  content: $icon_filter;
+}
+
+.sublimeplus-icon-eye:before {
+  content: $icon_eye;
+}
+
+.sublimeplus-icon-close:before {
+  content: $icon_close;
+}
+
+.sublimeplus-icon-plus:before {
+  content: $icon_plus;
+}
+
+.sublimeplus-icon-minus:before {
+  content: $icon_minus;
+}
+
+.sublimeplus-icon-up:before {
+  content: $icon_up;
+}
+
+.sublimeplus-icon-down:before {
+  content: $icon_down;
+}
+
+.sublimeplus-icon-caret-up:before {
+  content: $icon_caret_up;
+}
+
+.sublimeplus-icon-caret-down:before {
+  content: $icon_caret_down;
+}
+
+.sublimeplus-icon-arrow-up:before {
+  content: $icon_arrow_up;
+}
+
+.sublimeplus-icon-arrow-down:before {
+  content: $icon_arrow_down;
+}
+
+.sublimeplus-icon-arrow-left:before {
+  content: $icon_arrow_left;
+}
+
+.sublimeplus-icon-arrow-right:before {
+  content: $icon_arrow_right;
+}
+
+.sublimeplus-icon-long-arrow-left:before {
+  content: $icon_long_arrow_left;
+}
+
+.sublimeplus-icon-long-arrow-right:before {
+  content: $icon_long_arrow_right;
+}
+
+.sublimeplus-icon-share:before {
+  content: $icon_share;
+}
+
+.sublimeplus-icon-facebook:before {
+  content: $icon_facebook;
+}
+
+.sublimeplus-icon-twitter:before {
+  content: $icon_twitter;
+}
+
+.sublimeplus-icon-googleplus:before {
+  content: $icon_googleplus;
+}
+
+.sublimeplus-icon-instagram:before {
+  content: $icon_instagram;
+}
+
+.sublimeplus-icon-pinterest:before {
+  content: $icon_pinterest;
+}
+
+.sublimeplus-icon-skype:before {
+  content: $icon_skype;
+}
+
+.sublimeplus-icon-vimeo:before {
+  content: $icon_vimeo;
+}
+
+.sublimeplus-icon-youtube:before {
+  content: $icon_youtube;
+}
+
+.sublimeplus-icon-xing:before {
+  content: $icon_xing;
+}
+
+.sublimeplus-icon-tumblr:before {
+  content: $icon_tumblr;
+}
+
+.sublimeplus-icon-linkedin:before {
+  content: $icon_linkedin;
+}
+
+.sublimeplus-icon-github:before {
+  content: $icon_github;
+}
+
+.sublimeplus-icon-foursquare:before {
+  content: $icon_foursquare;
+}
+
+.sublimeplus-icon-flickr:before {
+  content: $icon_flickr;
+}
+
+.sublimeplus-icon-dribbble:before {
+  content: $icon_dribbble;
+}
+
+.sublimeplus-icon-email:before {
+  content: $icon_envelope;
+}
+
+.sublimeplus-icon-rss:before {
+  content: $icon_rss;
+}
+.sublimeplus-icon-clock:before {
+  content: $icon_clock;
+}

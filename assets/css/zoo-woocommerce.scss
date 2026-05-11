@@ -1,0 +1,21 @@
+
+//Icons content
+@import "global/variables.scss";
+
+//css for hover effect
+@import "woocommerce/product_item";
+@import "woocommerce/product_hover_effect";
+//css for single product
+@import "woocommerce/single_product.scss";
+//css for cart,checkout,myaccount page
+@import "woocommerce/pages.scss";
+//css for product quick view
+@import "woocommerce/product_quick_view.scss";
+//css for product sidebar
+@import "woocommerce/product_sidebar.scss";
+//css for products page
+@import "woocommerce/products.scss";
+//css for products page
+@import "woocommerce/cart_page.scss";
+//css for wishlist compare popup
+@import "woocommerce/wlcp.scss";
