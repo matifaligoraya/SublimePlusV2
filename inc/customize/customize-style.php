@@ -116,6 +116,15 @@ $font_arr = get_theme_mod('Sublimeplus_font_items', []);
                 }
         ';
         $css .= '@media(min-width:1500px){.elementor-section.elementor-section-boxed>.elementor-container,.container{max-width:' . Sublimeplus_site_width() . ';width:100%}}';
+
+        /* ----------------------------------------------------------
+                            Menu Alignment
+        ---------------------------------------------------------- */
+        $menu_alignment = get_theme_mod('Sublimeplus_primary_menu_alignment', 'left');
+        if ($menu_alignment !== 'left') {
+            $css .= '.primary-menu .nav-menu { display: flex; justify-content: ' . $menu_alignment . '; }';
+        }
+
         /* ----------------------------------------------------------
                             End Responsive control
                     Control Breakpoint of header Layout

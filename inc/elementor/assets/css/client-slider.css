@@ -1,0 +1,57 @@
+/* Client Slider Widget Styles */
+.client-slider-wrapper {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.client-slider-container {
+    display: flex;
+    animation: slide-left infinite linear;
+    white-space: nowrap;
+}
+
+.client-slider-item {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 30px;
+    flex-shrink: 0;
+}
+
+.client-slider-image {
+    margin-right: 15px;
+}
+
+.client-slider-image img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.client-slider-content {
+    text-align: left;
+}
+
+.client-slider-main-text {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.client-slider-sub-text {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+/* Animation keyframes */
+@keyframes slide-left {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}

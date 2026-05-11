@@ -35,3 +35,8 @@ if (class_exists('WooCommerce', false)) {
 require SUBLIMEPLUS_DIR.'inc/metaboxes/meta-boxes.php';
 require SUBLIMEPLUS_DIR.'inc/customize/customize-style.php';
 require SUBLIMEPLUS_DIR.'inc/customize/customize-options.php';
+
+/**
+ * Elementor widgets
+ */
+require SUBLIMEPLUS_DIR.'inc/elementor/elementor.php';

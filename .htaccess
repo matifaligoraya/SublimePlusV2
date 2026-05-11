@@ -1,0 +1,13 @@
+# Enable proper MIME type for SVG files
+<FilesMatch "\.svg$">
+    AddType image/svg+xml .svg
+    AddEncoding gzip .svgz
+</FilesMatch>
+
+# Allow SVG files to be served with correct headers
+<IfModule mod_headers.c>
+    <FilesMatch "\.svg$">
+        Header set Content-Type "image/svg+xml"
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+</IfModule>

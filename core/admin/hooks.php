@@ -23,6 +23,31 @@ add_action('admin_enqueue_scripts', function($hook_suffix)
         wp_add_inline_style('dashicons', '#wpcontent #wpbody #wpbody-content .notice{display:none !important}');
     }
 
+    if ($hook_suffix === 'nav-menus.php') {
+        wp_enqueue_media();
+        wp_add_inline_script('jquery', "
+            jQuery(document).ready(function($) {
+                $(document).on('click', '.upload-icon-button', function(e) {
+                    e.preventDefault();
+                    var button = $(this);
+                    var input = button.prev('input');
+                    var mediaUploader = wp.media({
+                        title: 'Select Icon Image',
+                        button: {
+                            text: 'Use this image'
+                        },
+                        multiple: false
+                    });
+                    mediaUploader.on('select', function() {
+                        var attachment = mediaUploader.state().get('selection').first().toJSON();
+                        input.val(attachment.url);
+                    });
+                    mediaUploader.open();
+                });
+            });
+        ");
+    }
+
     wp_enqueue_media();
     wp_enqueue_style('bootstrap', SUBLIMEPLUS_URI.'assets/bootstrap/css/bootstrap.css', array('dashicons'), SUBLIMEPLUS_VERSION);
     wp_enqueue_script('bootstrap-js', SUBLIMEPLUS_URI.'assets/bootstrap/js/bootstrap.bundle.min.js', array('jquery-core'), SUBLIMEPLUS_VERSION);

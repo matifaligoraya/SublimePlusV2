@@ -16,6 +16,22 @@
   * @see  https://developer.wordpress.org/reference/hooks/nav_menu_item_title/
   */
  add_filter('nav_menu_item_title', function ($title, $item, $args, $depth) {
+     // Add custom icon
+     $icon = get_post_meta($item->ID, '_menu_item_icon', true);
+     if (!empty($icon)) {
+         if (strpos($icon, '<svg') === 0) {
+             // SVG code - sanitize and allow SVG tags
+             $icon_html = wp_kses_post($icon);
+         } elseif (filter_var($icon, FILTER_VALIDATE_URL)) {
+             // Image URL (including SVG URLs)
+             $icon_html = '<img class="nav-icon" src="' . esc_url($icon) . '" alt="" width="18" height="18" aria-hidden="true">';
+         } else {
+             // Font Awesome or custom class
+             $icon_html = '<i class="' . esc_attr($icon) . ' nav-icon" aria-hidden="true"></i>';
+         }
+         $title = $icon_html . $title;
+     }
+
      if (in_array('menu-item-has-children', $item->classes)) {
          $menu_locations = get_nav_menu_locations();
          if(isset($args->menu->term_id)) {

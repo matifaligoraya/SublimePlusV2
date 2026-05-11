@@ -125,6 +125,131 @@ function sublimeplus_default_setup()
 add_action('after_setup_theme', 'sublimeplus_default_setup', 9, 0);
 
 /**
+ * Allow SVG uploads and serving
+ */
+function sublimeplus_allow_svg_uploads($mimes) {
+    $mimes['svg'] = 'image/svg+xml';
+    $mimes['svgz'] = 'image/svg+xml';
+    return $mimes;
+}
+add_filter('upload_mimes', 'sublimeplus_allow_svg_uploads');
+
+/**
+ * Allow SVG in front-end display
+ */
+function sublimeplus_sanitize_svg($content, $allowed_html, $allowed_protocols) {
+    $allowed_html['svg'] = array(
+        'xmlns' => true,
+        'viewBox' => true,
+        'width' => true,
+        'height' => true,
+        'class' => true,
+        'style' => true,
+        'fill' => true,
+        'stroke' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['path'] = array(
+        'd' => true,
+        'fill' => true,
+        'stroke' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['circle'] = array(
+        'cx' => true,
+        'cy' => true,
+        'r' => true,
+        'fill' => true,
+        'stroke' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['rect'] = array(
+        'x' => true,
+        'y' => true,
+        'width' => true,
+        'height' => true,
+        'fill' => true,
+        'stroke' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['line'] = array(
+        'x1' => true,
+        'y1' => true,
+        'x2' => true,
+        'y2' => true,
+        'stroke' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['polyline'] = array(
+        'points' => true,
+        'fill' => true,
+        'stroke' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['polygon'] = array(
+        'points' => true,
+        'fill' => true,
+        'stroke' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['text'] = array(
+        'x' => true,
+        'y' => true,
+        'fill' => true,
+        'font-size' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['g'] = array(
+        'class' => true,
+        'style' => true,
+        'transform' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['use'] = array(
+        'xlink:href' => true,
+        'href' => true,
+        'x' => true,
+        'y' => true,
+        'width' => true,
+        'height' => true,
+        'class' => true,
+        'style' => true,
+        'data-*' => true,
+    );
+    
+    $allowed_html['defs'] = array();
+    $allowed_html['style'] = array();
+    $allowed_html['title'] = array();
+    $allowed_html['desc'] = array();
+    
+    return $content;
+}
+add_filter('wp_kses_allowed_html', 'sublimeplus_sanitize_svg', 10, 3);
+
+/**
  * Register Elementor Locations.
  *
  * @param ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager $elementor_theme_manager theme manager.
