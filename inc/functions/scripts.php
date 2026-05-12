@@ -75,8 +75,7 @@ if (!function_exists('sublimeplus_scripts')) {
 // <!-- build:js js/custom.js -->
 // <script src="js/main.js"></script>
 // <!-- endbuild -->
-wp_register_script('popper', SUBLIMEPLUS_URI . 'assets/js/wave/popper.min.js');
-wp_register_script('bootstrap', SUBLIMEPLUS_URI . 'assets/js/wave/bootstrap.min.js');
+// Bootstrap 5 and Popper are now managed by inc/bootscore/enqueue.php
 wp_register_script('popper', SUBLIMEPLUS_URI . 'assets/js/wave/popper.min.js');
 wp_register_script('wow', SUBLIMEPLUS_URI . 'assets/js/wave/wow.min.js');
 wp_register_script('mCustomScrollbar', SUBLIMEPLUS_URI . 'assets/js/wave/jquery.mCustomScrollbar.js');

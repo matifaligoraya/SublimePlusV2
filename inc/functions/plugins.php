@@ -39,10 +39,11 @@ if (!function_exists('sublimeplus_register_required_plugins')) {
             //     'source' => $SUBLIMEPLUS_DIRectory_plugins . 'envato-market.zip',
             // ),
             array(
-                'name' => esc_html__('Elementor Page Builder', 'sublimeplus'),
-                'slug' => 'elementor',
+                'name' => esc_html__('WPBakery Page Builder', 'sublimeplus'),
+                'slug' => 'js_composer',
+                'required' => true,
+                'source' => $SUBLIMEPLUS_DIRectory_plugins . 'js_composer-8.7.2.zip',
             ),
-           
         );
         $config = array(
             'id' => 'tgmpa',                 // Unique ID for hashing notices for multiple instances of TGMPA.

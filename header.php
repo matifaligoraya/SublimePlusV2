@@ -1,87 +1,126 @@
 <?php
 /**
- * The template for displaying the header
+ * The header template
+ * Compatible: Bootscore 6.3.1 + SublimePlusV2
  *
- * @package SublimePulse\Templates
- * @author   SublimePulse
- * @link     https://www.SublimePulse.com/
- *
+ * @package SublimePlusV2
  */
+defined('ABSPATH') || exit;
 ?>
-    <!DOCTYPE html>
+<!doctype html>
 <html <?php language_attributes(); ?>>
-    <head>
-        <meta charset="<?php bloginfo('charset'); ?>">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="profile" href="//gmpg.org/xfn/11">
-        <?php wp_head(); ?>
-    </head>
-<body <?php body_class(); ?>>
-<?php
-wp_body_open();
-//$theme_settings = get_option(SUBLIMEPLUS_SETTINGS_KEY);
-$settings = get_option(Sublimeplus_SETTINGS_KEY);
-//print_r($settings);
-?>
 
-<header class="header">
-    <div class="header-top">
-<!--        <div class="link">-->
-<!--            <a href="#">On-demand Analysis</a>-->
-<!--            <span class="new">new</span>-->
-<!--        </div>-->
-<!--        <div class="sep"></div>-->
-        <div class="header-social">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
+<head>
+  <meta charset="<?= esc_attr(get_bloginfo('charset')); ?>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="profile" href="https://gmpg.org/xfn/11">
+  <?php wp_head(); ?>
+</head>
+
+<body <?php body_class(); ?>>
+
+<?php wp_body_open(); ?>
+
+<div id="page" class="site">
+
+  <!-- Skip Links -->
+  <a class="skip-link visually-hidden-focusable" href="#primary"><?php esc_html_e('Skip to content', 'bootscore'); ?></a>
+  <a class="skip-link visually-hidden-focusable" href="#footer"><?php esc_html_e('Skip to footer', 'bootscore'); ?></a>
+
+  <!-- Top Bar Widget -->
+  <?php if (is_active_sidebar('top-bar')) : ?>
+    <?php dynamic_sidebar('top-bar'); ?>
+  <?php endif; ?>
+
+  <?php do_action('bootscore_before_masthead'); ?>
+
+  <header id="masthead" class="<?= esc_attr(apply_filters('bootscore/class/header', 'sticky-top bg-body-tertiary')); ?> site-header">
+
+    <?php do_action('bootscore_after_masthead_open'); ?>
+
+    <nav id="nav-main" class="navbar <?= esc_attr(apply_filters('bootscore/class/header/navbar/breakpoint', 'navbar-expand-lg')); ?>">
+
+      <div class="<?= esc_attr(apply_filters('bootscore/class/container', 'container', 'header')); ?>">
+
+        <?php do_action('bootscore_before_navbar_brand'); ?>
+
+        <!-- Navbar Brand -->
+        <?php
+        $bs_brand_class = apply_filters('bootscore/class/header/navbar-brand', 'navbar-brand');
+        $bs_logo_filter = function ($html) use ($bs_brand_class) {
+          return str_replace('class="custom-logo-link"', 'class="custom-logo-link ' . esc_attr($bs_brand_class) . '"', $html);
+        };
+        add_filter('get_custom_logo', $bs_logo_filter, 20);
+        get_template_part('inc/templates/logo');
+        remove_filter('get_custom_logo', $bs_logo_filter, 20);
+        ?>
+
+        <?php do_action('bootscore_after_navbar_brand'); ?>
+
+        <!-- Offcanvas Navbar -->
+        <div class="offcanvas offcanvas-<?= esc_attr(apply_filters('bootscore/class/header/offcanvas/direction', 'end', 'menu')); ?>" tabindex="-1" id="offcanvas-navbar">
+          <div class="offcanvas-header <?= esc_attr(apply_filters('bootscore/class/offcanvas/header', '', 'menu')); ?>">
+            <span class="h5 offcanvas-title"><?= esc_html(apply_filters('bootscore/offcanvas/navbar/title', __('Menu', 'bootscore'))); ?></span>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body <?= esc_attr(apply_filters('bootscore/class/offcanvas/body', '', 'menu')); ?>">
+
+            <!-- Bootstrap 5 Nav Walker Main Menu -->
+            <?php get_template_part('template-parts/header/main-menu'); ?>
+
+            <!-- Top Nav 2 Widget -->
+            <?php if (is_active_sidebar('top-nav-2')) : ?>
+              <?php dynamic_sidebar('top-nav-2'); ?>
+            <?php endif; ?>
+
+          </div>
         </div>
-    </div>
-    <div class="header-bottom">
-       
-        <?php get_template_part('inc/templates/logo'); ?>
-      
-        <div class="header-inner">
-       
-                    <nav id="primary-menu" class="primary-menu header-nav">
-                        <span class="button-close-nav close-nav">
-                            <i class="sublimeplus-icon-close"></i>
-                        </span>
-                        <?php
-                        wp_nav_menu(array(
-                            'theme_location' => 'primary-menu',
-                            'container' => false,
-                            'container_id' => false,
-                            'container_class' => false,
-                            'menu_id' => false,
-                            'menu_class' => '',
-                        //    'walker' => Sublimeplus_get_walker_nav_menu(),
-                            'fallback_cb' => false,
-                        ));
-                        ?>
-                    </nav>
-                    <div class="header-buttons d-none d-sm-flex">
-                        <?php 
-                       // print_r($settings);
-                        if (isset($settings['enable_login_popup_in_menu']) && $settings['enable_login_popup_in_menu'] == 1) {
-                          ?>
-                            <a href="#" class="link" data-toggle="modal" data-target="#modalLogin">Login</a>
-                            
-                          <?php
-                        }?>
-          
-       
-                <?php  if (isset($settings['show_trial_button_in_menu']) && $settings['show_trial_button_in_menu']== 1) {?>
-                <a href="<?php echo $settings['trial_button_url']!= "" ? $settings['trial_button_url'] : "#"?>" class="btn btn--sm btn--secondary">
-                    <?php echo $settings['trial_button_text']!= "" ? $settings['trial_button_text'] : "Start 14-Day Trial"?>
-                </a>
-                <?php
-                        }?>
-                </div>
-           </div>
-        <button class="open-nav-btn c-hamburger c-hamburger--htx">
-            <span>toggle menu</span>
-        </button>
-    </div>
-</header>
+
+        <div class="header-actions <?= esc_attr(apply_filters('bootscore/class/header-actions', 'd-flex align-items-center')); ?>">
+
+          <!-- Top Nav Widget -->
+          <?php if (is_active_sidebar('top-nav')) : ?>
+            <?php dynamic_sidebar('top-nav'); ?>
+          <?php endif; ?>
+
+          <?php
+          if (class_exists('WooCommerce')) :
+            get_template_part('template-parts/header/actions', 'woocommerce');
+          else :
+            get_template_part('template-parts/header/actions');
+          endif;
+          ?>
+
+          <!-- Navbar Toggler -->
+          <button class="<?= esc_attr(apply_filters('bootscore/class/header/button', 'btn btn-outline-secondary', 'nav-toggler')); ?> <?= esc_attr(apply_filters('bootscore/class/header/navbar/toggler/breakpoint', 'd-lg-none')); ?> <?= esc_attr(apply_filters('bootscore/class/header/action/spacer', 'ms-1 ms-md-2', 'nav-toggler')); ?> nav-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas-navbar" aria-controls="offcanvas-navbar" aria-label="<?php esc_attr_e('Toggle main menu', 'bootscore'); ?>">
+            <?= wp_kses_post(apply_filters('bootscore/icon/menu', '<i class="fa-solid fa-bars"></i>')); ?> <span class="visually-hidden-focusable">Menu</span>
+          </button>
+
+          <?php do_action('bootscore_after_nav_toggler'); ?>
+
+        </div><!-- .header-actions -->
+
+      </div><!-- .container -->
+
+    </nav><!-- .navbar -->
+
+    <?php
+    if (class_exists('WooCommerce')) :
+      get_template_part('template-parts/header/collapse-search', 'woocommerce');
+    else :
+      get_template_part('template-parts/header/collapse-search');
+    endif;
+    ?>
+
+    <!-- Offcanvas User and Cart -->
+    <?php
+    if (class_exists('WooCommerce')) :
+      get_template_part('template-parts/header/offcanvas', 'woocommerce');
+    endif;
+    ?>
+
+    <?php do_action('bootscore_before_masthead_close'); ?>
+
+  </header><!-- #masthead -->
+
+  <?php do_action('bootscore_after_masthead'); ?>

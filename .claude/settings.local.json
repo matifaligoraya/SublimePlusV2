@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Mr. Smith/Downloads/bootscore/bootscore/assets/**)",
+      "Read(//c/Users/Mr. Smith/Downloads/bootscore/bootscore/inc/**)",
+      "Read(//c/Users/Mr. Smith/Downloads/bootscore/bootscore/**)"
+    ]
+  }
+}

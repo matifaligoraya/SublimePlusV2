@@ -779,6 +779,16 @@ class Sublimeplus_Customize_Live_CSS
                 'css_format' => null,
                 'type'       => null,
             ));
+
+            // Skip fields whose 'required' condition is not currently met —
+            // otherwise saved values from a different mode keep leaking into CSS.
+            if (!empty($field['required']) && is_array($field['required']) && count($field['required']) === 3) {
+                list($req_key, $req_op, $req_val) = $field['required'];
+                $req_current = Sublimeplus_customize_get_setting($req_key);
+                if ($req_op === '==' && $req_current != $req_val) continue;
+                if ($req_op === '!=' && $req_current == $req_val) continue;
+            }
+
             $v = isset($values[$field['name']]) ? $values[$field['name']] : null;
             if (!(is_null($v) && $skip_if_val_null)) {
                 if (($field['selector'] && $field['css_format']) || $field['type'] == 'modal') {

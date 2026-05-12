@@ -15,6 +15,18 @@
  */
 require get_template_directory() . '/core/const.php';
 
+// Bootscore integration — loaded at top level so after_setup_theme hooks register correctly
+require get_template_directory() . '/inc/bootscore/navwalker.php';
+require get_template_directory() . '/inc/bootscore/navmenu.php';
+require get_template_directory() . '/inc/bootscore/widgets.php';
+require get_template_directory() . '/inc/bootscore/enqueue.php';
+require get_template_directory() . '/inc/bootscore/template-functions.php';
+require get_template_directory() . '/inc/bootscore/template-tags.php';
+require get_template_directory() . '/inc/bootscore/columns.php';
+require get_template_directory() . '/inc/bootscore/pagination.php';
+require get_template_directory() . '/inc/bootscore/breadcrumb.php';
+require get_template_directory() . '/inc/bootscore/excerpt.php';
+
 /**
  * Check if system meets requirements
  *
@@ -89,11 +101,14 @@ function sublimeplus_default_setup()
     require SUBLIMEPLUS_DIR . 'core/admin/formatting.php';
     
 
+    // nav-menu.php registers wp_nav_menu_item_custom_fields (admin) and nav_menu_item_title (public)
+    require SUBLIMEPLUS_DIR . 'core/public/functions/nav-menu.php';
+
     // Load admin resources.
     if (is_admin()) {
-     
+
         require SUBLIMEPLUS_DIR . 'core/admin/functions/menu.php';
-        
+
         require SUBLIMEPLUS_DIR . 'core/admin/pages/sublimeplus-welcome-page.php';
         require SUBLIMEPLUS_DIR . 'core/admin/pages/sublimeplus-customize-page.php';
         require SUBLIMEPLUS_DIR . 'core/admin/pages/sublimeplus-settings-page.php';
@@ -108,7 +123,6 @@ function sublimeplus_default_setup()
     } else { // Load public resources.
         //require SUBLIMEPLUS_DIR . 'core/public/megamenu/class-mega-menu-walker.php';
         require SUBLIMEPLUS_DIR . 'core/public/breadcrumb/sublimeplus-breadcrumb.php';
-        require SUBLIMEPLUS_DIR . 'core/public/functions/nav-menu.php';
         require SUBLIMEPLUS_DIR . 'core/public/functions/pagination.php';
         require SUBLIMEPLUS_DIR . 'core/public/functions/breadcrumb.php';
         require SUBLIMEPLUS_DIR . 'core/public/hooks.php';
@@ -137,7 +151,7 @@ add_filter('upload_mimes', 'sublimeplus_allow_svg_uploads');
 /**
  * Allow SVG in front-end display
  */
-function sublimeplus_sanitize_svg($content, $allowed_html, $allowed_protocols) {
+function sublimeplus_sanitize_svg($allowed_html, $context) {
     $allowed_html['svg'] = array(
         'xmlns' => true,
         'viewBox' => true,
@@ -245,9 +259,9 @@ function sublimeplus_sanitize_svg($content, $allowed_html, $allowed_protocols) {
     $allowed_html['title'] = array();
     $allowed_html['desc'] = array();
     
-    return $content;
+    return $allowed_html;
 }
-add_filter('wp_kses_allowed_html', 'sublimeplus_sanitize_svg', 10, 3);
+add_filter('wp_kses_allowed_html', 'sublimeplus_sanitize_svg', 10, 2);
 
 /**
  * Register Elementor Locations.

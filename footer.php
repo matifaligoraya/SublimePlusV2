@@ -1,61 +1,95 @@
 <?php
 /**
- * Default site footer
+ * The footer template
+ * Compatible: Bootscore 6.3.1 + SublimePlusV2
  *
- * @package SublimePulse\Templates
- * @author   SublimePulse
- * @link     https://www.SublimePulse.com/
- *
+ * @package SublimePlusV2
  */
-
+defined('ABSPATH') || exit;
 ?>
 
-<a href="#" class="link-top" id="link-top"><span><i class="fas fa-chevron-up"></i></span></a>
+<?php do_action('bootscore_before_footer'); ?>
 
-<div class="overlay"></div>
+<footer id="footer" class="bootscore-footer">
 
-<div class="loader">
-    <div class="loader-inner line-spin-fade-loader">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+  <?php if (is_active_sidebar('footer-top')) : ?>
+    <div class="<?= esc_attr(apply_filters('bootscore/class/footer/top', 'bg-body-tertiary border-bottom py-5')); ?> bootscore-footer-top">
+      <div class="<?= esc_attr(apply_filters('bootscore/class/container', 'container', 'footer-top')); ?>">
+        <?php dynamic_sidebar('footer-top'); ?>
+      </div>
     </div>
-</div>
+  <?php endif; ?>
 
-<?php $settings = get_option(Sublimeplus_SETTINGS_KEY);
-if (isset($settings['html_of_login_popup_in_menu'])) {
-    echo $settings['html_of_login_popup_in_menu'];
-}
-?>
+  <div class="<?= esc_attr(apply_filters('bootscore/class/footer/columns', 'bg-body-tertiary pt-5 pb-4')); ?> bootscore-footer-columns">
 
-<?php 
-                    //    print_r($settings);
-                        if (isset($settings['html_of_login_popup_in_menu']) && $settings['html_of_login_popup_in_menu'] == 1) {
-                          ?>
-                            
-                           <?php 
-                           echo wp_kses_post($settings['html_of_login_popup_in_menu']);
-                           ?>
-                          <?php
-                        }?>
+    <?php do_action('bootscore_footer_columns_before_container'); ?>
+
+    <div class="<?= esc_attr(apply_filters('bootscore/class/container', 'container', 'footer-columns')); ?>">
+
+      <?php do_action('bootscore_footer_columns_after_container_open'); ?>
+
+      <div class="row">
+
+        <div class="<?= esc_attr(apply_filters('bootscore/class/footer/col', 'col-6 col-lg-3', 'footer-1')); ?>">
+          <?php if (is_active_sidebar('footer-1')) : ?>
+            <?php dynamic_sidebar('footer-1'); ?>
+          <?php endif; ?>
+        </div>
+
+        <div class="<?= esc_attr(apply_filters('bootscore/class/footer/col', 'col-6 col-lg-3', 'footer-2')); ?>">
+          <?php if (is_active_sidebar('footer-2')) : ?>
+            <?php dynamic_sidebar('footer-2'); ?>
+          <?php endif; ?>
+        </div>
+
+        <div class="<?= esc_attr(apply_filters('bootscore/class/footer/col', 'col-6 col-lg-3', 'footer-3')); ?>">
+          <?php if (is_active_sidebar('footer-3')) : ?>
+            <?php dynamic_sidebar('footer-3'); ?>
+          <?php endif; ?>
+        </div>
+
+        <div class="<?= esc_attr(apply_filters('bootscore/class/footer/col', 'col-6 col-lg-3', 'footer-4')); ?>">
+          <?php if (is_active_sidebar('footer-4')) : ?>
+            <?php dynamic_sidebar('footer-4'); ?>
+          <?php endif; ?>
+        </div>
+
+      </div>
+
+      <?php do_action('bootscore_footer_columns_before_footer_menu'); ?>
+
+      <!-- Bootstrap 5 Nav Walker Footer Menu -->
+      <?php get_template_part('template-parts/footer/footer-menu'); ?>
+
+      <?php do_action('bootscore_footer_columns_before_container_close'); ?>
+
+    </div>
+
+    <?php do_action('bootscore_footer_columns_after_container'); ?>
+
+  </div>
+
+  <div class="<?= esc_attr(apply_filters('bootscore/class/footer/info', 'bg-body-tertiary text-body-secondary border-top py-2 text-center')); ?> bootscore-footer-info">
+    <div class="<?= esc_attr(apply_filters('bootscore/class/container', 'container', 'footer-info')); ?>">
+
+      <?php do_action('bootscore_footer_info_after_container_open'); ?>
+
+      <?php if (is_active_sidebar('footer-info')) : ?>
+        <?php dynamic_sidebar('footer-info'); ?>
+      <?php endif; ?>
+      <div class="small bootscore-copyright"><span class="cr-symbol">&copy;</span>&nbsp;<?= esc_html(date_i18n('Y')); ?> <?= esc_html(get_bloginfo('name')); ?></div>
+    </div>
+  </div>
+
+</footer>
+
+<!-- To top button -->
+<a href="#" class="<?= esc_attr(apply_filters('bootscore/class/footer/to_top_button', 'btn btn-primary shadow')); ?> position-fixed zi-1000 top-button" role="button" aria-label="<?php esc_attr_e('Return to top', 'bootscore'); ?>"><?= wp_kses_post(apply_filters('bootscore/icon/chevron-up', '<i class="fa-solid fa-chevron-up" aria-hidden="true"></i>')); ?></a>
+
+</div><!-- #page -->
+
+<?php wp_footer(); ?>
+
 </body>
 
-</html>
-<!-- <div class="sublimeplus-mask-close"></div>
-<footer id="site-footer" class="site-footer">
-    <div class="container">
-        <?php
-        echo esc_html(get_theme_mod('Sublimeplus_footer_copy_right',sprintf(esc_html__( '© %s SublimePulse. All rights reserved.', 'sublimeplus' ),date("Y"))));
-        ?>
-    </div>
-</footer> -->
-<?php
-wp_footer();
-?>
-</body>
 </html>

@@ -1,0 +1,179 @@
+/*!
+ * Bootscore custom styles — SublimePlusV2
+ * Add your overrides below. This file is compiled after Bootstrap so all BS
+ * variables, mixins, and utilities are available.
+ */
+
+// ─── CSS custom properties ────────────────────────────────────────────────────
+// Defaults map to Bootstrap tokens where possible. Override in a child theme
+// or via the customizer's Additional CSS panel.
+:root {
+  --c-primary:       #{$primary};
+  --c-primary-dark:  #c2400a;          // darker accent for active states
+  --c-text-main:     #1e293b;
+  --c-text-muted:    #64748b;
+  --c-bg-accent:     #f1f5f9;
+}
+
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+.navbar-brand .custom-logo-link,
+.navbar-brand a {
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar-brand .custom-logo,
+.navbar-brand img {
+  max-height: 45px;
+  width: auto;
+  height: auto;
+}
+
+// ─── Nav links container ──────────────────────────────────────────────────────
+.nav-links {
+  display: flex;
+  gap: .4rem;
+  margin-left: auto;
+  align-items: center;
+}
+
+// ─── Individual nav link ──────────────────────────────────────────────────────
+.nav-links .nav-link {
+  font-size: .96rem;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .45rem .65rem;
+  border-radius: 6px;
+  transition: all .2s ease;
+  text-decoration: none;
+
+  &:hover,
+  &.active {
+    color: var(--c-text-main);
+    background-color: var(--c-bg-accent);
+  }
+
+  &.active {
+    color: var(--c-primary-dark);
+    font-weight: 600;
+    background-color: #fff7ed;
+  }
+}
+
+// ─── Nav icon ─────────────────────────────────────────────────────────────────
+.nav-icon {
+  width: 17px;
+  height: 17px;
+  display: inline-block;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: .92;
+}
+
+// ─── Language tongue switcher ─────────────────────────────────────────────────
+.lang-tongue-wrapper {
+  display: inline-flex;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  padding: 3px;
+  margin: 0 .5rem;
+  font-family: Outfit, var(--bs-font-sans-serif);
+}
+
+.lang-tongue-item {
+  padding: .4rem .9rem;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  border-radius: 50px;
+  text-decoration: none;
+  color: #64748b;
+  transition: all .25s ease;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+
+  &:hover:not(.active) {
+    color: var(--c-primary);
+  }
+
+  &.active {
+    background: #fff;
+    color: var(--c-primary-dark);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06);
+  }
+}
+
+[dir=rtl] .lang-tongue-wrapper {
+  flex-direction: row-reverse;
+}
+
+// Desktop: show wrapper outside nav, hide inside nav links
+.container-nav > .lang-tongue-wrapper  { display: inline-flex; }
+.nav-links .lang-tongue-wrapper         { display: none; }
+
+// ─── Responsive ───────────────────────────────────────────────────────────────
+@media (max-width: 1400px) {
+  .nav-links { gap: .2rem; }
+
+  .nav-links .nav-link {
+    padding: .42rem .54rem;
+    font-size: .91rem;
+    gap: .38rem;
+  }
+
+  .nav-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .navbar-brand { font-size: .9rem; }
+}
+
+@media (max-width: 1150px) {
+  .nav-links { gap: .1rem; }
+
+  .nav-links .nav-link {
+    font-size: .88rem;
+    padding: .4rem .45rem;
+    gap: .32rem;
+  }
+
+  .nav-icon {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .nav-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 1;
+  }
+
+  // On mobile: hide lang wrapper in the top bar, show it inside the offcanvas nav
+  .container-nav > .lang-tongue-wrapper  { display: none; }
+  .nav-links .lang-tongue-wrapper {
+    display: inline-flex;
+    margin: 1.5rem 0;
+  }
+
+  // Offcanvas nav link sizing
+  .navbar .nav-links .nav-link {
+    width: 100%;
+    min-height: 44px;
+    padding: .75rem .9rem;
+    font-size: 1rem;
+    gap: .7rem;
+    border-radius: 8px;
+  }
+}

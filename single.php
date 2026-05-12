@@ -1,61 +1,70 @@
 <?php
 /**
- * The template for displaying all single posts.
+ * The template for displaying single posts
+ * Template Version: 6.3.1
  *
- * @package     SublimePulse
- * @version     1.0.0
- * @author      SublimePulse
- * @link     https://bitandbytelab.com/
- * @copyright   Copyright (c) 2020 SublimePulse
+ * @package SublimePlusV2
  */
-
+defined('ABSPATH') || exit;
 
 get_header();
-if (have_posts()) :
-    while (have_posts()) : the_post();
-        /**
-         * Zoo Before Main Content
-         *
-         * @hooked Sublimeplus_breadcrumb - 10
-         * @hooked Sublimeplus_blog_cover - 20
-         */
-        do_action('Sublimeplus_before_main_content');
-        ?>
-        <main id="site-main-content" class="<?php echo esc_attr(Sublimeplus_main_content_css()) ?>">
-            <?php
-            /**
-             * Zoo Before Single Blog Content
-             *
-             */
-            do_action('Sublimeplus_before_single_main_content');
-            ?>
-            <div class="container">
-                <div class="row">
-                    <div class="<?php echo esc_attr(Sublimeplus_single_content_css()) ?>">
-                        <?php
-                        get_template_part('content', 'single');
-                        ?>
-                    </div>
-                    <?php
-                    get_sidebar('single');
-                    ?>
-                </div>
-            </div>
-            <?php
-            /**
-             * Zoo After Loop Single Content
-             *
-             */
-            do_action('Sublimeplus_after_single_main_content');
-            ?>
-        </main>
-        <?php
+?>
+  <div id="content" class="site-content <?= esc_attr(apply_filters('bootscore/class/container', 'container', 'single')); ?> <?= esc_attr(apply_filters('bootscore/class/content/spacer', 'pt-3 pb-5', 'single')); ?>">
+    <div id="primary" class="content-area">
 
-        /**
-         * Zoo After Main Content
-         *
-         */
-        do_action('Sublimeplus_after_main_content');
-    endwhile;
-endif;
+      <?php do_action('bootscore_after_primary_open', 'single'); ?>
+
+      <?php the_breadcrumb(); ?>
+
+      <div class="row">
+        <div class="<?= esc_attr(apply_filters('bootscore/class/main/col', 'col')); ?>">
+
+          <main id="main" class="site-main">
+
+            <div class="entry-header">
+              <?php the_post(); ?>
+              <?php bootscore_category_badge(); ?>
+              <?php do_action('bootscore_before_title', 'single'); ?>
+              <?php the_title('<h1 class="entry-title ' . esc_attr(apply_filters('bootscore/class/entry/title', '', 'single')) . '">', '</h1>'); ?>
+              <?php do_action('bootscore_after_title', 'single'); ?>
+              <p class="entry-meta">
+                <small class="text-body-secondary">
+                  <?php bootscore_date(); bootscore_author(); bootscore_comment_count(); ?>
+                </small>
+              </p>
+              <?php bootscore_post_thumbnail(); ?>
+            </div>
+
+            <?php do_action('bootscore_after_featured_image', 'single'); ?>
+
+            <div class="entry-content">
+              <?php the_content(); ?>
+            </div>
+
+            <?php do_action('bootscore_before_entry_footer', 'single'); ?>
+
+            <div class="entry-footer clear-both">
+              <div class="mb-4">
+                <?php bootscore_tags(); ?>
+              </div>
+              <?php if (function_exists('bootscore_related_posts')) bootscore_related_posts(); ?>
+              <nav aria-label="bs page navigation">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item"><?php previous_post_link('%link'); ?></li>
+                  <li class="page-item"><?php next_post_link('%link'); ?></li>
+                </ul>
+              </nav>
+              <?php comments_template(); ?>
+            </div>
+
+          </main>
+
+        </div>
+        <?php get_sidebar(); ?>
+      </div>
+
+    </div>
+  </div>
+
+<?php
 get_footer();
