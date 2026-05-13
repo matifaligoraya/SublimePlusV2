@@ -49,6 +49,7 @@
   border-radius: 6px;
   transition: all .2s ease;
   text-decoration: none;
+  white-space: nowrap;        // prevent text wrapping to second line
 
   &:hover,
   &.active {
@@ -63,14 +64,19 @@
   }
 }
 
-// ─── Nav icon ─────────────────────────────────────────────────────────────────
+// ─── Nav icon (img + icon-font + svg) ────────────────────────────────────────
 .nav-icon {
-  width: 17px;
-  height: 17px;
-  display: inline-block;
+  width: 17px !important;
+  height: 17px !important;
+  font-size: 17px !important;   // constrains <i> icon fonts (dashicons, FA)
+  line-height: 1;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   object-fit: contain;
   flex-shrink: 0;
-  opacity: .92;
+  opacity: .85;
+  vertical-align: middle;
 }
 
 // ─── Language tongue switcher ─────────────────────────────────────────────────
@@ -114,9 +120,10 @@
   flex-direction: row-reverse;
 }
 
-// Desktop: show wrapper outside nav, hide inside nav links
-.container-nav > .lang-tongue-wrapper  { display: inline-flex; }
-.nav-links .lang-tongue-wrapper         { display: none; }
+// Desktop: show wrapper in navbar container, hide inside nav links
+.navbar .container > .lang-tongue-wrapper,
+.navbar .container-fluid > .lang-tongue-wrapper { display: inline-flex; }
+.nav-links .lang-tongue-wrapper                 { display: none; }
 
 // ─── Responsive ───────────────────────────────────────────────────────────────
 @media (max-width: 1400px) {
@@ -129,8 +136,9 @@
   }
 
   .nav-icon {
-    width: 16px;
-    height: 16px;
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 16px !important;
   }
 }
 
@@ -148,26 +156,29 @@
   }
 
   .nav-icon {
-    width: 15px;
-    height: 15px;
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 15px !important;
   }
 }
 
 @media (max-width: 1024px) {
   .nav-icon {
-    width: 18px;
-    height: 18px;
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 18px !important;
     opacity: 1;
   }
 
-  // On mobile: hide lang wrapper in the top bar, show it inside the offcanvas nav
-  .container-nav > .lang-tongue-wrapper  { display: none; }
+  // On mobile: hide lang wrapper in top bar, show it inside the offcanvas nav
+  .navbar .container > .lang-tongue-wrapper,
+  .navbar .container-fluid > .lang-tongue-wrapper { display: none; }
   .nav-links .lang-tongue-wrapper {
     display: inline-flex;
     margin: 1.5rem 0;
   }
 
-  // Offcanvas nav link sizing
+  // Offcanvas nav link sizing — allow wrapping at full width
   .navbar .nav-links .nav-link {
     width: 100%;
     min-height: 44px;
@@ -175,6 +186,7 @@
     font-size: 1rem;
     gap: .7rem;
     border-radius: 8px;
+    white-space: normal;   // allow wrap in mobile offcanvas
   }
 }
 

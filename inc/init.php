@@ -47,6 +47,13 @@ require SUBLIMEPLUS_DIR.'inc/functions/wpbakery-elements.php';
 require SUBLIMEPLUS_DIR.'inc/cpt/sp-products.php';
 require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-product-metabox.php';
 
+/**
+ * One-click importer (Tools → Import Products) — remove after use
+ */
+if (is_admin()) {
+    require SUBLIMEPLUS_DIR.'inc/tools/sp-import-products.php';
+}
+
 
 /**
  * Elementor widgets

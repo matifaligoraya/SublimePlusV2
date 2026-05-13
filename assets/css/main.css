@@ -12523,6 +12523,7 @@ WooCommerce Block Widgets
   border-radius: 6px;
   transition: all 0.2s ease;
   text-decoration: none;
+  white-space: nowrap;
 }
 .nav-links .nav-link:hover, .nav-links .nav-link.active {
   color: var(--c-text-main);
@@ -12534,12 +12535,17 @@ WooCommerce Block Widgets
   background-color: #fff7ed;
 }
 .nav-icon {
-  width: 17px;
-  height: 17px;
-  display: inline-block;
+  width: 17px !important;
+  height: 17px !important;
+  font-size: 17px !important;
+  line-height: 1;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   object-fit: contain;
   flex-shrink: 0;
-  opacity: 0.92;
+  opacity: 0.85;
+  vertical-align: middle;
 }
 .lang-tongue-wrapper {
   display: inline-flex;
@@ -12576,7 +12582,7 @@ WooCommerce Block Widgets
 [dir=rtl] .lang-tongue-wrapper {
   flex-direction: row-reverse;
 }
-.container-nav > .lang-tongue-wrapper {
+.navbar .container > .lang-tongue-wrapper, .navbar .container-fluid > .lang-tongue-wrapper, .navbar .container-sm > .lang-tongue-wrapper, .navbar .container-md > .lang-tongue-wrapper, .navbar .container-lg > .lang-tongue-wrapper, .navbar .container-xl > .lang-tongue-wrapper, .navbar .container-xxl > .lang-tongue-wrapper {
   display: inline-flex;
 }
 .nav-links .lang-tongue-wrapper {
@@ -12592,8 +12598,9 @@ WooCommerce Block Widgets
     gap: 0.38rem;
   }
   .nav-icon {
-    width: 16px;
-    height: 16px;
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 16px !important;
   }
 }
 @media (max-width: 1200px) {
@@ -12611,17 +12618,19 @@ WooCommerce Block Widgets
     gap: 0.32rem;
   }
   .nav-icon {
-    width: 15px;
-    height: 15px;
+    width: 15px !important;
+    height: 15px !important;
+    font-size: 15px !important;
   }
 }
 @media (max-width: 1024px) {
   .nav-icon {
-    width: 18px;
-    height: 18px;
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 18px !important;
     opacity: 1;
   }
-  .container-nav > .lang-tongue-wrapper {
+  .navbar .container > .lang-tongue-wrapper, .navbar .container-fluid > .lang-tongue-wrapper, .navbar .container-sm > .lang-tongue-wrapper, .navbar .container-md > .lang-tongue-wrapper, .navbar .container-lg > .lang-tongue-wrapper, .navbar .container-xl > .lang-tongue-wrapper, .navbar .container-xxl > .lang-tongue-wrapper {
     display: none;
   }
   .nav-links .lang-tongue-wrapper {
@@ -12635,6 +12644,7 @@ WooCommerce Block Widgets
     font-size: 1rem;
     gap: 0.7rem;
     border-radius: 8px;
+    white-space: normal;
   }
 }
 .has-wpb-content #content.site-content {
