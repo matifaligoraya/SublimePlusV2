@@ -1,5 +1,5 @@
    <?php
-    require_once SUBLIMEPLUS_DIR . 'core/admin/freamwork/SublimeBaseTab.php'; // If SublimeBaseTab is in the same directory
+    require_once SUBLIMEPLUS_DIR . 'core/admin/freamwork/sublimebasetab.php'; // If SublimeBaseTab is in the same directory
     class SublimeBannerTab extends SublimeBaseTab {
         private $subTabs = [];
         public function getTitle() {
