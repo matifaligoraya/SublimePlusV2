@@ -1,4 +1,4 @@
-# Plugin zips — never commit these, they trigger AV heuristics and bloat the repo
+# Plugin zips — never commit, trigger AV heuristics and bloat the repo
 inc/plugins/*.zip
 inc/plugins/**/*.zip
 
@@ -8,6 +8,12 @@ inc/plugins/**/*.zip
 # Node / build
 node_modules/
 npm-debug.log
+
+# Source maps — dev only, not needed on production
+*.map
+
+# Bootstrap test suite — dev only, never needed at runtime
+assets/scss/bootstrap/tests/
 
 # OS
 .DS_Store
