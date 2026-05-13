@@ -1,0 +1,20 @@
+# Plugin zips — never commit these, they trigger AV heuristics and bloat the repo
+inc/plugins/*.zip
+inc/plugins/**/*.zip
+
+# General zip files
+*.zip
+
+# Node / build
+node_modules/
+npm-debug.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
