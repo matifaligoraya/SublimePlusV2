@@ -6,50 +6,23 @@
  */
 defined('ABSPATH') || exit;
 
-$items = apply_filters('sp_approvals_items', [
-  [
-    'img'   => get_template_directory_uri() . '/assets/img/authority/rta.png',
-    'main'  => 'RTA Approved',
-    'sub'   => 'Roads &amp; Transport Authority',
-    'alt'   => 'RTA',
-  ],
-  [
-    'img'   => get_template_directory_uri() . '/assets/img/authority/municipality.png',
-    'main'  => 'Municipality Compliant',
-    'sub'   => 'Dubai &amp; Abu Dhabi Specs',
-    'alt'   => 'Municipality',
-  ],
-  [
-    'img'   => get_template_directory_uri() . '/assets/img/authority/iso9001.png',
-    'main'  => 'ISO 9001:2015',
-    'sub'   => 'Quality Management System',
-    'alt'   => 'ISO 9001',
-  ],
-  [
-    'img'   => get_template_directory_uri() . '/assets/img/authority/iso14001.png',
-    'main'  => 'ISO 14001:2015',
-    'sub'   => 'Environmental Management',
-    'alt'   => 'ISO 14001',
-  ],
-  [
-    'img'   => get_template_directory_uri() . '/assets/img/authority/icv.png',
-    'main'  => 'ICV Certified',
-    'sub'   => 'In-Country Value Program',
-    'alt'   => 'ICV',
-  ],
-  [
-    'img'   => get_template_directory_uri() . '/assets/img/authority/made-in-uae.png',
-    'main'  => 'Made in UAE',
-    'sub'   => 'Industrial Development',
-    'alt'   => 'Made in UAE',
-  ],
-  [
-    'img'   => get_template_directory_uri() . '/assets/img/authority/iso45001.png',
-    'main'  => 'ISO 45001:2018',
-    'sub'   => 'Health &amp; Safety Management',
-    'alt'   => 'ISO 45001',
-  ],
-]);
+$args = $args ?? [];
+
+$_uri     = get_template_directory_uri() . '/assets/img/authority/';
+$_default = [
+  ['img' => $_uri . 'rta.png',         'main' => 'RTA Approved',          'sub' => 'Roads &amp; Transport Authority',  'alt' => 'RTA'],
+  ['img' => $_uri . 'municipality.png','main' => 'Municipality Compliant', 'sub' => 'Dubai &amp; Abu Dhabi Specs',      'alt' => 'Municipality'],
+  ['img' => $_uri . 'iso9001.png',     'main' => 'ISO 9001:2015',          'sub' => 'Quality Management System',        'alt' => 'ISO 9001'],
+  ['img' => $_uri . 'iso14001.png',    'main' => 'ISO 14001:2015',         'sub' => 'Environmental Management',         'alt' => 'ISO 14001'],
+  ['img' => $_uri . 'icv.png',         'main' => 'ICV Certified',          'sub' => 'In-Country Value Program',         'alt' => 'ICV'],
+  ['img' => $_uri . 'made-in-uae.png', 'main' => 'Made in UAE',            'sub' => 'Industrial Development',           'alt' => 'Made in UAE'],
+  ['img' => $_uri . 'iso45001.png',    'main' => 'ISO 45001:2018',         'sub' => 'Health &amp; Safety Management',   'alt' => 'ISO 45001'],
+];
+
+// $args['items'] from WPBakery overrides the filter
+$items = (!empty($args['items']) && is_array($args['items']))
+  ? $args['items']
+  : apply_filters('sp_approvals_items', $_default);
 
 if (empty($items)) return;
 ?>

@@ -8,20 +8,27 @@
  */
 defined('ABSPATH') || exit;
 
-$badge       = get_theme_mod('sp_hero_badge',    'RTA &amp; Municipality Compliant');
-$title_top   = get_theme_mod('sp_hero_title_top', 'High-Strength');
-$title_bot   = get_theme_mod('sp_hero_title_bot', 'Concrete Precast.');
-$description = get_theme_mod('sp_hero_desc',     'Jersey barriers, bunker components, wheel stoppers, and blocks — factory-cast with RTA and municipality approvals for UAE projects.');
-$btn1_text   = get_theme_mod('sp_hero_btn1_text', 'Get a Quote');
-$btn1_url    = get_theme_mod('sp_hero_btn1_url',  get_permalink(get_page_by_path('contact')));
-$btn2_text   = get_theme_mod('sp_hero_btn2_text', 'View Catalogue');
-$btn2_url    = get_theme_mod('sp_hero_btn2_url',  get_permalink(get_page_by_path('products')));
+// $args can be passed via get_template_part( ..., null, $args ) or from a WPBakery shortcode
+$args        = $args ?? [];
+$badge       = $args['badge']       ?? get_theme_mod('sp_hero_badge',    'RTA &amp; Municipality Compliant');
+$title_top   = $args['title_top']   ?? get_theme_mod('sp_hero_title_top', 'High-Strength');
+$title_bot   = $args['title_bot']   ?? get_theme_mod('sp_hero_title_bot', 'Concrete Precast.');
+$description = $args['description'] ?? get_theme_mod('sp_hero_desc',     'Jersey barriers, bunker components, wheel stoppers, and blocks — factory-cast with RTA and municipality approvals for UAE projects.');
+$btn1_text   = $args['btn1_text']   ?? get_theme_mod('sp_hero_btn1_text', 'Get a Quote');
+$btn1_url    = $args['btn1_url']    ?? get_theme_mod('sp_hero_btn1_url',  get_permalink(get_page_by_path('contact')));
+$btn2_text   = $args['btn2_text']   ?? get_theme_mod('sp_hero_btn2_text', 'View Catalogue');
+$btn2_url    = $args['btn2_url']    ?? get_theme_mod('sp_hero_btn2_url',  get_permalink(get_page_by_path('products')));
 
-// Background: featured image of homepage, then theme_mod, then fallback
-$page_id    = get_option('page_on_front');
-$bg_url     = '';
-if ($page_id && has_post_thumbnail($page_id)) {
-  $bg_url = get_the_post_thumbnail_url($page_id, 'full');
+// Background: $args image ID → featured image of homepage → theme_mod → fallback
+$bg_url = '';
+if (!empty($args['bg_image_id'])) {
+  $bg_url = wp_get_attachment_image_url((int) $args['bg_image_id'], 'full');
+}
+if (!$bg_url) {
+  $page_id = get_option('page_on_front');
+  if ($page_id && has_post_thumbnail($page_id)) {
+    $bg_url = get_the_post_thumbnail_url($page_id, 'full');
+  }
 }
 if (!$bg_url) {
   $bg_url = get_theme_mod('sp_hero_bg_image', get_template_directory_uri() . '/assets/img/hero-bg.jpg');

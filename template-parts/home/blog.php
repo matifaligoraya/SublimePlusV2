@@ -6,10 +6,11 @@
  */
 defined('ABSPATH') || exit;
 
-$heading  = get_theme_mod('sp_blog_heading', 'Latest Industry Insights');
-$subtext  = get_theme_mod('sp_blog_subtext', 'Stay updated on precast concrete innovations, project highlights, and UAE infrastructure news.');
-$cta_text = get_theme_mod('sp_blog_cta_text', 'Read All Articles');
-$cta_url  = get_permalink(get_option('page_for_posts')) ?: get_home_url(null, '/blog/');
+$args     = $args ?? [];
+$heading  = $args['heading']  ?? get_theme_mod('sp_blog_heading', 'Latest Industry Insights');
+$subtext  = $args['subtext']  ?? get_theme_mod('sp_blog_subtext', 'Stay updated on precast concrete innovations, project highlights, and UAE infrastructure news.');
+$cta_text = $args['cta_text'] ?? get_theme_mod('sp_blog_cta_text', 'Read All Articles');
+$cta_url  = $args['cta_url']  ?? (get_permalink(get_option('page_for_posts')) ?: get_home_url(null, '/blog/'));
 
 $posts = new WP_Query([
   'post_type'      => 'post',
@@ -35,17 +36,20 @@ if (!$posts->have_posts()) return;
     </div>
 
     <div class="home-grid home-grid--blog">
-      <?php while ($posts->have_posts()) : $posts->the_post();
-        $img  = get_the_post_thumbnail_url(null, 'medium_large');
-        $cats = get_the_category();
-        $cat  = $cats ? $cats[0]->name : '';
+      <?php foreach ($posts->posts as $sp_post) :
+        $sp_id = $sp_post->ID;
+        $img   = get_the_post_thumbnail_url($sp_id, 'medium_large');
+        $cats  = get_the_category($sp_id);
+        $cat   = $cats ? $cats[0]->name : '';
+        $title = get_the_title($sp_id);
+        $link  = get_permalink($sp_id);
       ?>
-        <a href="<?php the_permalink(); ?>" class="blog-card-link">
+        <a href="<?php echo esc_url($link); ?>" class="blog-card-link">
           <article class="blog-card">
 
             <?php if ($img) : ?>
               <div class="blog-card__image">
-                <img src="<?php echo esc_url($img); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy" decoding="async">
+                <img src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr($title); ?>" loading="lazy" decoding="async">
               </div>
             <?php endif; ?>
 
@@ -53,15 +57,15 @@ if (!$posts->have_posts()) return;
               <?php if ($cat) : ?>
                 <span class="blog-card__cat"><?php echo esc_html($cat); ?></span>
               <?php endif; ?>
-              <h3><?php the_title(); ?></h3>
+              <h3><?php echo esc_html($title); ?></h3>
               <p class="blog-card__meta">
-                <time datetime="<?php echo get_the_date('c'); ?>"><?php echo get_the_date(); ?></time>
+                <time datetime="<?php echo get_the_date('c', $sp_post); ?>"><?php echo get_the_date('', $sp_post); ?></time>
               </p>
             </div>
 
           </article>
         </a>
-      <?php endwhile; wp_reset_postdata(); ?>
+      <?php endforeach; ?>
     </div>
 
   </div>

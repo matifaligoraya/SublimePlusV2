@@ -264,6 +264,19 @@ function sublimeplus_sanitize_svg($allowed_html, $context) {
 add_filter('wp_kses_allowed_html', 'sublimeplus_sanitize_svg', 10, 2);
 
 /**
+ * Add body class for pages built with WPBakery so CSS can go full-width.
+ */
+add_filter('body_class', function ($classes) {
+    if (is_singular()) {
+        global $post;
+        if ($post && has_shortcode($post->post_content, 'vc_row')) {
+            $classes[] = 'has-wpb-content';
+        }
+    }
+    return $classes;
+});
+
+/**
  * Register Elementor Locations.
  *
  * @param ElementorPro\Modules\ThemeBuilder\Classes\Locations_Manager $elementor_theme_manager theme manager.

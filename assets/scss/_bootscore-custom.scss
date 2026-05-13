@@ -177,3 +177,38 @@
     border-radius: 8px;
   }
 }
+
+// ─── WPBakery full-width layout ───────────────────────────────────────────────
+// body.has-wpb-content is added when a page contains [vc_row] shortcodes.
+// Strips Bootstrap container constraints so sections span the full viewport.
+.has-wpb-content {
+  // Remove container max-width and horizontal padding
+  #content.site-content {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  // Remove Bootstrap row gutters (negative side margins)
+  #primary.content-area > .row {
+    --bs-gutter-x: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  // Remove column padding so sections bleed edge-to-edge
+  #primary.content-area > .row > .col,
+  #primary.content-area > .row > [class*="col-"] {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  // Keep the page title and comments reasonably contained
+  .entry-header,
+  .entry-footer {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}

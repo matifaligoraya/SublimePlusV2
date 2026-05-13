@@ -37,6 +37,18 @@ require SUBLIMEPLUS_DIR.'inc/customize/customize-style.php';
 require SUBLIMEPLUS_DIR.'inc/customize/customize-options.php';
 
 /**
+ * WPBakery Page Builder — custom homepage elements
+ */
+require SUBLIMEPLUS_DIR.'inc/functions/wpbakery-elements.php';
+
+/**
+ * Products CPT + meta box
+ */
+require SUBLIMEPLUS_DIR.'inc/cpt/sp-products.php';
+require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-product-metabox.php';
+
+
+/**
  * Elementor widgets
  */
 require SUBLIMEPLUS_DIR.'inc/elementor/elementor.php';

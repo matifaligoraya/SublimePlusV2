@@ -9,25 +9,35 @@
  */
 defined('ABSPATH') || exit;
 
-$clients = apply_filters('sp_client_logos', [
-  'NMDC Construction'        => 'nmdc.png',
-  'Trojan Construction Group'=> 'trojan.png',
-  'AMANA Group'              => 'amana.png',
-  'ASGC'                     => 'asgc.png',
-  'ALEC Engineering'         => 'alec.png',
-  'Arabian Construction Co'  => 'acc.png',
-  'Naresco Contracting'      => 'naresco.png',
-  'Ginco Contracting'        => 'ginco.png',
-  'Al Naboodah'              => 'alnaboodah.png',
-  'BESIX / Six Construct'    => 'besix.png',
-  'L&T'                      => 'lnt.png',
-  'China State Construction' => 'cscec.png',
-]);
+$args    = $args ?? [];
+$heading = $args['heading'] ?? get_theme_mod('sp_clients_heading', "The Choice of UAE's Top Contractors");
+$subtext = $args['subtext'] ?? get_theme_mod('sp_clients_subtext', "Supplying certified precast solutions for the region's most critical infrastructure projects.");
 
-$base = get_template_directory_uri() . '/assets/img/clients/';
-
-$heading = get_theme_mod('sp_clients_heading', "The Choice of UAE's Top Contractors");
-$subtext = get_theme_mod('sp_clients_subtext', "Supplying certified precast solutions for the region's most critical infrastructure projects.");
+// $args['clients'] from WPBakery: [['name'=>'...','url'=>'...'], ...]
+// Falls back to the filter which uses filenames relative to /assets/img/clients/
+if (!empty($args['clients']) && is_array($args['clients'])) {
+  $clients_data = $args['clients'];
+} else {
+  $base         = get_template_directory_uri() . '/assets/img/clients/';
+  $filter_logos = apply_filters('sp_client_logos', [
+    'NMDC Construction'        => 'nmdc.png',
+    'Trojan Construction Group' => 'trojan.png',
+    'AMANA Group'              => 'amana.png',
+    'ASGC'                     => 'asgc.png',
+    'ALEC Engineering'         => 'alec.png',
+    'Arabian Construction Co'  => 'acc.png',
+    'Naresco Contracting'      => 'naresco.png',
+    'Ginco Contracting'        => 'ginco.png',
+    'Al Naboodah'              => 'alnaboodah.png',
+    'BESIX / Six Construct'    => 'besix.png',
+    'L&T'                      => 'lnt.png',
+    'China State Construction' => 'cscec.png',
+  ]);
+  $clients_data = [];
+  foreach ($filter_logos as $name => $file) {
+    $clients_data[] = ['name' => $name, 'url' => $base . $file];
+  }
+}
 ?>
 <section class="trusted-by-section" id="trusted-by">
   <div class="container">
@@ -45,11 +55,11 @@ $subtext = get_theme_mod('sp_clients_subtext', "Supplying certified precast solu
     </div>
 
     <div class="client-grid">
-      <?php foreach ($clients as $name => $file) :
-        $src = $base . $file;
+      <?php foreach ($clients_data as $c) :
+        if (empty($c['url'])) continue;
       ?>
-        <div class="client-logo-item" title="<?php echo esc_attr($name); ?>">
-          <img src="<?php echo esc_url($src); ?>" alt="<?php echo esc_attr($name); ?>" loading="lazy" decoding="async">
+        <div class="client-logo-item" title="<?php echo esc_attr($c['name'] ?? ''); ?>">
+          <img src="<?php echo esc_url($c['url']); ?>" alt="<?php echo esc_attr($c['name'] ?? ''); ?>" loading="lazy" decoding="async">
         </div>
       <?php endforeach; ?>
     </div>

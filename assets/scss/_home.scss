@@ -41,6 +41,15 @@
 }
 
 // ─── Grid ─────────────────────────────────────────────────────────────────────
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 992px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 576px) { grid-template-columns: 1fr; }
+}
+
 .home-grid {
   display: grid;
   gap: 1.5rem;
@@ -364,6 +373,36 @@
   }
 }
 
+// ─── Slideshow (product card image area) ─────────────────────────────────────
+.image-container {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #f1f5f9;
+
+  &.slideshow {
+    position: relative;
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity .7s ease;
+
+      &.active { opacity: 1; }
+    }
+  }
+
+  &:not(.slideshow) img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .35s ease;
+  }
+}
+
 .product-card {
   background: #fff;
   border-radius: 12px;
@@ -421,14 +460,22 @@
 
 .spec-row {
   display: flex;
-  align-items: baseline;
-  gap: .5rem;
+  align-items: center;
+  gap: .45rem;
   padding: .28rem 0;
   font-size: .8rem;
 
+  .spec-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    opacity: .6;
+    filter: invert(40%) sepia(10%) saturate(500%) hue-rotate(180deg);
+  }
+
   .label {
     color: var(--c-text-muted);
-    min-width: 105px;
+    min-width: 100px;
     flex-shrink: 0;
   }
 
@@ -436,6 +483,11 @@
     color: var(--c-text-main);
     font-weight: 600;
   }
+}
+
+.home-products-action {
+  text-align: center;
+  margin-top: 2.5rem;
 }
 
 // ─── Supply capability ────────────────────────────────────────────────────────
