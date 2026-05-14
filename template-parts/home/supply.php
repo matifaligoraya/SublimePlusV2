@@ -24,7 +24,10 @@ if (!empty($args['cards']) && is_array($args['cards'])) {
     ['img' => $base . 'compliance-docs.jpg','title' => 'Compliance Docs',  'desc' => 'Every delivery includes a full QA package: mill certificates, compressive strength reports, and delivery notes for inspection.'],
     ['img' => $base . 'custom-molds.jpg',   'title' => 'Custom Moulds',    'desc' => 'Our in-house mould fabrication team can produce bespoke steel moulds for non-standard shapes within 2–3 weeks.'],
     ['img' => $base . 'site-support.jpg',   'title' => 'Site Support',     'desc' => 'Our technical team provides on-site guidance for barrier placement, anchoring, and inspection compliance.'],
-    ['img' => $base . 'lab.jpg',            'title' => 'In-House Lab',     'desc' => 'Every batch is tested in our on-site concrete lab — slump, cube strength, and density — before dispatch.'],
+    ['img' => $base . 'lab.jpg',            'title' => 'In-House Lab',          'desc' => 'Every batch is tested in our on-site concrete lab — slump, cube strength, and density — before dispatch.'],
+    ['img' => $base . 'consolidated.jpg',   'title' => 'Consolidated Delivery',  'desc' => 'Multiple product types dispatched on a single load — barriers, blocks, and stoppers together — reducing your site coordination overhead.'],
+    ['img' => $base . 'relocation.jpg',     'title' => 'Site-to-Site Relocation', 'desc' => 'We collect, transport, and reinstall used barriers and temporary works between your project sites across the UAE.'],
+    ['img' => $base . 'bulk.jpg',           'title' => 'Bulk Logistics',         'desc' => 'Volume orders of 500+ units handled end-to-end: production scheduling, staged deliveries, and on-site stacking plans.'],
   ]);
 }
 
