@@ -48,10 +48,16 @@ require SUBLIMEPLUS_DIR.'inc/cpt/sp-products.php';
 require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-product-metabox.php';
 
 /**
- * One-click importer (Tools → Import Products) — remove after use
+ * Inquiry AJAX handler (front-end quote form)
+ */
+require SUBLIMEPLUS_DIR.'inc/functions/inquiry.php';
+
+/**
+ * One-click importers (Tools menu) — idempotent, safe to keep
  */
 if (is_admin()) {
     require SUBLIMEPLUS_DIR.'inc/tools/sp-import-products.php';
+    require SUBLIMEPLUS_DIR.'inc/tools/sp-import-clients.php';
 }
 
 

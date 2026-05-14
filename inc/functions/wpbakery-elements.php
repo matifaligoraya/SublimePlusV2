@@ -189,6 +189,52 @@ function sublime_shortcode_supply($atts) {
 }
 add_shortcode('sublime_supply', 'sublime_shortcode_supply');
 
+// Testimonials
+function sublime_shortcode_testimonials($atts) {
+    $atts = shortcode_atts([
+        'heading' => '',
+        'subtext' => '',
+        'reviews' => '',
+    ], $atts, 'sublime_testimonials');
+
+    $args = [
+        'heading' => $atts['heading'],
+        'subtext' => $atts['subtext'],
+    ];
+
+    $rows = _sublime_parse_group($atts['reviews'], 'thumbnail');
+    if (!empty($rows)) {
+        $args['reviews'] = array_map(function ($r) {
+            return [
+                'stars'   => (int) ($r['stars']   ?? 5),
+                'text'    => $r['text']    ?? '',
+                'name'    => $r['name']    ?? '',
+                'title'   => $r['title']   ?? '',
+                'company' => $r['company'] ?? '',
+            ];
+        }, $rows);
+    }
+
+    return _sublime_render_part('testimonials', $args);
+}
+add_shortcode('sublime_testimonials', 'sublime_shortcode_testimonials');
+
+// Project Inquiry
+function sublime_shortcode_inquiry($atts) {
+    $atts = shortcode_atts([
+        'info_heading' => '',
+        'info_text'    => '',
+        'phone'        => '',
+        'email'        => '',
+        'address'      => '',
+        'whatsapp'     => '',
+        'form_heading' => '',
+    ], $atts, 'sublime_inquiry');
+
+    return _sublime_render_part('inquiry', array_filter($atts));
+}
+add_shortcode('sublime_inquiry', 'sublime_shortcode_inquiry');
+
 // Blog / insights
 function sublime_shortcode_blog($atts) {
     $atts = shortcode_atts([
@@ -447,6 +493,124 @@ function sublime_register_vc_elements() {
                         'description' => __('Recommended: landscape photo, at least 600×400 px.', 'sublimeplus'),
                     ],
                 ],
+            ],
+        ],
+    ]);
+
+    // ── Testimonials ──────────────────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime Testimonials', 'sublimeplus'),
+        'base'        => 'sublime_testimonials',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-format-quote',
+        'description' => __('6-card review grid with star ratings, reviewer name, title, and company.', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Section Heading', 'sublimeplus'),
+                'param_name' => 'heading',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textarea',
+                'heading'    => __('Sub-text', 'sublimeplus'),
+                'param_name' => 'subtext',
+                'value'      => '',
+            ],
+            [
+                'type'        => 'param_group',
+                'heading'     => __('Reviews', 'sublimeplus'),
+                'param_name'  => 'reviews',
+                'description' => __('Leave empty to use the 6 hardcoded defaults. Add rows here to replace them entirely.', 'sublimeplus'),
+                'value'       => '',
+                'params'      => [
+                    [
+                        'type'        => 'dropdown',
+                        'heading'     => __('Stars', 'sublimeplus'),
+                        'param_name'  => 'stars',
+                        'value'       => ['5' => '5', '4' => '4', '3' => '3'],
+                        'admin_label' => true,
+                    ],
+                    [
+                        'type'       => 'textarea',
+                        'heading'    => __('Review Text', 'sublimeplus'),
+                        'param_name' => 'text',
+                        'value'      => '',
+                    ],
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Reviewer Name', 'sublimeplus'),
+                        'param_name'  => 'name',
+                        'value'       => '',
+                        'admin_label' => true,
+                    ],
+                    [
+                        'type'       => 'textfield',
+                        'heading'    => __('Title / Position', 'sublimeplus'),
+                        'param_name' => 'title',
+                        'value'      => '',
+                    ],
+                    [
+                        'type'       => 'textfield',
+                        'heading'    => __('Company', 'sublimeplus'),
+                        'param_name' => 'company',
+                        'value'      => '',
+                    ],
+                ],
+            ],
+        ],
+    ]);
+
+    // ── Project Inquiry ────────────────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime Project Inquiry', 'sublimeplus'),
+        'base'        => 'sublime_inquiry',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-email-alt',
+        'description' => __('Dark two-column section: contact details on the left, quote request form on the right.', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Info Panel Heading', 'sublimeplus'),
+                'param_name' => 'info_heading',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textarea',
+                'heading'    => __('Info Panel Text', 'sublimeplus'),
+                'param_name' => 'info_text',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Phone Number', 'sublimeplus'),
+                'param_name' => 'phone',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Email Address', 'sublimeplus'),
+                'param_name' => 'email',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Physical Address', 'sublimeplus'),
+                'param_name' => 'address',
+                'value'      => '',
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('WhatsApp URL', 'sublimeplus'),
+                'param_name'  => 'whatsapp',
+                'value'       => '',
+                'description' => __('e.g. https://wa.me/971543507724', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Form Panel Heading', 'sublimeplus'),
+                'param_name' => 'form_heading',
+                'value'      => '',
             ],
         ],
     ]);
