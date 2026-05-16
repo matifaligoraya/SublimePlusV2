@@ -20,14 +20,19 @@ if ($_wpb) : ?>
       </main>
     </div>
   </div>
-<?php else : ?>
+<?php else :
+  $sidebar_pos = Sublimeplus_page_sidebar();
+  $has_sidebar = in_array($sidebar_pos, ['left', 'right'], true) && is_active_sidebar('sidebar-1');
+  $row_class   = ($has_sidebar && $sidebar_pos === 'left') ? ' flex-row-reverse' : '';
+  $col_class   = $has_sidebar ? 'col-lg-9' : 'col-12';
+?>
   <div id="content" class="site-content <?= esc_attr(apply_filters('bootscore/class/container', 'container', 'page')); ?> <?= esc_attr(apply_filters('bootscore/class/content/spacer', 'pt-4 pb-5', 'page')); ?>">
     <div id="primary" class="content-area">
 
       <?php do_action('bootscore_after_primary_open', 'page'); ?>
 
-      <div class="row">
-        <div class="<?= esc_attr(apply_filters('bootscore/class/main/col', 'col')); ?>">
+      <div class="row<?= esc_attr($row_class); ?>">
+        <div class="<?= esc_attr($col_class); ?>">
 
           <main id="main" class="site-main">
 
@@ -54,7 +59,7 @@ if ($_wpb) : ?>
           </main>
 
         </div>
-        <?php get_sidebar(); ?>
+        <?php if ($has_sidebar) get_sidebar(); ?>
       </div>
 
     </div>

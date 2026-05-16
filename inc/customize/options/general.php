@@ -29,6 +29,18 @@ return [
         'description' => esc_html__('Max width content of site. Leave it blank or 0, size max width will full width.', 'sublimeplus'),
         'default' => '1170',
     ],[
+        'name' => 'Sublimeplus_page_sidebar_config',
+        'type' => 'select',
+        'section' => 'Sublimeplus_general',
+        'title' => esc_html__('Page Default Sidebar', 'sublimeplus'),
+        'description' => esc_html__('Default sidebar position for all pages. Can be overridden per page via the Page Layout metabox in the editor.', 'sublimeplus'),
+        'default' => '',
+        'choices' => [
+            '' => esc_html__('None (Full Width)', 'sublimeplus'),
+            'right' => esc_html__('Right', 'sublimeplus'),
+            'left' => esc_html__('Left', 'sublimeplus'),
+        ]
+    ],[
         'name' => 'Sublimeplus_disable_breadcrumbs',
         'type' => 'checkbox',
         'section' => 'Sublimeplus_general',

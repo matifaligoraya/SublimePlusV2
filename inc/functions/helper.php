@@ -173,6 +173,20 @@ if (!function_exists('Sublimeplus_site_width')) {
 }
 
 /**
+ * Resolve sidebar position for pages.
+ * Priority: page meta → Customizer → '' (none / full-width).
+ */
+if (!function_exists('Sublimeplus_page_sidebar')) {
+    function Sublimeplus_page_sidebar() {
+        $meta = get_post_meta(get_the_ID(), '_sp_page_sidebar', true);
+        if ($meta !== '' && $meta !== 'inherit' && $meta !== false) {
+            return $meta;
+        }
+        return get_theme_mod('Sublimeplus_page_sidebar_config', '');
+    }
+}
+
+/**
  * Check single post sidebar
  * @uses: call function Sublimeplus_single_post_sidebar()
  * @return sidebar option

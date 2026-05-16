@@ -34,6 +34,7 @@ if (class_exists('WooCommerce', false)) {
  * Theme customize and metaboxes
  */
 require SUBLIMEPLUS_DIR.'inc/metaboxes/meta-boxes.php';
+require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-page-layout.php';
 require SUBLIMEPLUS_DIR.'inc/customize/customize-style.php';
 require SUBLIMEPLUS_DIR.'inc/customize/customize-options.php';
 require SUBLIMEPLUS_DIR.'inc/customize/footer-settings.php';
