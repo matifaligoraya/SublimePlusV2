@@ -217,7 +217,8 @@ $count = count($slides);
   min-height: 580px;
   max-height: 980px;
   overflow: hidden;
-  background: #1a3340;
+  /* Lighter navy — menu color stepped up in lightness */
+  background: #2a5080;
 }
 
 /* Background image — stays fixed */
@@ -228,7 +229,7 @@ $count = count($slides);
 }
 .sph__overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(110deg, rgba(10,25,35,.95) 0%, rgba(10,25,35,.75) 50%, rgba(10,25,35,.35) 100%);
+  background: linear-gradient(110deg, rgba(20,50,85,.88) 0%, rgba(20,50,85,.65) 50%, rgba(20,50,85,.25) 100%);
 }
 
 /* Slides sit on top of the fixed background */
@@ -278,26 +279,26 @@ $count = count($slides);
 
 .sph__cat {
   display: inline-block;
-  background: #264653;
-  color: #E9C46A;
+  background: var(--c-accent, #F97316);
+  color: #fff;
   font-size: .7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .14em;
   padding: .28rem .9rem;
-  border-radius: 50px;
+  border-radius: 4px;
   margin-bottom: 1rem;
 }
 .sph__title {
   font-size: clamp(1.35rem, 2vw, 1.85rem);
   font-weight: 800;
   line-height: 1.2;
-  color: #1a3340;
+  color: #1a2d45;
   margin: 0 0 .9rem;
 }
 .sph__line {
   width: 44px; height: 3px;
-  background: #E9C46A;
+  background: var(--c-accent, #F97316);
   border-radius: 2px;
   margin-bottom: 1.1rem;
 }
@@ -357,17 +358,21 @@ $count = count($slides);
   white-space: nowrap;
 }
 .sph__btn--solid {
-  background: #E9C46A;
-  color: #264653 !important;
-  border-color: #E9C46A;
+  background: var(--c-accent, #F97316);
+  color: #fff !important;
+  border-color: var(--c-accent, #F97316);
 }
-.sph__btn--solid:hover { background: #d4a843; border-color: #d4a843; }
+.sph__btn--solid:hover {
+  background: var(--c-accent-dark, #ea6c0a);
+  border-color: var(--c-accent-dark, #ea6c0a);
+  box-shadow: 0 4px 16px rgba(249,115,22,.4);
+}
 .sph__btn--outline {
   background: transparent;
-  color: #264653 !important;
-  border-color: #264653;
+  color: #1a2d45 !important;
+  border-color: rgba(26,45,69,.35);
 }
-.sph__btn--outline:hover { background: #264653; color: #fff !important; }
+.sph__btn--outline:hover { background: #1a2d45; color: #fff !important; border-color: #1a2d45; }
 
 /* ── RIGHT: 3D model viewer ──────────────────────────────────────────────────── */
 .sph__visual {
@@ -441,7 +446,7 @@ model-viewer:focus { outline: none; }
   transition: width .25s, background .25s;
 }
 .sph__dot--on,
-.sph__dot:hover { width: 48px; background: #E9C46A; }
+.sph__dot:hover { width: 48px; background: var(--c-accent, #F97316); }
 
 /* ── Responsive ───────────────────────────────────────────────────────────────── */
 @media (max-width: 991px) {

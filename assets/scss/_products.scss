@@ -47,9 +47,9 @@
   }
 
   &.active {
-    background: var(--c-primary, #e55010);
+    background: var(--c-accent, #F97316);
     color: #fff;
-    border-color: var(--c-primary, #e55010);
+    border-color: var(--c-accent, #F97316);
   }
 }
 
@@ -80,7 +80,7 @@
   a {
     color: #64748b;
     text-decoration: none;
-    &:hover { color: var(--c-primary, #e55010); }
+    &:hover { color: var(--c-primary, #1a3a5c); }
   }
 
   .sep { margin: 0 .4rem; }
@@ -153,7 +153,7 @@
 
   &.active,
   &:hover {
-    border-color: var(--c-primary, #e55010);
+    border-color: var(--c-accent, #F97316);
   }
 }
 
@@ -174,7 +174,7 @@
   padding: .3rem .8rem;
   border-radius: 50px;
   background: #fff7ed;
-  color: var(--c-primary, #e55010);
+  color: var(--c-primary, #1a3a5c);
   font-size: .75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -221,42 +221,53 @@
 // ─── Quick spec panel ────────────────────────────────────────────────────────
 
 .sp-product-quick-specs {
-  background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-  padding: 1.1rem 1.25rem;
+  overflow: hidden;
   margin-bottom: 1.5rem;
+  border-left: 3px solid var(--c-accent, #F97316);
 }
 
 .sp-qspec-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 150px 1fr;
   align-items: center;
-  padding: .45rem 0;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: .9rem;
-  gap: .5rem;
+  border-bottom: 1px solid #eef2f6;
+  font-size: .87rem;
+  gap: 0;
+  transition: background .15s;
 
   &:last-child { border-bottom: none; }
+  &:hover { background: #fffbf7; }
 
   .sp-qspec-icon {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
-    opacity: .55;
-    filter: invert(40%) sepia(10%) saturate(500%) hue-rotate(180deg);
+    opacity: .6;
+    margin-right: .35rem;
   }
 
   .sp-qspec-label {
-    color: #64748b;
-    font-weight: 500;
-    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: .55rem .9rem;
+    color: var(--c-accent, #F97316);
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    background: rgba(249,115,22,.05);
+    border-right: 1px solid rgba(249,115,22,.12);
+    line-height: 1.3;
+    height: 100%;
   }
 
   .sp-qspec-value {
+    padding: .55rem .9rem;
     color: #1e293b;
     font-weight: 600;
-    text-align: right;
-    flex-shrink: 0;
+    font-size: .88rem;
   }
 }
 

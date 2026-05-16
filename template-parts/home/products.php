@@ -527,7 +527,7 @@ foreach ($query->posts as $idx => $_p) {
   line-height: 1.4;
 }
 .sp-prod-card__hover-pill strong {
-  color: #E9C46A;
+  color: var(--c-accent, #F97316);
   font-weight: 600;
   margin-right: .28rem;
 }
@@ -576,9 +576,9 @@ foreach ($query->posts as $idx => $_p) {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .1em;
-  color: var(--c-accent, #E9C46A);
-  background: rgba(233,196,106,.12);
-  border: 1px solid rgba(233,196,106,.35);
+  color: var(--c-accent, #F97316);
+  background: rgba(249,115,22,.1);
+  border: 1px solid rgba(249,115,22,.28);
   padding: .28rem .75rem;
   border-radius: 50px;
   width: fit-content;
@@ -611,30 +611,50 @@ foreach ($query->posts as $idx => $_p) {
   overflow: hidden;
 }
 
-/* ── Spec chips ───────────────────────────────────────────────────────────── */
+/* ── Spec chips — attribute table style ───────────────────────────────────── */
 .sp-prod-card__chips {
   display: flex;
-  flex-wrap: wrap;
-  gap: .32rem;
+  flex-direction: column;
+  border: 1px solid #e8edf3;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  gap: 0;
 }
 .sp-prod-card__chip {
-  display: inline-flex;
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid #eef2f6;
+  font-size: .78rem;
+  line-height: 1.3;
+  background: none;
+  transition: background .15s;
+}
+.sp-prod-card__chip:last-child { border-bottom: none; }
+.sp-prod-card:hover .sp-prod-card__chip { background: none; }
+.sp-prod-card__chip-k {
+  color: var(--c-accent, #F97316);
+  font-weight: 700;
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  min-width: 90px;
+  max-width: 110px;
+  flex-shrink: 0;
+  padding: .42rem .65rem;
+  border-right: 2px solid rgba(249,115,22,.15);
+  background: rgba(249,115,22,.04);
+  display: flex;
   align-items: center;
-  gap: .3rem;
-  background: #f1f5f9;
-  border: 1px solid #e2eaf0;
-  border-radius: 6px;
-  padding: .22rem .62rem;
-  font-size: .7rem;
-  line-height: 1.35;
-  transition: background .2s, border-color .2s;
+  line-height: 1.2;
 }
-.sp-prod-card:hover .sp-prod-card__chip {
-  background: #e8f0f6;
-  border-color: #c8d8e8;
+.sp-prod-card__chip-v {
+  color: #1e293b;
+  font-weight: 600;
+  padding: .42rem .65rem;
+  display: flex;
+  align-items: center;
 }
-.sp-prod-card__chip-k { color: #94a3b8; font-weight: 500; }
-.sp-prod-card__chip-v { color: #1e293b; font-weight: 700; }
 
 /* ── Certifications ───────────────────────────────────────────────────────── */
 .sp-prod-card__certs {
@@ -685,14 +705,15 @@ foreach ($query->posts as $idx => $_p) {
   box-shadow: 0 4px 12px rgba(38,70,83,.25);
 }
 .sp-prod-card__btn--quote {
-  background: var(--c-accent, #E9C46A);
-  border-color: var(--c-accent, #E9C46A);
-  color: #1a3340 !important;
+  background: var(--c-accent, #F97316);
+  border-color: var(--c-accent, #F97316);
+  color: #fff !important;
 }
 .sp-prod-card__btn--quote:hover {
-  background: var(--c-accent-dark, #d4a843);
-  border-color: var(--c-accent-dark, #d4a843);
-  box-shadow: 0 4px 12px rgba(233,196,106,.4);
+  background: var(--c-accent-dark, #ea6c0a);
+  border-color: var(--c-accent-dark, #ea6c0a);
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(249,115,22,.4);
 }
 .sp-prod-card__pdf {
   display: inline-flex;

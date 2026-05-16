@@ -21,6 +21,7 @@ include SUBLIMEPLUS_DIR.'inc/functions/scripts.php';
 include SUBLIMEPLUS_DIR.'inc/functions/plugins.php';
 include SUBLIMEPLUS_DIR.'inc/functions/functions.php';
 include SUBLIMEPLUS_DIR.'inc/functions/hooks.php';
+include SUBLIMEPLUS_DIR.'inc/functions/nav-subtitle.php';
 /**
  * WooCommerce theme functions
  * All hooks, functions, features will load below.

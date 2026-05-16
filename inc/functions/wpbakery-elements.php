@@ -237,6 +237,27 @@ function sublime_shortcode_inquiry($atts) {
 }
 add_shortcode('sublime_inquiry', 'sublime_shortcode_inquiry');
 
+// Contact page section
+function sublime_shortcode_contact($atts) {
+    $atts = shortcode_atts([
+        'heading'       => 'CONTACT',
+        'description'   => '',
+        'phone'         => '',
+        'phone_label'   => 'Sales Department',
+        'email_sales'   => '',
+        'email_general' => '',
+        'whatsapp'      => '',
+        'address'       => '',
+        'trade_name'    => '',
+        'form_id'       => '3',
+        'form_heading'  => 'Request a Project Quote',
+        'form_subtext'  => 'Fill in the form and our team will respond within 24 hours.',
+    ], $atts, 'sublime_contact');
+
+    return _sublime_render_part('contact', $atts);
+}
+add_shortcode('sublime_contact', 'sublime_shortcode_contact');
+
 // Projects showcase
 function sublime_shortcode_projects($atts) {
     $atts = shortcode_atts([
@@ -477,6 +498,105 @@ function sublime_register_vc_elements() {
                         'description' => __('URL this card links to. Leave empty to use the default products archive link.', 'sublimeplus'),
                     ],
                 ],
+            ],
+        ],
+    ]);
+
+    // ── Contact Page ──────────────────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime Contact Page', 'sublimeplus'),
+        'base'        => 'sublime_contact',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-location-alt',
+        'description' => __('Two-column contact section: details left, quote form right.', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Heading', 'sublimeplus'),
+                'param_name' => 'heading',
+                'value'      => 'CONTACT',
+                'admin_label'=> true,
+            ],
+            [
+                'type'       => 'textarea',
+                'heading'    => __('Description', 'sublimeplus'),
+                'param_name' => 'description',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Office Address', 'sublimeplus'),
+                'param_name' => 'address',
+                'value'      => '',
+                'description'=> __('Use &#13;&#10; in the field for line breaks, or just press Enter.', 'sublimeplus'),
+                'group'      => __('Contact Details', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Trade Name / Legal Line', 'sublimeplus'),
+                'param_name' => 'trade_name',
+                'value'      => '',
+                'description'=> __('Shown below the address in a muted style.', 'sublimeplus'),
+                'group'      => __('Contact Details', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Department Label', 'sublimeplus'),
+                'param_name' => 'phone_label',
+                'value'      => 'Sales Department',
+                'group'      => __('Contact Details', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Phone Number', 'sublimeplus'),
+                'param_name' => 'phone',
+                'value'      => '',
+                'group'      => __('Contact Details', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Sales Email', 'sublimeplus'),
+                'param_name' => 'email_sales',
+                'value'      => '',
+                'group'      => __('Contact Details', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('General Inquiries Email', 'sublimeplus'),
+                'param_name'  => 'email_general',
+                'value'       => '',
+                'description' => __('Leave empty to hide this row.', 'sublimeplus'),
+                'group'       => __('Contact Details', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('WhatsApp URL', 'sublimeplus'),
+                'param_name'  => 'whatsapp',
+                'value'       => '',
+                'description' => __('e.g. https://wa.me/971543507724', 'sublimeplus'),
+                'group'       => __('Contact Details', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('Formidable Form ID', 'sublimeplus'),
+                'param_name'  => 'form_id',
+                'value'       => '3',
+                'description' => __('Numeric ID from Formidable → Forms.', 'sublimeplus'),
+                'group'       => __('Form', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Form Card Heading', 'sublimeplus'),
+                'param_name' => 'form_heading',
+                'value'      => 'Request a Project Quote',
+                'group'      => __('Form', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Form Card Sub-text', 'sublimeplus'),
+                'param_name' => 'form_subtext',
+                'value'      => 'Fill in the form and our team will respond within 24 hours.',
+                'group'      => __('Form', 'sublimeplus'),
             ],
         ],
     ]);
