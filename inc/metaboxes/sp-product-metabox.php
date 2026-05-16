@@ -11,6 +11,19 @@ add_action('add_meta_boxes', 'sp_product_add_meta_boxes');
 add_action('save_post_sp_product', 'sp_product_save_meta', 10, 2);
 add_action('admin_enqueue_scripts', 'sp_product_admin_scripts');
 
+// Allow .glb uploads (GLTF binary 3D model)
+add_filter('upload_mimes', function ($mimes) {
+    $mimes['glb'] = 'model/gltf-binary';
+    return $mimes;
+});
+add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mimes) {
+    if (substr($filename, -4) === '.glb') {
+        $data['ext']  = 'glb';
+        $data['type'] = 'model/gltf-binary';
+    }
+    return $data;
+}, 10, 4);
+
 function sp_product_admin_scripts($hook) {
     global $post;
     if (($hook === 'post-new.php' || $hook === 'post.php') && isset($post->post_type) && $post->post_type === 'sp_product') {
@@ -36,6 +49,8 @@ function sp_product_details_cb($post) {
     $certifications = get_post_meta($post->ID, '_sp_product_certifications', true);
     $material       = get_post_meta($post->ID, '_sp_product_material',       true);
     $finish         = get_post_meta($post->ID, '_sp_product_finish',         true);
+    $model_id       = (int) get_post_meta($post->ID, '_sp_product_model_id',        true);
+    $model_url      = $model_id ? wp_get_attachment_url($model_id) : '';
     $datasheet_id   = (int) get_post_meta($post->ID, '_sp_product_datasheet',      true);
     $gallery_raw    = get_post_meta($post->ID, '_sp_product_gallery',        true);
     $specs_raw      = get_post_meta($post->ID, '_sp_product_specs',          true);
@@ -87,6 +102,16 @@ function sp_product_details_cb($post) {
         <div class="sp-label"><?php _e('Finish', 'sublimeplus'); ?></div>
         <div class="sp-field">
             <input type="text" name="sp_product_finish" value="<?php echo esc_attr($finish); ?>" placeholder="<?php esc_attr_e('e.g. As-cast concrete finish', 'sublimeplus'); ?>">
+        </div>
+
+        <!-- 3D Model -->
+        <div class="sp-label"><?php _e('3D Model (.glb)', 'sublimeplus'); ?></div>
+        <div class="sp-field">
+            <input type="hidden" name="sp_product_model_id" id="sp_product_model_id" value="<?php echo esc_attr($model_id ?: ''); ?>">
+            <button type="button" class="button" id="sp-model-btn"><?php _e('Upload / Select .glb', 'sublimeplus'); ?></button>
+            <button type="button" class="button" id="sp-model-clear"<?php echo $model_id ? '' : ' style="display:none"'; ?>><?php _e('Remove', 'sublimeplus'); ?></button>
+            <span id="sp-model-name" style="margin-left:8px;color:#64748b;"><?php echo $model_url ? esc_html(basename($model_url)) : ''; ?></span>
+            <p style="margin:.35rem 0 0;font-size:12px;color:#64748b;"><?php _e('Upload or select a .glb file — displayed as the rotating 3D object in the homepage hero slider.', 'sublimeplus'); ?></p>
         </div>
 
         <!-- Datasheet PDF -->
@@ -207,6 +232,31 @@ function sp_product_details_cb($post) {
         });
         $('#sp-gallery-clear').on('click', function() { $('#sp_product_gallery').val(''); $('#sp-gallery-preview').html(''); $(this).hide(); });
 
+        // 3D Model
+        var modelFrame;
+        $('#sp-model-btn').on('click', function(e) {
+            e.preventDefault();
+            if (!modelFrame) {
+                modelFrame = wp.media({
+                    title: '<?php echo esc_js(__('Select 3D Model (.glb)', 'sublimeplus')); ?>',
+                    button: { text: '<?php echo esc_js(__('Use this model', 'sublimeplus')); ?>' },
+                    multiple: false
+                });
+                modelFrame.on('select', function() {
+                    var a = modelFrame.state().get('selection').first().toJSON();
+                    $('#sp_product_model_id').val(a.id);
+                    $('#sp-model-name').text(a.filename || a.url.split('/').pop());
+                    $('#sp-model-clear').show();
+                });
+            }
+            modelFrame.open();
+        });
+        $('#sp-model-clear').on('click', function() {
+            $('#sp_product_model_id').val('');
+            $('#sp-model-name').text('');
+            $(this).hide();
+        });
+
     })(jQuery);
     </script>
     <?php
@@ -216,6 +266,16 @@ function sp_product_save_meta($post_id) {
     if (!isset($_POST['sp_product_nonce']) || !wp_verify_nonce($_POST['sp_product_nonce'], 'sp_product_meta_save')) return;
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
+
+    // 3D model — store attachment ID and derive the public URL for banner.php
+    $model_id = absint($_POST['sp_product_model_id'] ?? 0);
+    if ($model_id) {
+        update_post_meta($post_id, '_sp_product_model_id', $model_id);
+        update_post_meta($post_id, 'sp_model_url', wp_get_attachment_url($model_id));
+    } else {
+        delete_post_meta($post_id, '_sp_product_model_id');
+        delete_post_meta($post_id, 'sp_model_url');
+    }
 
     // Text fields
     foreach (['sp_product_certifications', 'sp_product_material', 'sp_product_finish'] as $key) {

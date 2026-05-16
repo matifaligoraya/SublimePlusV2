@@ -34,6 +34,9 @@ if (!function_exists('sublimeplus_styles')) {
             //Custom Woocommerce Css
             wp_enqueue_style('sublimeplus-woocommerce', SUBLIMEPLUS_URI . 'assets/css/sublimeplus-woocommerce.css');
         }
+        // Google Fonts — Oswald (headings) + Inter (body)
+        wp_enqueue_style('sp-google-fonts', 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap', [], null);
+
         wp_register_style('sublimeplus-base-styles', false);
         wp_enqueue_style('sublimeplus-base-styles');
         wp_enqueue_style('sublimeplus-styles', SUBLIMEPLUS_URI . 'assets/css/zoo-styles.css');

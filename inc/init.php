@@ -35,6 +35,7 @@ if (class_exists('WooCommerce', false)) {
 require SUBLIMEPLUS_DIR.'inc/metaboxes/meta-boxes.php';
 require SUBLIMEPLUS_DIR.'inc/customize/customize-style.php';
 require SUBLIMEPLUS_DIR.'inc/customize/customize-options.php';
+require SUBLIMEPLUS_DIR.'inc/customize/footer-settings.php';
 
 /**
  * WPBakery Page Builder — custom homepage elements
@@ -48,6 +49,24 @@ require SUBLIMEPLUS_DIR.'inc/cpt/sp-products.php';
 require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-product-metabox.php';
 
 /**
+ * Testimonials CPT + meta box
+ */
+require SUBLIMEPLUS_DIR.'inc/cpt/sp-testimonials.php';
+require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-testimonial-metabox.php';
+
+/**
+ * Projects CPT + meta box
+ */
+require SUBLIMEPLUS_DIR.'inc/cpt/sp-projects.php';
+require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-project-metabox.php';
+
+/**
+ * Supply Capability CPT + meta box
+ */
+require SUBLIMEPLUS_DIR.'inc/cpt/sp-supply.php';
+require SUBLIMEPLUS_DIR.'inc/metaboxes/sp-supply-metabox.php';
+
+/**
  * Inquiry AJAX handler (front-end quote form)
  */
 require SUBLIMEPLUS_DIR.'inc/functions/inquiry.php';
@@ -58,6 +77,8 @@ require SUBLIMEPLUS_DIR.'inc/functions/inquiry.php';
 if (is_admin()) {
     require SUBLIMEPLUS_DIR.'inc/tools/sp-import-products.php';
     require SUBLIMEPLUS_DIR.'inc/tools/sp-import-clients.php';
+    require SUBLIMEPLUS_DIR.'inc/tools/sp-import-projects.php';
+    require SUBLIMEPLUS_DIR.'inc/tools/sp-import-supply.php';
 }
 
 

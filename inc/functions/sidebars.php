@@ -53,4 +53,23 @@ add_action('widgets_init', function () {
         unregister_sidebar('shop');
         unregister_sidebar('top-shop');
     }
+
+    // Footer widget areas
+    $footer_cols = [
+        'sp-footer-col-1' => 'Footer — Brand',
+        'sp-footer-col-2' => 'Footer — Products',
+        'sp-footer-col-3' => 'Footer — Company',
+        'sp-footer-col-4' => 'Footer — Contact',
+    ];
+    foreach ($footer_cols as $id => $name) {
+        register_sidebar([
+            'name'          => esc_html__($name, 'sublimeplus'),
+            'id'            => $id,
+            'description'   => esc_html__('Override default footer column content with widgets.', 'sublimeplus'),
+            'before_widget' => '<div id="%1$s" class="widget %2$s">',
+            'after_widget'  => '</div>',
+            'before_title'  => '<h4 class="sp-footer__col-heading">',
+            'after_title'   => '</h4>',
+        ]);
+    }
 },10,0);

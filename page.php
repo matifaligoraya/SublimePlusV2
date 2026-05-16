@@ -7,8 +7,20 @@
  */
 defined('ABSPATH') || exit;
 
+global $post;
+$_wpb = $post && has_shortcode($post->post_content, 'vc_row');
+
 get_header();
-?>
+
+if ($_wpb) : ?>
+  <div id="content" class="site-content">
+    <div id="primary" class="content-area">
+      <main id="main" class="site-main">
+        <?php the_post(); the_content(); ?>
+      </main>
+    </div>
+  </div>
+<?php else : ?>
   <div id="content" class="site-content <?= esc_attr(apply_filters('bootscore/class/container', 'container', 'page')); ?> <?= esc_attr(apply_filters('bootscore/class/content/spacer', 'pt-4 pb-5', 'page')); ?>">
     <div id="primary" class="content-area">
 
@@ -47,6 +59,6 @@ get_header();
 
     </div>
   </div>
+<?php endif;
 
-<?php
 get_footer();

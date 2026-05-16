@@ -77,19 +77,36 @@ function _sublime_render_part($slug, array $atts) {
     return $output;
 }
 
+// ─── Hero product autocomplete hooks ─────────────────────────────────────────
+
+// Called while the user types — returns matching sp_product posts as suggestions
+add_filter('vc_autocomplete_sublime_hero_product_ids_callback', function ($query) {
+    $posts = get_posts([
+        'post_type'      => 'sp_product',
+        'posts_per_page' => 20,
+        'post_status'    => 'publish',
+        's'              => sanitize_text_field($query),
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+    ]);
+    return array_map(function ($p) {
+        return ['value' => (string) $p->ID, 'label' => $p->post_title];
+    }, $posts);
+});
+
+// Called to render already-selected items (e.g. when re-opening the element)
+add_filter('vc_autocomplete_sublime_hero_product_ids_render', function ($query) {
+    $post = get_post((int) $query);
+    if (!$post || $post->post_status !== 'publish') return [];
+    return ['value' => (string) $post->ID, 'label' => $post->post_title];
+});
+
 // ─── Shortcode callbacks ──────────────────────────────────────────────────────
 
 // Hero
 function sublime_shortcode_hero($atts) {
     $atts = shortcode_atts([
-        'badge'       => '',
-        'title_top'   => '',
-        'title_bot'   => '',
-        'description' => '',
-        'btn1_text'   => '',
-        'btn1_url'    => '',
-        'btn2_text'   => '',
-        'btn2_url'    => '',
+        'product_ids' => '',
         'bg_image_id' => '',
     ], $atts, 'sublime_hero');
 
@@ -181,6 +198,7 @@ function sublime_shortcode_supply($atts) {
                 'img'   => $r['img']   ?? '',
                 'title' => $r['title'] ?? '',
                 'desc'  => $r['desc']  ?? '',
+                'link'  => $r['link']  ?? '',
             ];
         }, $rows);
     }
@@ -194,28 +212,12 @@ function sublime_shortcode_testimonials($atts) {
     $atts = shortcode_atts([
         'heading' => '',
         'subtext' => '',
-        'reviews' => '',
     ], $atts, 'sublime_testimonials');
 
-    $args = [
+    return _sublime_render_part('testimonials', [
         'heading' => $atts['heading'],
         'subtext' => $atts['subtext'],
-    ];
-
-    $rows = _sublime_parse_group($atts['reviews'], 'thumbnail');
-    if (!empty($rows)) {
-        $args['reviews'] = array_map(function ($r) {
-            return [
-                'stars'   => (int) ($r['stars']   ?? 5),
-                'text'    => $r['text']    ?? '',
-                'name'    => $r['name']    ?? '',
-                'title'   => $r['title']   ?? '',
-                'company' => $r['company'] ?? '',
-            ];
-        }, $rows);
-    }
-
-    return _sublime_render_part('testimonials', $args);
+    ]);
 }
 add_shortcode('sublime_testimonials', 'sublime_shortcode_testimonials');
 
@@ -234,6 +236,20 @@ function sublime_shortcode_inquiry($atts) {
     return _sublime_render_part('inquiry', array_filter($atts));
 }
 add_shortcode('sublime_inquiry', 'sublime_shortcode_inquiry');
+
+// Projects showcase
+function sublime_shortcode_projects($atts) {
+    $atts = shortcode_atts([
+        'eyebrow'  => '',
+        'heading'  => '',
+        'subtext'  => '',
+        'cta_text' => '',
+        'cta_url'  => '',
+    ], $atts, 'sublime_projects');
+
+    return _sublime_render_part('projects', array_filter($atts));
+}
+add_shortcode('sublime_projects', 'sublime_shortcode_projects');
 
 // Blog / insights
 function sublime_shortcode_blog($atts) {
@@ -258,67 +274,28 @@ function sublime_register_vc_elements() {
         'base'        => 'sublime_hero',
         'category'    => __('Sublime Sections', 'sublimeplus'),
         'icon'        => 'dashicons-superhero',
-        'description' => __('Full-width hero with background image, headline, description, and two CTA buttons.', 'sublimeplus'),
+        'description' => __('Full-width product showcase hero with 3D model viewer slider.', 'sublimeplus'),
         'params'      => [
+            [
+                'type'        => 'autocomplete',
+                'heading'     => __('Products to Display', 'sublimeplus'),
+                'param_name'  => 'product_ids',
+                'settings'    => [
+                    'multiple'       => true,
+                    'sortable'       => true,
+                    'unique_values'  => true,
+                    'display_inline' => true,
+                    'delay'          => 300,
+                    'auto_focus'     => true,
+                    'min_length'     => 0,
+                ],
+                'description' => __('Search and select products. Drag to reorder. Leave empty to show all published products automatically.', 'sublimeplus'),
+            ],
             [
                 'type'        => 'attach_image',
                 'heading'     => __('Background Image', 'sublimeplus'),
                 'param_name'  => 'bg_image_id',
-                'description' => __('Leave empty to use the homepage featured image or Customizer setting.', 'sublimeplus'),
-            ],
-            [
-                'type'        => 'textfield',
-                'heading'     => __('Badge / Label', 'sublimeplus'),
-                'param_name'  => 'badge',
-                'value'       => '',
-                'description' => __('Small pill above the headline. HTML allowed (e.g. &lt;strong&gt;).', 'sublimeplus'),
-            ],
-            [
-                'type'       => 'textfield',
-                'heading'    => __('Headline — Top Line', 'sublimeplus'),
-                'param_name' => 'title_top',
-                'value'      => '',
-            ],
-            [
-                'type'       => 'textfield',
-                'heading'    => __('Headline — Bottom Line', 'sublimeplus'),
-                'param_name' => 'title_bot',
-                'value'      => '',
-            ],
-            [
-                'type'       => 'textarea',
-                'heading'    => __('Description', 'sublimeplus'),
-                'param_name' => 'description',
-                'value'      => '',
-            ],
-            [
-                'type'       => 'textfield',
-                'heading'    => __('Button 1 — Label', 'sublimeplus'),
-                'param_name' => 'btn1_text',
-                'value'      => '',
-                'group'      => __('Buttons', 'sublimeplus'),
-            ],
-            [
-                'type'        => 'textfield',
-                'heading'     => __('Button 1 — URL', 'sublimeplus'),
-                'param_name'  => 'btn1_url',
-                'value'       => '',
-                'description' => __('Paste a full URL or relative path.', 'sublimeplus'),
-                'group'       => __('Buttons', 'sublimeplus'),
-            ],
-            [
-                'type'       => 'textfield',
-                'heading'    => __('Button 2 — Label', 'sublimeplus'),
-                'param_name' => 'btn2_text',
-                'value'      => '',
-                'group'      => __('Buttons', 'sublimeplus'),
-            ],
-            [
-                'type'       => 'textfield',
-                'heading'    => __('Button 2 — URL', 'sublimeplus'),
-                'param_name' => 'btn2_url',
-                'value'      => '',
-                'group'      => __('Buttons', 'sublimeplus'),
+                'description' => __('Dark full-screen background behind all slides. Leave empty to use the Customizer setting.', 'sublimeplus'),
             ],
         ],
     ]);
@@ -492,19 +469,33 @@ function sublime_register_vc_elements() {
                         'param_name'  => 'image_id',
                         'description' => __('Recommended: landscape photo, at least 600×400 px.', 'sublimeplus'),
                     ],
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Card Link URL', 'sublimeplus'),
+                        'param_name'  => 'link',
+                        'value'       => '',
+                        'description' => __('URL this card links to. Leave empty to use the default products archive link.', 'sublimeplus'),
+                    ],
                 ],
             ],
         ],
     ]);
 
-    // ── Testimonials ──────────────────────────────────────────────────────────
+    // ── Projects Showcase ─────────────────────────────────────────────────────
     vc_map([
-        'name'        => __('Sublime Testimonials', 'sublimeplus'),
-        'base'        => 'sublime_testimonials',
+        'name'        => __('Sublime Projects', 'sublimeplus'),
+        'base'        => 'sublime_projects',
         'category'    => __('Sublime Sections', 'sublimeplus'),
-        'icon'        => 'dashicons-format-quote',
-        'description' => __('6-card review grid with star ratings, reviewer name, title, and company.', 'sublimeplus'),
+        'icon'        => 'dashicons-portfolio',
+        'description' => __('Featured projects bento grid — pulls from the Projects CPT (WP Admin → Projects).', 'sublimeplus'),
         'params'      => [
+            [
+                'type'        => 'textfield',
+                'heading'     => __('Eyebrow Text', 'sublimeplus'),
+                'param_name'  => 'eyebrow',
+                'value'       => '',
+                'description' => __('Small label above the heading (e.g. "Our Projects").', 'sublimeplus'),
+            ],
             [
                 'type'       => 'textfield',
                 'heading'    => __('Section Heading', 'sublimeplus'),
@@ -518,45 +509,44 @@ function sublime_register_vc_elements() {
                 'value'      => '',
             ],
             [
-                'type'        => 'param_group',
-                'heading'     => __('Reviews', 'sublimeplus'),
-                'param_name'  => 'reviews',
-                'description' => __('Leave empty to use the 6 hardcoded defaults. Add rows here to replace them entirely.', 'sublimeplus'),
+                'type'       => 'textfield',
+                'heading'    => __('CTA Button Label', 'sublimeplus'),
+                'param_name' => 'cta_text',
+                'value'      => '',
+                'group'      => __('Call to Action', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('CTA Button URL', 'sublimeplus'),
+                'param_name'  => 'cta_url',
                 'value'       => '',
-                'params'      => [
-                    [
-                        'type'        => 'dropdown',
-                        'heading'     => __('Stars', 'sublimeplus'),
-                        'param_name'  => 'stars',
-                        'value'       => ['5' => '5', '4' => '4', '3' => '3'],
-                        'admin_label' => true,
-                    ],
-                    [
-                        'type'       => 'textarea',
-                        'heading'    => __('Review Text', 'sublimeplus'),
-                        'param_name' => 'text',
-                        'value'      => '',
-                    ],
-                    [
-                        'type'        => 'textfield',
-                        'heading'     => __('Reviewer Name', 'sublimeplus'),
-                        'param_name'  => 'name',
-                        'value'       => '',
-                        'admin_label' => true,
-                    ],
-                    [
-                        'type'       => 'textfield',
-                        'heading'    => __('Title / Position', 'sublimeplus'),
-                        'param_name' => 'title',
-                        'value'      => '',
-                    ],
-                    [
-                        'type'       => 'textfield',
-                        'heading'    => __('Company', 'sublimeplus'),
-                        'param_name' => 'company',
-                        'value'      => '',
-                    ],
-                ],
+                'description' => __('Paste the full URL to your projects archive page. Leave empty to auto-resolve.', 'sublimeplus'),
+                'group'       => __('Call to Action', 'sublimeplus'),
+            ],
+        ],
+    ]);
+
+    // ── Testimonials ──────────────────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime Testimonials', 'sublimeplus'),
+        'base'        => 'sublime_testimonials',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-format-quote',
+        'description' => __('Testimonials carousel — pulls from the Testimonials CPT (WP Admin → Testimonials).', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'        => 'textfield',
+                'heading'     => __('Section Heading', 'sublimeplus'),
+                'param_name'  => 'heading',
+                'value'       => '',
+                'description' => __('Leave empty to use the default heading.', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'textarea',
+                'heading'     => __('Sub-text', 'sublimeplus'),
+                'param_name'  => 'subtext',
+                'value'       => '',
+                'description' => __('Leave empty to use the default sub-text.', 'sublimeplus'),
             ],
         ],
     ]);
