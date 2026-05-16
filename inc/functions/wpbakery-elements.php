@@ -237,6 +237,111 @@ function sublime_shortcode_inquiry($atts) {
 }
 add_shortcode('sublime_inquiry', 'sublime_shortcode_inquiry');
 
+// Stats counters
+function sublime_shortcode_stats($atts) {
+    $atts = shortcode_atts([
+        'eyebrow' => '',
+        'heading' => '',
+        'subtext' => '',
+        'bg'      => 'light',
+        'stats'   => '',
+    ], $atts, 'sublime_stats');
+
+    $args = [
+        'eyebrow' => $atts['eyebrow'],
+        'heading' => $atts['heading'],
+        'subtext' => $atts['subtext'],
+        'bg'      => $atts['bg'],
+    ];
+
+    $rows = _sublime_parse_group($atts['stats']);
+    if (!empty($rows)) {
+        $args['stats'] = array_map(function ($r) {
+            return [
+                'number' => $r['number'] ?? '0',
+                'suffix' => $r['suffix'] ?? '',
+                'prefix' => $r['prefix'] ?? '',
+                'label'  => $r['label']  ?? '',
+            ];
+        }, $rows);
+    }
+
+    return _sublime_render_part('stats', $args);
+}
+add_shortcode('sublime_stats', 'sublime_shortcode_stats');
+
+// Features / Why-choose-us
+function sublime_shortcode_features($atts) {
+    $atts = shortcode_atts([
+        'eyebrow'  => '',
+        'heading'  => '',
+        'subtext'  => '',
+        'cols'     => '3',
+        'cta_text' => '',
+        'cta_url'  => '',
+        'features' => '',
+    ], $atts, 'sublime_features');
+
+    $args = [
+        'eyebrow'  => $atts['eyebrow'],
+        'heading'  => $atts['heading'],
+        'subtext'  => $atts['subtext'],
+        'cols'     => $atts['cols'],
+        'cta_text' => $atts['cta_text'],
+        'cta_url'  => $atts['cta_url'],
+    ];
+
+    $rows = _sublime_parse_group($atts['features'], 'thumbnail');
+    if (!empty($rows)) {
+        $args['features'] = array_map(function ($r) {
+            return [
+                'img'   => $r['img']   ?? '',
+                'title' => $r['title'] ?? '',
+                'desc'  => $r['desc']  ?? '',
+            ];
+        }, $rows);
+    }
+
+    return _sublime_render_part('features', $args);
+}
+add_shortcode('sublime_features', 'sublime_shortcode_features');
+
+// About intro
+function sublime_shortcode_about_intro($atts) {
+    $atts = shortcode_atts([
+        'eyebrow'   => '',
+        'heading'   => '',
+        'content'   => '',
+        'image_id'  => '',
+        'img_pos'   => 'left',
+        'cta_text'  => '',
+        'cta_url'   => '',
+        'cta2_text' => '',
+        'cta2_url'  => '',
+        'badges'    => '',
+    ], $atts, 'sublime_about_intro');
+
+    $args = [
+        'eyebrow'   => $atts['eyebrow'],
+        'heading'   => $atts['heading'],
+        'content'   => $atts['content'],
+        'image_id'  => $atts['image_id'],
+        'img_pos'   => $atts['img_pos'],
+        'cta_text'  => $atts['cta_text'],
+        'cta_url'   => $atts['cta_url'],
+        'cta2_text' => $atts['cta2_text'],
+        'cta2_url'  => $atts['cta2_url'],
+    ];
+
+    $rows = _sublime_parse_group($atts['badges']);
+    if (!empty($rows)) {
+        $args['badges'] = $rows;
+    }
+
+    return _sublime_render_part('about-intro', $args);
+}
+add_shortcode('sublime_about_intro', 'sublime_shortcode_about_intro');
+
 // Contact page section
 function sublime_shortcode_contact($atts) {
     $atts = shortcode_atts([
@@ -498,6 +603,253 @@ function sublime_register_vc_elements() {
                         'description' => __('URL this card links to. Leave empty to use the default products archive link.', 'sublimeplus'),
                     ],
                 ],
+            ],
+        ],
+    ]);
+
+    // ── Stats Counters ────────────────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime Stats', 'sublimeplus'),
+        'base'        => 'sublime_stats',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-chart-bar',
+        'description' => __('Animated number counters — projects, years, products, clients.', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'        => 'textfield',
+                'heading'     => __('Eyebrow Text', 'sublimeplus'),
+                'param_name'  => 'eyebrow',
+                'value'       => '',
+                'description' => __('Small label above the heading.', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Heading', 'sublimeplus'),
+                'param_name' => 'heading',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textarea',
+                'heading'    => __('Sub-text', 'sublimeplus'),
+                'param_name' => 'subtext',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'dropdown',
+                'heading'    => __('Background', 'sublimeplus'),
+                'param_name' => 'bg',
+                'value'      => [
+                    __('Light (white/off-white)', 'sublimeplus') => 'light',
+                    __('Dark (navy)',              'sublimeplus') => 'dark',
+                    __('Accent (orange)',          'sublimeplus') => 'accent',
+                ],
+            ],
+            [
+                'type'        => 'param_group',
+                'heading'     => __('Stats', 'sublimeplus'),
+                'param_name'  => 'stats',
+                'description' => __('Leave empty to use the 4 default stats. Add rows to replace them.', 'sublimeplus'),
+                'value'       => '',
+                'params'      => [
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Number', 'sublimeplus'),
+                        'param_name'  => 'number',
+                        'value'       => '100',
+                        'admin_label' => true,
+                        'description' => __('Numeric value only (e.g. 500).', 'sublimeplus'),
+                    ],
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Suffix', 'sublimeplus'),
+                        'param_name'  => 'suffix',
+                        'value'       => '+',
+                        'description' => __('Appended after number (e.g. + or %).', 'sublimeplus'),
+                    ],
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Prefix', 'sublimeplus'),
+                        'param_name'  => 'prefix',
+                        'value'       => '',
+                        'description' => __('Prepended before number (e.g. AED).', 'sublimeplus'),
+                    ],
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Label', 'sublimeplus'),
+                        'param_name'  => 'label',
+                        'value'       => '',
+                        'admin_label' => true,
+                    ],
+                ],
+            ],
+        ],
+    ]);
+
+    // ── Features / Why Choose Us ──────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime Features', 'sublimeplus'),
+        'base'        => 'sublime_features',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-grid-view',
+        'description' => __('Icon + title + description grid — Why Choose Us, capabilities, benefits.', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Eyebrow Text', 'sublimeplus'),
+                'param_name' => 'eyebrow',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Heading', 'sublimeplus'),
+                'param_name' => 'heading',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textarea',
+                'heading'    => __('Sub-text', 'sublimeplus'),
+                'param_name' => 'subtext',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'dropdown',
+                'heading'    => __('Columns', 'sublimeplus'),
+                'param_name' => 'cols',
+                'value'      => [
+                    '2 columns' => '2',
+                    '3 columns' => '3',
+                    '4 columns' => '4',
+                ],
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('CTA Button Label', 'sublimeplus'),
+                'param_name' => 'cta_text',
+                'value'      => '',
+                'group'      => __('Call to Action', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('CTA Button URL', 'sublimeplus'),
+                'param_name' => 'cta_url',
+                'value'      => '',
+                'group'      => __('Call to Action', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'param_group',
+                'heading'     => __('Feature Cards', 'sublimeplus'),
+                'param_name'  => 'features',
+                'description' => __('Leave empty to use 6 default feature cards. Add rows to replace them.', 'sublimeplus'),
+                'value'       => '',
+                'params'      => [
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Title', 'sublimeplus'),
+                        'param_name'  => 'title',
+                        'value'       => '',
+                        'admin_label' => true,
+                    ],
+                    [
+                        'type'       => 'textarea',
+                        'heading'    => __('Description', 'sublimeplus'),
+                        'param_name' => 'desc',
+                        'value'      => '',
+                    ],
+                    [
+                        'type'        => 'attach_image',
+                        'heading'     => __('Icon Image', 'sublimeplus'),
+                        'param_name'  => 'image_id',
+                        'description' => __('Small icon (40×40 px recommended). Leave empty to use inline SVG default.', 'sublimeplus'),
+                    ],
+                ],
+            ],
+        ],
+    ]);
+
+    // ── About Intro ───────────────────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime About Intro', 'sublimeplus'),
+        'base'        => 'sublime_about_intro',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-admin-home',
+        'description' => __('Split-layout about section: image one side, rich text + checklist the other.', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Eyebrow Text', 'sublimeplus'),
+                'param_name' => 'eyebrow',
+                'value'      => 'About Us',
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Heading', 'sublimeplus'),
+                'param_name' => 'heading',
+                'value'      => '',
+            ],
+            [
+                'type'        => 'textarea_html',
+                'heading'     => __('Body Content', 'sublimeplus'),
+                'param_name'  => 'content',
+                'value'       => '',
+                'description' => __('Supports basic HTML — paragraphs, bold, lists.', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'attach_image',
+                'heading'    => __('Image', 'sublimeplus'),
+                'param_name' => 'image_id',
+            ],
+            [
+                'type'       => 'dropdown',
+                'heading'    => __('Image Position', 'sublimeplus'),
+                'param_name' => 'img_pos',
+                'value'      => [
+                    __('Left', 'sublimeplus')  => 'left',
+                    __('Right', 'sublimeplus') => 'right',
+                ],
+            ],
+            [
+                'type'        => 'param_group',
+                'heading'     => __('Checklist Items', 'sublimeplus'),
+                'param_name'  => 'badges',
+                'description' => __('Bullet points with an orange tick — certifications, USPs, etc.', 'sublimeplus'),
+                'value'       => '',
+                'params'      => [
+                    [
+                        'type'        => 'textfield',
+                        'heading'     => __('Text', 'sublimeplus'),
+                        'param_name'  => 'text',
+                        'value'       => '',
+                        'admin_label' => true,
+                    ],
+                ],
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Primary CTA Label', 'sublimeplus'),
+                'param_name' => 'cta_text',
+                'value'      => '',
+                'group'      => __('Call to Action', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Primary CTA URL', 'sublimeplus'),
+                'param_name' => 'cta_url',
+                'value'      => '',
+                'group'      => __('Call to Action', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Secondary CTA Label', 'sublimeplus'),
+                'param_name' => 'cta2_text',
+                'value'      => '',
+                'group'      => __('Call to Action', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Secondary CTA URL', 'sublimeplus'),
+                'param_name' => 'cta2_url',
+                'value'      => '',
+                'group'      => __('Call to Action', 'sublimeplus'),
             ],
         ],
     ]);

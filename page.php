@@ -8,7 +8,16 @@
 defined('ABSPATH') || exit;
 
 global $post;
-$_wpb = $post && has_shortcode($post->post_content, 'vc_row');
+
+// Treat WPBakery pages AND pages using any of our custom section shortcodes as full-width.
+$_sublime_tags = ['vc_row', 'sublime_hero', 'sublime_certificates', 'sublime_clients',
+                  'sublime_products', 'sublime_supply', 'sublime_testimonials',
+                  'sublime_inquiry', 'sublime_projects', 'sublime_blog',
+                  'sublime_contact', 'sublime_stats', 'sublime_features',
+                  'sublime_about_intro'];
+$_wpb = $post && array_reduce($_sublime_tags, function ($carry, $tag) use ($post) {
+    return $carry || has_shortcode($post->post_content, $tag);
+}, false);
 
 get_header();
 
