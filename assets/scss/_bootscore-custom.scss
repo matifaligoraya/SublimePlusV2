@@ -40,9 +40,6 @@ h1, h2, h3, h4, h5, h6,
   border-bottom: none;
   box-shadow: 0 2px 16px rgba(15,23,42,.1);
   padding: 0;
-  position: sticky;
-  top: 0;
-  z-index: 999;
 }
 
 // ─── Row 1: Brand / contact tiles ────────────────────────────────────────────
@@ -206,9 +203,9 @@ h1, h2, h3, h4, h5, h6,
       gap: .4rem;
       padding: .55rem 1rem;
       font-family: 'Inter', sans-serif;
-      font-size: .92rem !important;
+      font-size: .82rem;
       font-weight: 600;
-      color: var(--c-accent) !important;
+      color: var(--c-text-main);
       text-decoration: none;
       white-space: nowrap;
       transition: color .2s, background .2s;
@@ -226,9 +223,9 @@ h1, h2, h3, h4, h5, h6,
       // Icon element (img / i / svg) that sits to the left of the label
       > img, > i, > svg {
         flex-shrink: 0;
-        width: 35px;
-        height: 35px;
-        opacity: .7;
+        width: 16px;
+        height: 16px;
+        opacity: .5;
         transition: opacity .2s;
       }
       &:hover > img,
@@ -278,7 +275,7 @@ h1, h2, h3, h4, h5, h6,
 
 // Subtitle line below the nav title
 .sp-nav-sub {
-  display: none;
+  display: block;
   font-size: .58rem;
   font-weight: 500;
   color: var(--c-text-muted);
@@ -542,65 +539,6 @@ h1, h2, h3, h4, h5, h6,
   }
 
   .entry-header { display: none !important; }
-}
-
-// ─── Approvals / Certifications ticker ───────────────────────────────────────
-.approvals-section {
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 1.1rem 0;
-  overflow: hidden;
-}
-
-.approvals-track {
-  display: flex;
-  width: max-content;
-  animation: sp-approvals-scroll 32s linear infinite;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
-
-  &:hover { animation-play-state: paused; }
-}
-
-.approvals-group {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.approval-item {
-  display: flex;
-  align-items: center;
-  gap: .7rem;
-  padding: 0 2.25rem;
-  border-right: 1px solid #e5e7eb;
-  white-space: nowrap;
-
-  img {
-    width: 42px;
-    height: 42px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-}
-
-.approval-text-main {
-  font-size: .8rem;
-  font-weight: 700;
-  color: var(--c-primary, #1a3a5c);
-  line-height: 1.25;
-}
-
-.approval-text-sub {
-  font-size: .68rem;
-  color: #64748b;
-  line-height: 1.25;
-}
-
-@keyframes sp-approvals-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
 }
 
 // ─── Inquiry / Contact section ────────────────────────────────────────────────
