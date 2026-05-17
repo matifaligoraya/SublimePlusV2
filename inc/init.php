@@ -81,6 +81,7 @@ if (is_admin()) {
     require SUBLIMEPLUS_DIR.'inc/tools/sp-import-clients.php';
     require SUBLIMEPLUS_DIR.'inc/tools/sp-import-projects.php';
     require SUBLIMEPLUS_DIR.'inc/tools/sp-import-supply.php';
+    require SUBLIMEPLUS_DIR.'inc/tools/sp-import-authority.php';
 }
 
 

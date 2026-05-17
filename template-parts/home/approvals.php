@@ -8,15 +8,26 @@ defined('ABSPATH') || exit;
 
 $args = $args ?? [];
 
-$_uri     = get_template_directory_uri() . '/assets/img/authority/';
+$_uri        = get_template_directory_uri() . '/assets/img/authority/';
+$_stored_ids = (array) get_option('sp_authority_img_ids', []);
+
+// Helper: prefer media-library URL when an imported attachment ID exists, otherwise fall back to direct file path.
+$_img = function (string $key, string $fallback) use ($_stored_ids, $_uri): string {
+    $id = (int) ($_stored_ids[$key] ?? 0);
+    if ($id && ($url = wp_get_attachment_image_url($id, 'thumbnail'))) {
+        return $url;
+    }
+    return $_uri . $fallback;
+};
+
 $_default = [
-  ['img' => $_uri . 'rta.webp',          'main' => 'RTA Approved',          'sub' => 'Roads &amp; Transport Authority',  'alt' => 'RTA'],
-  ['img' => $_uri . 'municipality.webp', 'main' => 'Municipality Compliant', 'sub' => 'Dubai &amp; Abu Dhabi Specs',      'alt' => 'Municipality'],
-  ['img' => $_uri . 'iso9001.webp',      'main' => 'ISO 9001:2015',          'sub' => 'Quality Management System',        'alt' => 'ISO 9001'],
-  ['img' => $_uri . 'iso14001.webp',     'main' => 'ISO 14001:2015',         'sub' => 'Environmental Management',         'alt' => 'ISO 14001'],
-  ['img' => $_uri . 'icv.webp',          'main' => 'ICV Certified',          'sub' => 'In-Country Value Program',         'alt' => 'ICV'],
-  ['img' => $_uri . 'made-in-uae.webp',  'main' => 'Made in UAE',            'sub' => 'Industrial Development',           'alt' => 'Made in UAE'],
-  ['img' => $_uri . 'iso45001.webp',     'main' => 'ISO 45001:2018',         'sub' => 'Health &amp; Safety Management',   'alt' => 'ISO 45001'],
+  ['img' => $_img('rta',          'rta.webp'),          'main' => 'RTA Approved',          'sub' => 'Roads &amp; Transport Authority',  'alt' => 'RTA'],
+  ['img' => $_img('municipality', 'municipality.webp'), 'main' => 'Municipality Compliant', 'sub' => 'Dubai &amp; Abu Dhabi Specs',      'alt' => 'Municipality'],
+  ['img' => $_img('iso9001',      'iso9001.webp'),      'main' => 'ISO 9001:2015',          'sub' => 'Quality Management System',        'alt' => 'ISO 9001'],
+  ['img' => $_img('iso14001',     'iso14001.webp'),     'main' => 'ISO 14001:2015',         'sub' => 'Environmental Management',         'alt' => 'ISO 14001'],
+  ['img' => $_img('icv',          'icv.webp'),          'main' => 'ICV Certified',          'sub' => 'In-Country Value Program',         'alt' => 'ICV'],
+  ['img' => $_img('made-in-uae',  'made-in-uae.webp'),  'main' => 'Made in UAE',            'sub' => 'Industrial Development',           'alt' => 'Made in UAE'],
+  ['img' => $_img('iso45001',     'iso45001.webp'),     'main' => 'ISO 45001:2018',         'sub' => 'Health &amp; Safety Management',   'alt' => 'ISO 45001'],
 ];
 
 // $args['items'] from WPBakery overrides the filter
