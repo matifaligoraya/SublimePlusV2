@@ -15,14 +15,15 @@ defined('ABSPATH') || exit;
 if (!is_admin()) return;
 
 function sp_authority_img_list(): array {
+    // key => [remote filename on precastuae.ae, local save name, title]
     return [
-        'rta'          => ['rta.webp',         'RTA Approved'],
-        'municipality' => ['municipality.webp', 'Municipality Compliant'],
-        'iso9001'      => ['iso9001.webp',      'ISO 9001:2015'],
-        'iso14001'     => ['iso14001.webp',     'ISO 14001:2015'],
-        'icv'          => ['icv.webp',          'ICV Certified'],
-        'made-in-uae'  => ['made-in-uae.webp',  'Made in UAE'],
-        'iso45001'     => ['iso45001.webp',      'ISO 45001:2018'],
+        'rta'          => ['icon_rta_hu_f8dbde2709607f59.webp',       'rta.webp',          'RTA Approved'],
+        'municipality' => ['icon_gov_hu_68d5611c45fe9202.webp',        'municipality.webp', 'Municipality Compliant'],
+        'iso9001'      => ['icon_iso_hu_65b3b7fa78d402ad.webp',        'iso9001.webp',      'ISO 9001:2015'],
+        'iso14001'     => ['icon_iso14001_hu_b0839e86659938ce.webp',   'iso14001.webp',     'ISO 14001:2015'],
+        'icv'          => ['icon_icv_hu_ad13437139275aa0.webp',        'icv.webp',          'ICV Certified'],
+        'made-in-uae'  => ['icon_made_uae_hu_5fecb080d114eff1.webp',   'made-in-uae.webp',  'Made in UAE'],
+        'iso45001'     => ['icon_iso45001_hu_1c1d54ffcbcf3eca.webp',   'iso45001.webp',      'ISO 45001:2018'],
     ];
 }
 
@@ -37,9 +38,8 @@ add_action('admin_menu', function () {
 });
 
 function sp_import_authority_page(): void {
-    $list    = sp_authority_img_list();
-    $src_dir = get_template_directory() . '/assets/img/authority/';
-    $stored  = (array) get_option('sp_authority_img_ids', []);
+    $list   = sp_authority_img_list();
+    $stored = (array) get_option('sp_authority_img_ids', []);
     $results = [];
 
     // ── Import ────────────────────────────────────────────────────────────────
@@ -48,7 +48,9 @@ function sp_import_authority_page(): void {
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
-        foreach ($list as $key => [$file, $title]) {
+        $base_url = 'https://precastuae.ae/icons/authority/';
+
+        foreach ($list as $key => [$remote_file, $local_file, $title]) {
             $existing_id = (int) ($stored[$key] ?? 0);
 
             if ($existing_id && get_post_type($existing_id) === 'attachment') {
@@ -56,20 +58,14 @@ function sp_import_authority_page(): void {
                 continue;
             }
 
-            $src = $src_dir . $file;
-            if (!file_exists($src)) {
-                $results[] = ['error', "$key — file not found: assets/img/authority/$file"];
+            $tmp = download_url($base_url . $remote_file);
+
+            if (is_wp_error($tmp)) {
+                $results[] = ['error', "$key — download failed: " . $tmp->get_error_message()];
                 continue;
             }
 
-            // Copy to temp so media_handle_sideload doesn't remove the original
-            $tmp = wp_tempnam($file);
-            if (!@copy($src, $tmp)) {
-                $results[] = ['error', "$key — could not create temp copy"];
-                continue;
-            }
-
-            $id = media_handle_sideload(['name' => $file, 'tmp_name' => $tmp], 0, $title);
+            $id = media_handle_sideload(['name' => $local_file, 'tmp_name' => $tmp], 0, $title);
 
             if (is_wp_error($id)) {
                 @unlink($tmp);
@@ -95,7 +91,7 @@ function sp_import_authority_page(): void {
     $done  = 0;
     foreach (array_keys($list) as $key) {
         $id = (int) ($stored[$key] ?? 0);
-        if ($id && get_post_type($id) === 'attachment') $done++;
+        if ($id && get_post_type((int) $id) === 'attachment') $done++;
     }
     ?>
     <div class="wrap">
@@ -117,13 +113,13 @@ function sp_import_authority_page(): void {
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($list as $key => [$file, $title]) :
+          <?php foreach ($list as $key => [$remote_file, $local_file, $title]) :
             $id    = (int) ($stored[$key] ?? 0);
             $valid = $id && get_post_type($id) === 'attachment';
           ?>
           <tr>
             <td><strong><?php echo esc_html($key); ?></strong></td>
-            <td><code><?php echo esc_html($file); ?></code></td>
+            <td><code><?php echo esc_html($local_file); ?></code></td>
             <td>
               <?php if ($valid) : ?>
                 <span style="color:#166534">&#10004; In media library</span>
