@@ -4,7 +4,8 @@
       "Read(//c/Users/Mr. Smith/Downloads/bootscore/bootscore/assets/**)",
       "Read(//c/Users/Mr. Smith/Downloads/bootscore/bootscore/inc/**)",
       "Read(//c/Users/Mr. Smith/Downloads/bootscore/bootscore/**)",
-      "PowerShell($file = \"d:/xampp_local/htdocs/wp-content/themes/SublimePlusV2/assets/scss/main.scss\"; \\(Get-Item $file\\).LastWriteTime = Get-Date; Write-Output \"touched\")"
+      "PowerShell($file = \"d:/xampp_local/htdocs/wp-content/themes/SublimePlusV2/assets/scss/main.scss\"; \\(Get-Item $file\\).LastWriteTime = Get-Date; Write-Output \"touched\")",
+      "Read(//d/xampp_local/**)"
     ]
   }
 }

@@ -10,13 +10,13 @@ $args = $args ?? [];
 
 $_uri     = get_template_directory_uri() . '/assets/img/authority/';
 $_default = [
-  ['img' => $_uri . 'rta.png',         'main' => 'RTA Approved',          'sub' => 'Roads &amp; Transport Authority',  'alt' => 'RTA'],
-  ['img' => $_uri . 'municipality.png','main' => 'Municipality Compliant', 'sub' => 'Dubai &amp; Abu Dhabi Specs',      'alt' => 'Municipality'],
-  ['img' => $_uri . 'iso9001.png',     'main' => 'ISO 9001:2015',          'sub' => 'Quality Management System',        'alt' => 'ISO 9001'],
-  ['img' => $_uri . 'iso14001.png',    'main' => 'ISO 14001:2015',         'sub' => 'Environmental Management',         'alt' => 'ISO 14001'],
-  ['img' => $_uri . 'icv.png',         'main' => 'ICV Certified',          'sub' => 'In-Country Value Program',         'alt' => 'ICV'],
-  ['img' => $_uri . 'made-in-uae.png', 'main' => 'Made in UAE',            'sub' => 'Industrial Development',           'alt' => 'Made in UAE'],
-  ['img' => $_uri . 'iso45001.png',    'main' => 'ISO 45001:2018',         'sub' => 'Health &amp; Safety Management',   'alt' => 'ISO 45001'],
+  ['img' => $_uri . 'rta.webp',          'main' => 'RTA Approved',          'sub' => 'Roads &amp; Transport Authority',  'alt' => 'RTA'],
+  ['img' => $_uri . 'municipality.webp', 'main' => 'Municipality Compliant', 'sub' => 'Dubai &amp; Abu Dhabi Specs',      'alt' => 'Municipality'],
+  ['img' => $_uri . 'iso9001.webp',      'main' => 'ISO 9001:2015',          'sub' => 'Quality Management System',        'alt' => 'ISO 9001'],
+  ['img' => $_uri . 'iso14001.webp',     'main' => 'ISO 14001:2015',         'sub' => 'Environmental Management',         'alt' => 'ISO 14001'],
+  ['img' => $_uri . 'icv.webp',          'main' => 'ICV Certified',          'sub' => 'In-Country Value Program',         'alt' => 'ICV'],
+  ['img' => $_uri . 'made-in-uae.webp',  'main' => 'Made in UAE',            'sub' => 'Industrial Development',           'alt' => 'Made in UAE'],
+  ['img' => $_uri . 'iso45001.webp',     'main' => 'ISO 45001:2018',         'sub' => 'Health &amp; Safety Management',   'alt' => 'ISO 45001'],
 ];
 
 // $args['items'] from WPBakery overrides the filter

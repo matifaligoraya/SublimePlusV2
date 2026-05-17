@@ -226,10 +226,12 @@ $count = count($slides);
   position: absolute; inset: 0;
   background-size: cover;
   background-position: center;
+  pointer-events: none;
 }
 .sph__overlay {
   position: absolute; inset: 0;
   background: linear-gradient(110deg, rgba(20,50,85,.88) 0%, rgba(20,50,85,.65) 50%, rgba(20,50,85,.25) 100%);
+  pointer-events: none;
 }
 
 /* Slides sit on top of the fixed background */
