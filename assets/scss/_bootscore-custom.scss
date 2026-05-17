@@ -544,6 +544,65 @@ h1, h2, h3, h4, h5, h6,
   .entry-header { display: none !important; }
 }
 
+// ─── Approvals / Certifications ticker ───────────────────────────────────────
+.approvals-section {
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.1rem 0;
+  overflow: hidden;
+}
+
+.approvals-track {
+  display: flex;
+  width: max-content;
+  animation: sp-approvals-scroll 32s linear infinite;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+
+  &:hover { animation-play-state: paused; }
+}
+
+.approvals-group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.approval-item {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: 0 2.25rem;
+  border-right: 1px solid #e5e7eb;
+  white-space: nowrap;
+
+  img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+}
+
+.approval-text-main {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--c-primary, #1a3a5c);
+  line-height: 1.25;
+}
+
+.approval-text-sub {
+  font-size: .68rem;
+  color: #64748b;
+  line-height: 1.25;
+}
+
+@keyframes sp-approvals-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
 // ─── Inquiry / Contact section ────────────────────────────────────────────────
 .sp-inquiry {
   background: linear-gradient(135deg, #1e3f6f 0%, #2a5fa0 100%);
