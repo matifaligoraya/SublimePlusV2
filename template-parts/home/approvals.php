@@ -38,23 +38,36 @@ $items = (!empty($args['items']) && is_array($args['items']))
 if (empty($items)) return;
 ?>
 <section class="approvals-section" aria-label="<?php esc_attr_e('Certifications and approvals', 'sublimeplus'); ?>">
-  <div class="approvals-track" aria-hidden="true">
 
-    <?php foreach ([1, 2] as $pass) : /* duplicate for seamless loop */ ?>
-    <div class="approvals-group">
-      <?php foreach ($items as $item) : ?>
-        <div class="approval-item">
-          <?php if (!empty($item['img'])) : ?>
-            <img src="<?php echo esc_url($item['img']); ?>" alt="<?php echo esc_attr($item['alt'] ?? ''); ?>" loading="lazy">
-          <?php endif; ?>
-          <div>
-            <div class="approval-text-main"><?php echo esc_html($item['main']); ?></div>
-            <div class="approval-text-sub"><?php echo wp_kses_post($item['sub']); ?></div>
+  <!-- Fixed left label -->
+  <div class="approvals-label" aria-hidden="true">
+    <span class="approvals-label__icon">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </span>
+    <span class="approvals-label__text">Certified<br>&amp; Approved</span>
+  </div>
+
+  <!-- Scrolling ticker -->
+  <div class="approvals-ticker">
+    <div class="approvals-track" aria-hidden="true">
+      <?php foreach ([1, 2] as $pass) : ?>
+      <div class="approvals-group">
+        <?php foreach ($items as $item) : ?>
+          <div class="approval-item">
+            <?php if (!empty($item['img'])) : ?>
+              <div class="approval-item__icon-wrap">
+                <img src="<?php echo esc_url($item['img']); ?>" alt="<?php echo esc_attr($item['alt'] ?? ''); ?>" loading="lazy">
+              </div>
+            <?php endif; ?>
+            <div class="approval-item__text">
+              <div class="approval-text-main"><?php echo esc_html($item['main']); ?></div>
+              <div class="approval-text-sub"><?php echo wp_kses_post($item['sub']); ?></div>
+            </div>
           </div>
-        </div>
+        <?php endforeach; ?>
+      </div>
       <?php endforeach; ?>
     </div>
-    <?php endforeach; ?>
-
   </div>
+
 </section>
