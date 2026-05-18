@@ -9,6 +9,10 @@ inc/plugins/**/*.zip
 node_modules/
 npm-debug.log
 
+# Compiled CSS — regenerated at runtime by the PHP SCSS compiler, do not track
+assets/css/main.css
+assets/css/editor.css
+
 # Source maps — dev only, not needed on production
 *.map
 
