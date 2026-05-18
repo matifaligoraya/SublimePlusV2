@@ -278,13 +278,13 @@ h1, h2, h3, h4, h5, h6,
 
 // Subtitle line below the nav title
 .sp-nav-sub {
-  display: none;
+
   font-size: .58rem;
   font-weight: 500;
   color: var(--c-text-muted);
   text-transform: uppercase;
   letter-spacing: .07em;
-  line-height: 1;
+  line-height: 1.2;
   font-family: 'Inter', sans-serif;
   white-space: nowrap;
 }
