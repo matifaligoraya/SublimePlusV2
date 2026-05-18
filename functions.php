@@ -81,6 +81,7 @@ function sublimeplus_default_setup()
     $settings = get_option(Sublimeplus_SETTINGS_KEY);
 
     register_nav_menus([
+        'main-menu'    => esc_html__('Main Menu', 'sublimeplus'),
         'top-menu'     => esc_html__('Top Menu', 'sublimeplus'),
         'mobile-menu'  => esc_html__('Mobile Menu', 'sublimeplus'),
         'primary-menu' => esc_html__('Primary Menu', 'sublimeplus'),

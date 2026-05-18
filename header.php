@@ -139,7 +139,8 @@ $cta_url = get_permalink(get_page_by_path('contact')) ?: '#inquiry';
     <div class="sp-hdr-nav d-none d-lg-block">
       <div class="container">
         <?php
-        $nav_location = has_nav_menu('main-menu') ? 'main-menu' : 'primary-menu';
+        $nav_location = has_nav_menu('main-menu')    ? 'main-menu'
+                      : (has_nav_menu('primary-menu') ? 'primary-menu' : 'top-menu');
         wp_nav_menu([
           'theme_location' => $nav_location,
           'container'      => false,

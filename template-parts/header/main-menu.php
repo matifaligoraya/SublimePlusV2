@@ -7,7 +7,8 @@
 defined('ABSPATH') || exit;
 
 // Use 'main-menu' if a menu is assigned there, otherwise fall back to 'primary-menu'
-$nav_location = has_nav_menu('main-menu') ? 'main-menu' : 'primary-menu';
+$nav_location = has_nav_menu('main-menu')    ? 'main-menu'
+              : (has_nav_menu('primary-menu') ? 'primary-menu' : 'top-menu');
 
 wp_nav_menu(array(
   'theme_location' => $nav_location,
