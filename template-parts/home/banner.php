@@ -11,7 +11,12 @@
 defined('ABSPATH') || exit;
 
 $base        = get_template_directory_uri();
-$contact_url = get_permalink(get_page_by_path('contact')) ?: '#inquiry';
+// Try common contact page slugs, then fall back to #inquiry
+$_contact_pg = get_page_by_path('contact-us') ?: get_page_by_path('contact');
+$contact_url = $_contact_pg ? get_permalink($_contact_pg) : '#inquiry';
+// Products archive URL for fallback slides
+$_products_pg = get_page_by_path('products') ?: get_page_by_path('product');
+$products_url = $_products_pg ? get_permalink($_products_pg) : (get_post_type_archive_link('sp_product') ?: home_url('/products/'));
 $hero_bg     = get_theme_mod('sp_hero_bg', $base . '/assets/img/banner/hero-bg.jpg');
 
 // ── Query sp_product posts ────────────────────────────────────────────────────
@@ -64,7 +69,7 @@ if (empty($slides)) {
         [
             'title'     => 'Jersey Barrier — Type F',
             'excerpt'   => 'RTA-approved concrete Jersey barriers for highway lane division, crash zones, and construction site separation across all UAE Emirates.',
-            'permalink' => '#',
+            'permalink' => $products_url,
             'img'       => '',
             'model_url' => $base . '/assets/models/concrete_road_barrier.glb',
             'category'  => 'Traffic Barriers',
@@ -76,7 +81,7 @@ if (empty($slides)) {
         [
             'title'     => 'Concrete Wheel Stopper',
             'excerpt'   => 'Heavy-duty concrete wheel stoppers for car parks, loading bays, and logistics zones. Reflective markings and anchor bolt holes standard.',
-            'permalink' => '#',
+            'permalink' => $products_url,
             'img'       => '',
             'model_url' => $base . '/assets/models/wheel_stopper.glb',
             'category'  => 'Parking Solutions',
@@ -88,7 +93,7 @@ if (empty($slides)) {
         [
             'title'     => 'Water-Filled Plastic Barrier',
             'excerpt'   => 'RTA-approved UV-stabilized HDPE barriers for agile traffic diversion and crowd control. Interlocking, easy to deploy and relocate.',
-            'permalink' => '#',
+            'permalink' => $products_url,
             'img'       => '',
             'model_url' => $base . '/assets/models/plastic_barrier.glb',
             'category'  => 'Traffic Management',
