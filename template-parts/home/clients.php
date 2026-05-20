@@ -281,7 +281,6 @@ $contact_url = get_permalink(get_page_by_path('contact')) ?: '#inquiry';
   width: auto;
   height: auto;
   object-fit: contain;
-  filter: grayscale(1) opacity(.65);
   transition: filter .25s;
 }
 .sp-clients__tile:hover img {

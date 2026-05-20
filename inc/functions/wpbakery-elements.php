@@ -377,6 +377,21 @@ function sublime_shortcode_projects($atts) {
 }
 add_shortcode('sublime_projects', 'sublime_shortcode_projects');
 
+// Start a Project CTA strip
+function sublime_shortcode_start_project($atts) {
+    $atts = shortcode_atts([
+        'eyebrow'  => '',
+        'heading'  => '',
+        'subtext'  => '',
+        'btn_text' => '',
+        'phone'    => '',
+        'whatsapp' => '',
+    ], $atts, 'sublime_start_project');
+
+    return _sublime_render_part('start-project', array_filter($atts));
+}
+add_shortcode('sublime_start_project', 'sublime_shortcode_start_project');
+
 // Blog / insights
 function sublime_shortcode_blog($atts) {
     $atts = shortcode_atts([
@@ -1073,6 +1088,57 @@ function sublime_register_vc_elements() {
                 'heading'    => __('Form Panel Heading', 'sublimeplus'),
                 'param_name' => 'form_heading',
                 'value'      => '',
+            ],
+        ],
+    ]);
+
+    // ── Start a Project CTA ──────────────────────────────────────────────────
+    vc_map([
+        'name'        => __('Sublime Start a Project', 'sublimeplus'),
+        'base'        => 'sublime_start_project',
+        'category'    => __('Sublime Sections', 'sublimeplus'),
+        'icon'        => 'dashicons-hammer',
+        'description' => __('Dark CTA strip — "Start a Project" banner leading to the inquiry form.', 'sublimeplus'),
+        'params'      => [
+            [
+                'type'        => 'textfield',
+                'heading'     => __('Eyebrow Text', 'sublimeplus'),
+                'param_name'  => 'eyebrow',
+                'value'       => '',
+                'description' => __('Small badge above heading. Leave empty for default.', 'sublimeplus'),
+            ],
+            [
+                'type'       => 'textfield',
+                'heading'    => __('Heading', 'sublimeplus'),
+                'param_name' => 'heading',
+                'value'      => '',
+            ],
+            [
+                'type'       => 'textarea',
+                'heading'    => __('Sub-text', 'sublimeplus'),
+                'param_name' => 'subtext',
+                'value'      => '',
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('Primary Button Label', 'sublimeplus'),
+                'param_name'  => 'btn_text',
+                'value'       => '',
+                'description' => __('Default: "Start a Project". Always links to #inquiry on the page.', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('Phone Number', 'sublimeplus'),
+                'param_name'  => 'phone',
+                'value'       => '',
+                'description' => __('Shown as a "call us" link below the buttons. Leave empty to use Customizer value.', 'sublimeplus'),
+            ],
+            [
+                'type'        => 'textfield',
+                'heading'     => __('WhatsApp URL', 'sublimeplus'),
+                'param_name'  => 'whatsapp',
+                'value'       => '',
+                'description' => __('e.g. https://wa.me/971543507724. Leave empty to use Customizer value.', 'sublimeplus'),
             ],
         ],
     ]);

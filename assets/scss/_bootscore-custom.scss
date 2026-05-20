@@ -611,6 +611,8 @@ h1, h2, h3, h4, h5, h6,
 // Ticker wrapper — takes remaining width, fade edges
 .approvals-ticker {
   flex: 1;
+  display: flex;          // ← key: lets align-items work on the track
+  align-items: center;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -620,8 +622,8 @@ h1, h2, h3, h4, h5, h6,
 
 .approvals-track {
   display: flex;
+  align-items: center;    // ← all groups vertically centred
   width: max-content;
-  align-items: center;
   animation: sp-approvals-scroll 42s linear infinite;
 
   &:hover { animation-play-state: paused; }
@@ -629,13 +631,13 @@ h1, h2, h3, h4, h5, h6,
 
 .approvals-group {
   display: flex;
-  align-items: center;
+  align-items: center;    // ← all items vertically centred within a group
   flex-shrink: 0;
 }
 
 .approval-item {
   display: flex;
-  align-items: center;
+  align-items: center;    // ← icon + text share the same vertical midpoint
   gap: 1.1rem;
   padding: 1.1rem 2.75rem;
   border-right: 1px solid rgba(255,255,255,.08);
@@ -655,7 +657,7 @@ h1, h2, h3, h4, h5, h6,
   justify-content: center;
   background: rgba(255,255,255,.1);
   border: 1px solid rgba(255,255,255,.14);
-  border-radius: 50%;           // circular to match certification seals
+  border-radius: 50%;
   padding: .45rem;
   transition: background .25s, border-color .25s, transform .3s, box-shadow .3s;
 
@@ -663,6 +665,7 @@ h1, h2, h3, h4, h5, h6,
     width: 100%;
     height: 100%;
     object-fit: contain;
+    display: block;       // ← removes inline baseline gap under image
   }
 
   .approval-item:hover & {
@@ -676,6 +679,7 @@ h1, h2, h3, h4, h5, h6,
 .approval-item__text {
   display: flex;
   flex-direction: column;
+  justify-content: center;  // ← text lines centred vertically in their column
   gap: .18rem;
 }
 

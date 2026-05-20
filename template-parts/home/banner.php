@@ -195,10 +195,10 @@ $count = count($slides);
   <?php if ($count > 1) : ?>
   <!-- Prev / Next -->
   <button class="sph__arrow sph__arrow--prev" aria-label="Previous">
-    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
   <button class="sph__arrow sph__arrow--next" aria-label="Next">
-    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </button>
 
   <!-- Dot indicators -->
@@ -218,24 +218,53 @@ $count = count($slides);
 .sph {
   position: relative;
   width: 100%;
-  height: 100vh;
-  min-height: 580px;
-  max-height: 980px;
+  height: 72vh;
+  min-height: 500px;
+  max-height: 720px;
   overflow: hidden;
-  /* Lighter navy — menu color stepped up in lightness */
-  background: #2a5080;
+  background: #edf1f7;
 }
 
-/* Background image — stays fixed */
+/* Left brand accent strip */
+.sph::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 5px;
+  background: linear-gradient(to bottom, var(--c-accent, #F97316) 0%, var(--c-primary, #264653) 100%);
+  z-index: 4;
+}
+
+/* Background image — very faint texture if present */
 .sph__bg {
   position: absolute; inset: 0;
   background-size: cover;
   background-position: center;
   pointer-events: none;
+  opacity: .05;
 }
+
+/* Blueprint engineering grid — construction / precast feel */
 .sph__overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(110deg, rgba(20,50,85,.88) 0%, rgba(20,50,85,.65) 50%, rgba(20,50,85,.25) 100%);
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(38,70,83,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38,70,83,.10) 1px, transparent 1px),
+    linear-gradient(rgba(38,70,83,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38,70,83,.045) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+  background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+}
+
+/* Right half warm accent wash */
+.sph__overlay::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg,
+    rgba(38,70,83,.06)   0%,
+    transparent          45%,
+    rgba(249,115,22,.04) 100%);
   pointer-events: none;
 }
 
@@ -264,16 +293,17 @@ $count = count($slides);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 3rem 2.5rem 3rem 2rem;
+  padding: 1.75rem 2rem 1.75rem 2rem;
   height: 100%;
 }
 .sph__card {
   background: #fff;
   border-radius: 14px;
-  padding: 2.25rem 2rem;
+  padding: 1.75rem 1.75rem;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  box-shadow: 0 10px 40px rgba(38,70,83,.12), 0 2px 8px rgba(38,70,83,.06);
+  border: 1px solid rgba(38,70,83,.08);
   /* Slide-in from left when active */
   transform: translateX(-28px);
   opacity: 0;
@@ -410,7 +440,7 @@ model-viewer:focus { outline: none; }
   max-height: 70%;
   max-width: 90%;
   object-fit: contain;
-  filter: drop-shadow(0 16px 40px rgba(0,0,0,.5));
+  filter: drop-shadow(0 12px 28px rgba(38,70,83,.28));
 }
 
 /* ── Navigation arrows ────────────────────────────────────────────────────────── */
@@ -418,22 +448,23 @@ model-viewer:focus { outline: none; }
   position: absolute;
   top: 50%; transform: translateY(-50%);
   z-index: 10;
-  width: 52px; height: 52px;
+  width: 44px; height: 44px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.55);
-  background: rgba(255,255,255,.14);
-  color: #fff !important;
+  border: 1.5px solid rgba(38,70,83,.22);
+  background: rgba(255,255,255,.9);
+  color: #264653 !important;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   backdrop-filter: blur(8px);
-  transition: border-color .2s, background .2s, transform .2s;
+  transition: border-color .2s, background .2s, box-shadow .2s, transform .2s;
 }
 .sph__arrow:hover {
-  border-color: #fff;
-  background: rgba(255,255,255,.25);
+  border-color: var(--c-primary, #264653);
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(38,70,83,.18);
   transform: translateY(-50%) scale(1.08);
 }
-.sph__arrow svg { stroke: #fff; }
+.sph__arrow svg { stroke: #264653; }
 .sph__arrow--prev { left: 1.25rem; }
 .sph__arrow--next { right: 1.25rem; }
 
@@ -448,7 +479,7 @@ model-viewer:focus { outline: none; }
 .sph__dot {
   width: 32px; height: 3px;
   border-radius: 2px; border: none; padding: 0;
-  background: rgba(255,255,255,.28);
+  background: rgba(38,70,83,.22);
   cursor: pointer;
   transition: width .25s, background .25s;
 }
@@ -478,10 +509,10 @@ model-viewer:focus { outline: none; }
   .sph__slide--active .sph__visual { opacity: 1; }
 }
 @media (max-width: 576px) {
-  .sph { height: 95vh; }
-  .sph__card { padding: 1.5rem 1.1rem; }
+  .sph { height: auto; min-height: 520px; }
+  .sph__card { padding: 1.35rem 1.1rem; }
   .sph__specs { grid-template-columns: 1fr; }
-  .sph__visual { height: 32vh; }
+  .sph__visual { height: 28vh; }
 }
 </style>
 

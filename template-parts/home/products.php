@@ -638,15 +638,15 @@ foreach ($query->posts as $idx => $_p) {
   font-size: .65rem;
   text-transform: uppercase;
   letter-spacing: .07em;
-  min-width: 90px;
-  max-width: 110px;
-  flex-shrink: 0;
+  flex: 0 0 120px;
+  width: 120px;
   padding: .42rem .65rem;
   border-right: 2px solid rgba(249,115,22,.15);
   background: rgba(249,115,22,.04);
   display: flex;
   align-items: center;
   line-height: 1.2;
+  word-break: break-word;
 }
 .sp-prod-card__chip-v {
   color: #1e293b;
@@ -654,6 +654,8 @@ foreach ($query->posts as $idx => $_p) {
   padding: .42rem .65rem;
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 /* ── Certifications ───────────────────────────────────────────────────────── */
