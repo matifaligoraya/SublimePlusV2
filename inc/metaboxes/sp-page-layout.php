@@ -20,7 +20,8 @@ add_action('add_meta_boxes', function () {
 
 function sp_page_layout_cb($post) {
     wp_nonce_field('sp_page_layout_save', 'sp_page_layout_nonce');
-    $sidebar = get_post_meta($post->ID, '_sp_page_sidebar', true);
+    $sidebar      = get_post_meta($post->ID, '_sp_page_sidebar',    true);
+    $hide_inquiry = get_post_meta($post->ID, '_sp_hide_inquiry',    true);
     if ($sidebar === false || $sidebar === null) {
         $sidebar = 'inherit';
     }
@@ -45,6 +46,16 @@ function sp_page_layout_cb($post) {
     <p style="margin:5px 0 0;color:#6b7280;font-size:11px;line-height:1.5;">
         <?= esc_html__('Overrides the global Customizer setting for this page only.', 'sublimeplus') ?>
     </p>
+
+    <hr style="margin:12px 0;border:none;border-top:1px solid #e5e7eb;">
+
+    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;color:#1d2327;">
+        <input type="checkbox" name="sp_hide_inquiry" value="1" <?php checked($hide_inquiry, '1'); ?>>
+        <span><?= esc_html__('Hide pre-footer inquiry form', 'sublimeplus') ?></span>
+    </label>
+    <p style="margin:4px 0 0;color:#6b7280;font-size:11px;line-height:1.5;">
+        <?= esc_html__('Suppresses the contact/quote strip in the footer on this page.', 'sublimeplus') ?>
+    </p>
     <?php
 }
 
@@ -66,4 +77,10 @@ add_action('save_post_page', function ($post_id) {
     }
 
     update_post_meta($post_id, '_sp_page_sidebar', $val);
+
+    if (!empty($_POST['sp_hide_inquiry'])) {
+        update_post_meta($post_id, '_sp_hide_inquiry', '1');
+    } else {
+        delete_post_meta($post_id, '_sp_hide_inquiry');
+    }
 });

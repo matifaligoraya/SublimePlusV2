@@ -45,7 +45,15 @@ if (!$use_builder) :
 ?>
 
   <!-- ── Pre-footer: contact info + form (shared template) ───────────────── -->
-  <?php echo do_shortcode('[sublime_inquiry]'); ?>
+  <?php
+  $_inquiry_page_id = (int) get_queried_object_id();
+  $_hide_inquiry    = $_inquiry_page_id
+      ? get_post_meta($_inquiry_page_id, '_sp_hide_inquiry', true) === '1'
+      : false;
+  if (!$_hide_inquiry) :
+      echo do_shortcode('[sublime_inquiry]');
+  endif;
+  ?>
 
   <!-- ── Brand / Links columns ────────────────────────────────────────────── -->
   <div class="sp-footer__columns">
