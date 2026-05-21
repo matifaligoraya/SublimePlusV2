@@ -17,7 +17,10 @@ $contact_url = $_contact_pg ? get_permalink($_contact_pg) : '#inquiry';
 // Products archive URL for fallback slides
 $_products_pg = get_page_by_path('products') ?: get_page_by_path('product');
 $products_url = $_products_pg ? get_permalink($_products_pg) : (get_post_type_archive_link('sp_product') ?: home_url('/products/'));
-$hero_bg     = get_theme_mod('sp_hero_bg', $base . '/assets/img/banner/hero-bg.jpg');
+$_bg_id  = !empty($args['bg_image_id']) ? absint($args['bg_image_id']) : 0;
+$hero_bg = $_bg_id
+    ? (wp_get_attachment_image_url($_bg_id, 'full') ?: get_theme_mod('sp_hero_bg', ''))
+    : get_theme_mod('sp_hero_bg', '');
 
 // ── Query sp_product posts ────────────────────────────────────────────────────
 // $args['product_ids'] is a comma-separated string of IDs from the WPBakery element.
@@ -111,10 +114,10 @@ $count = count($slides);
 <!-- model-viewer web component (Google) -->
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
-<section class="sph" id="sp-hero" aria-label="Product showcase">
+<section class="sph<?php echo $_bg_id ? ' sph--has-bg' : ''; ?>" id="sp-hero" aria-label="Product showcase">
 
   <!-- Fixed background (stays still while slides change) -->
-  <div class="sph__bg" style="background-image:url('<?php echo esc_url($hero_bg); ?>')"></div>
+  <div class="sph__bg"<?php echo $hero_bg ? ' style="background-image:url(\'' . esc_url($hero_bg) . '\')"' : ''; ?>></div>
   <div class="sph__overlay"></div>
 
   <!-- Slides -->
@@ -235,7 +238,7 @@ $count = count($slides);
   z-index: 4;
 }
 
-/* Background image — very faint texture if present */
+/* Background image — very faint texture by default */
 .sph__bg {
   position: absolute; inset: 0;
   background-size: cover;
@@ -243,6 +246,8 @@ $count = count($slides);
   pointer-events: none;
   opacity: .05;
 }
+/* When an image is explicitly chosen in the WPBakery add-on, make it visible */
+.sph--has-bg .sph__bg { opacity: .32; }
 
 /* Blueprint engineering grid — construction / precast feel */
 .sph__overlay {
