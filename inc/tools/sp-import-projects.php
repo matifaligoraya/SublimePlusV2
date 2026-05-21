@@ -24,6 +24,16 @@ function sp_project_importer_render() {
         $log  = sp_project_importer_run();
         $done = true;
     }
+
+    $patch_done = false;
+    if (isset($_POST['sp_do_patch_images']) && check_admin_referer('sp_patch_images_run')) {
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        $log        = sp_project_patch_images();
+        $patch_done = true;
+        $done       = true;
+    }
     ?>
     <div class="wrap" style="max-width:760px">
         <h1>🏗️ Import Projects</h1>
@@ -31,7 +41,7 @@ function sp_project_importer_render() {
 
         <?php if ($done) : ?>
             <div class="notice notice-success inline" style="margin:12px 0">
-                <p>✅ Import complete — <a href="<?php echo esc_url(admin_url('edit.php?post_type=sp_project')); ?>">view projects</a></p>
+                <p>✅ <?php echo $patch_done ? 'Image patch' : 'Import'; ?> complete — <a href="<?php echo esc_url(admin_url('edit.php?post_type=sp_project')); ?>">view projects</a></p>
             </div>
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px 18px;font-family:monospace;font-size:12px;line-height:1.9;max-height:480px;overflow-y:auto">
                 <?php foreach ($log as $line) :
@@ -54,9 +64,101 @@ function sp_project_importer_render() {
                     🚀 Import All Projects
                 </button>
             </form>
+            <hr style="margin:24px 0">
+            <h2 style="font-size:15px;margin-bottom:6px">Fix Project Images</h2>
+            <p style="color:#64748b;font-size:13px;margin-bottom:12px">
+                Sideloads project images from the local staging folder
+                (<code>wp-content/uploads/sp-staging/</code>) and sets them as featured images.
+                Run this if images were blocked during the initial import. Works on both new and existing project posts.
+            </p>
+            <form method="post">
+                <?php wp_nonce_field('sp_patch_images_run'); ?>
+                <input type="hidden" name="sp_do_patch_images" value="1">
+                <button type="submit" class="button button-secondary" style="height:40px;padding:0 22px;font-size:14px;font-weight:600">
+                    🖼️ Fix Project Images (Local Staging)
+                </button>
+            </form>
         <?php endif; ?>
     </div>
     <?php
+}
+
+// ─── Patch images (local staging → featured image) ───────────────────────────
+
+function sp_project_patch_images(): array {
+    $log     = [];
+    $staging = WP_CONTENT_DIR . '/uploads/sp-staging/';
+
+    $map = [
+        'al-maktoum-airport-road' => 'project_highway_hu_aedd9ea1c0fa6c10.webp',
+        'damac-hills-community'   => 'project_villa_hu_b95f7fcb147f3f5d.webp',
+        'sheikh-mbd-road'         => 'project_e311_maintenance_hu_4a59a39d79343a30.webp',
+        'etihad-rail-network'     => 'project_etihad_rail_hu_7a010fd8c98f89f4.webp',
+        'atlantis-the-royal'      => 'project_atlantis_parking_hu_93e827b4a30f69fb.webp',
+        'yas-marina-circuit'      => 'project_yas_marina_hu_435020567dbe2a9c.webp',
+        'dubai-hills-estate'      => 'project_dubai_hills_hu_a7a4029162fb3f87.webp',
+        'opus-tower-parking'      => 'project_opus_parking_hu_e13269eee20651dd.webp',
+    ];
+
+    foreach ($map as $slug => $filename) {
+        $post = get_page_by_path($slug, OBJECT, 'sp_project');
+        if (!$post) {
+            $log[] = 'SKIP (no post): ' . $slug;
+            continue;
+        }
+
+        $local = $staging . $filename;
+        if (!file_exists($local)) {
+            $log[] = '── ' . $slug;
+            $log[] = '  ✗ staging file missing — copy ' . $filename . ' to wp-content/uploads/sp-staging/';
+            continue;
+        }
+
+        // Deduplicate via canonical remote URL stored as _sp_src
+        $remote_url = 'https://precastuae.ae/images/' . $filename;
+        $existing   = get_posts([
+            'post_type'      => 'attachment',
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
+            'meta_key'       => '_sp_src',
+            'meta_value'     => $remote_url,
+        ]);
+
+        if ($existing) {
+            $attach_id = (int) $existing[0];
+            $log[]     = '── ' . $slug . ' (reusing existing media #' . $attach_id . ')';
+        } else {
+            // Copy to sys temp dir (required by media_handle_sideload)
+            $tmp = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
+            if (!copy($local, $tmp)) {
+                $log[] = '── ' . $slug;
+                $log[] = '  ✗ temp copy failed — check permissions on ' . sys_get_temp_dir();
+                continue;
+            }
+
+            $attach_id = media_handle_sideload(
+                ['name' => $filename, 'tmp_name' => $tmp],
+                $post->ID,
+                $slug
+            );
+            @unlink($tmp);
+
+            if (is_wp_error($attach_id)) {
+                $log[] = '── ' . $slug;
+                $log[] = '  ✗ sideload error — ' . $attach_id->get_error_message();
+                continue;
+            }
+
+            update_post_meta((int) $attach_id, '_sp_src', $remote_url);
+            $log[] = '── ' . $slug;
+            $log[] = '  ✓ image imported (attachment #' . $attach_id . ')';
+        }
+
+        set_post_thumbnail($post->ID, $attach_id);
+        $log[] = '  ✓ featured image set';
+    }
+
+    return $log;
 }
 
 // ─── Project data ─────────────────────────────────────────────────────────────
@@ -68,161 +170,145 @@ function sp_project_importer_data(): array {
 
         [
             'slug'     => 'al-maktoum-airport-road',
-            'title'    => 'Al Maktoum Airport Road Expansion',
-            'excerpt'  => '3,200 RTA-approved Jersey Barriers installed across the DWC access corridors — delivered in four staged crane deployments over six weeks.',
-            'content'  => '<p>This project required rapid mobilisation of 3,200 RTA-approved Jersey Barriers across the main access corridors to Al Maktoum International Airport (DWC). Working under a live RTA road permit, our delivery team deployed crane-mounted 40ft trailers for direct offloading onto active construction zones, completing the full barrier installation in four staged deliveries.</p><p>Each barrier was supplied with full mill certificates and compressive strength reports for RTA site inspection. Our technical team provided on-site placement guidance and joint alignment checking throughout the programme.</p><h3>Scope of Work</h3><ul><li>3,200 × 1m and 2m Jersey Barriers — K-Rail profile</li><li>Crane-assisted offloading at three site access points</li><li>RTA compliance documentation for each delivery batch</li><li>Joint alignment and placement guidance by technical team</li></ul>',
-            'cats'     => ['Infrastructure'],
-            'client'   => 'RTA Dubai',
+            'title'    => 'Al Maktoum Airport Road',
+            'excerpt'  => 'Supply and installation of 15 km of K-Type Jersey Barriers for the main airport access road, with 24/7 delivery logistics to meet the fast-track paving schedule.',
+            'content'  => '<p>Supply and installation of 15 km of K-Type Jersey Barriers for the main access road to Al Maktoum International Airport at Dubai South. The project required 24/7 delivery logistics to meet the fast-track paving schedule, with crane-mounted flatbed trucks completing staged overnight drops across multiple site access points.</p><p>Every barrier was supplied with RTA mill certificates and compressive strength test reports to satisfy on-site inspections. Our technical team provided joint alignment guidance and barrier sequencing support throughout the programme.</p><h3>Scope of Work</h3><ul><li>15 km of K-Type Jersey Barriers — K-Rail profile, C30 grade</li><li>24/7 crane-assisted delivery to active construction zones</li><li>Full RTA compliance documentation per delivery batch</li><li>On-site joint alignment and technical support</li></ul>',
+            'cats'     => ['Infrastructure', 'Road Barriers', 'RTA'],
+            'client'   => 'Dubai Aviation City Corporation',
             'emirate'  => 'dubai',
-            'scale'    => '3,200 Barriers',
-            'value'    => 'AED 4.2M',
+            'scale'    => '15 km K-Rail',
+            'value'    => 'AED 4.8M',
             'status'   => 'completed',
-            'date'     => '2024-03-15',
-            'products' => ['jersey-barrier', 'plastic-barrier'],
+            'date'     => '2024-03-01',
+            'products' => ['jersey-barrier'],
             'images'   => [
-                $B . '/images/barrier_stockpile_hu_c2f8772c5563f12.webp',
-                $B . '/images/barrier_slide_2_hu_d6aa501998fc4774.webp',
-                $B . '/images/feature_delivery_new_hu_434855aada6d92f4.webp',
+                $B . '/images/project_highway_hu_aedd9ea1c0fa6c10.webp',
             ],
         ],
 
         [
             'slug'     => 'damac-hills-community',
-            'title'    => 'DAMAC Hills Community — Phase 3',
-            'excerpt'  => '8,500 high-strength masonry blocks supplied and delivered to the Phase 3 boundary wall and landscaping programme at DAMAC Hills, Dubai.',
-            'content'  => '<p>Phase 3 of DAMAC Hills required 8,500 high-strength concrete masonry blocks across boundary walls, garden retaining structures, and landscaping podiums. Our 400×200×200mm solid and hollow blocks were specified for the load-bearing boundary wall sections, with half-blocks and corner specials supplied for all openings.</p><p>Deliveries were co-ordinated with the main contractor\'s block-laying gangs to ensure zero downtime — a total of 12 staged deliveries across the 14-week block-laying programme.</p><h3>Scope of Work</h3><ul><li>8,500 masonry blocks — solid and hollow configurations</li><li>Corner specials, half-blocks, and lintel blocks</li><li>12 staged deliveries co-ordinated with laying programme</li><li>Batch test certificates for all structural wall sections</li></ul>',
-            'cats'     => ['Residential'],
+            'title'    => 'Damac Hills Community',
+            'excerpt'  => 'Bulk supply of high-density 200 mm hollow blocks for boundary walls and substructures of 150 luxury villas, delivered on crane-mounted trucks for direct plot offloading.',
+            'content'  => '<p>Bulk supply of high-density 200 mm hollow masonry blocks for the boundary walls and substructures of 150 luxury villas at Damac Hills, Dubai. Deliveries were co-ordinated directly with villa construction teams, with crane-mounted trucks offloading pallets to individual plots to eliminate site handling.</p><p>All blocks were ESMA-certified and supplied with batch test certificates for the structural wall sections. Corner specials and half-blocks were included to minimise site cutting and maintain wall quality across all boundary treatments.</p><h3>Scope of Work</h3><ul><li>High-density 200 mm hollow masonry blocks — boundary walls</li><li>Corner specials and half-blocks for all openings</li><li>Crane-mounted truck delivery — direct plot offloading</li><li>ESMA batch certificates for structural wall sections</li></ul>',
+            'cats'     => ['Residential', 'Masonry Blocks', 'Construction'],
             'client'   => 'DAMAC Properties',
             'emirate'  => 'dubai',
-            'scale'    => '8,500 Blocks',
-            'value'    => 'AED 2.8M',
+            'scale'    => '150 Luxury Villas',
+            'value'    => 'AED 3.2M',
             'status'   => 'completed',
             'date'     => '2023-11-30',
             'products' => ['masonry-block'],
             'images'   => [
-                $B . '/images/block_pallets_hu_42ef7d7a61cd9245.webp',
-                $B . '/images/block_slide_2_hu_227a9ff28e6bcca.webp',
-                $B . '/images/block_slide_3_hu_6a72150325c7020a.webp',
+                $B . '/images/project_villa_hu_b95f7fcb147f3f5d.webp',
             ],
         ],
 
         [
-            'slug'     => 'sheikh-mbd-road-expansion',
-            'title'    => 'Sheikh Mohammed Bin Zayed Road Lane Expansion',
-            'excerpt'  => '5,400 Jersey Barriers deployed along an 18 km corridor for the MBZ Road widening works — UAE\'s longest single precast barrier contract in 2023.',
-            'content'  => '<p>The MBZ Road widening project required the largest single barrier supply contract in our history — 5,400 Jersey Barriers across an 18 km active motorway corridor. Deliveries were phased nightly to avoid peak traffic disruption, with crane offloading completing each 300-unit nightly drop within a 2-hour window.</p><p>All barriers were supplied with RTA-compliant mill certificates and compressive strength test reports. A dedicated technical team managed barrier placement sequencing and joint alignment throughout the 20-week programme.</p><h3>Scope of Work</h3><ul><li>5,400 × 2m Jersey Barriers — K-Rail profile, C30 grade</li><li>Night-shift phased delivery programme — 20 nightly drops</li><li>Crane-mounted truck deployment at 6 access points</li><li>Full RTA documentation package for each delivery batch</li></ul>',
-            'cats'     => ['Infrastructure'],
+            'slug'     => 'sheikh-mbd-road',
+            'title'    => 'Sheikh Mohammed Bin Zayed Rd',
+            'excerpt'  => 'Urgent maintenance contract: removal of damaged barriers and installation of new precast elements during night shifts to minimise traffic disruption on the E311.',
+            'content'  => '<p>Urgent maintenance contract on the E311 (Sheikh Mohammed Bin Zayed Road) involving the removal of crash-damaged barriers and installation of new precast concrete elements during approved night-shift windows to minimise traffic disruption to one of Dubai\'s busiest arterial corridors.</p><p>Our crane-equipped delivery teams completed each nightly drop within tight road-closure windows, with all damaged units removed and new barriers placed and jointed before the morning peak. Full RTA road-permit and documentation compliance was maintained throughout.</p><h3>Scope of Work</h3><ul><li>Removal and disposal of crash-damaged Jersey Barriers</li><li>Installation of new K-Rail precast barriers — night shifts</li><li>Crane-assisted placement within RTA road-closure windows</li><li>Full RTA permit and documentation compliance</li></ul>',
+            'cats'     => ['Maintenance', 'Infrastructure', 'Emergency'],
             'client'   => 'RTA Dubai',
             'emirate'  => 'dubai',
-            'scale'    => '5,400 Barriers',
-            'value'    => 'AED 6.8M',
+            'scale'    => 'Emergency Works',
+            'value'    => 'AED 1.6M',
             'status'   => 'completed',
-            'date'     => '2023-08-20',
+            'date'     => '2024-01-20',
             'products' => ['jersey-barrier'],
             'images'   => [
-                $B . '/images/barrier_slide_3_hu_d25108439516b5fb.webp',
-                $B . '/images/barrier_stockpile_hu_c2f8772c5563f12.webp',
-                $B . '/images/feature_site_support_hu_6f60d4b30e09f89c.webp',
+                $B . '/images/project_e311_maintenance_hu_4a59a39d79343a30.webp',
             ],
         ],
 
         [
-            'slug'     => 'etihad-rail-phase-2',
-            'title'    => 'Etihad Rail Phase 2 — Safety Corridor',
-            'excerpt'  => '12,000 concrete barriers lining 42 km of the Etihad Rail Phase 2 right-of-way across Abu Dhabi, Sharjah, and Dubai.',
-            'content'  => '<p>Etihad Rail Phase 2 required a continuous barrier line along 42 km of the rail right-of-way to prevent vehicle encroachment. Our supply of 12,000 Jersey Barriers was delivered across 9 months in 38 staged loads, with barriers placed by contractor-operated cranes working from our delivery trucks.</p><p>The programme spanned three emirates — requiring co-ordination with RTA Dubai, DoT Abu Dhabi, and Sharjah Traffic authorities for road permits on each delivery route. All documentation was managed by our compliance team.</p><h3>Scope of Work</h3><ul><li>12,000 × 2m and 3m Jersey Barriers — C30 grade</li><li>38 staged deliveries across Abu Dhabi, Dubai, and Sharjah</li><li>Multi-emirate road permit co-ordination</li><li>Production scheduling to sustain 350 units per week</li></ul>',
-            'cats'     => ['Infrastructure'],
+            'slug'     => 'etihad-rail-network',
+            'title'    => 'Etihad Rail Network',
+            'excerpt'  => 'Production and delivery of customised reinforced operational barriers for the UAE\'s national railway network, engineered for high-impact resistance and long-term desert durability.',
+            'content'  => '<p>Production and delivery of customised reinforced concrete operational barriers for the Etihad Rail national railway network spanning Abu Dhabi and Dubai. The barriers were engineered specifically for high-impact resistance and long-term structural durability in UAE desert conditions, with enhanced concrete mix design and reinforcement detailing beyond standard K-Rail specification.</p><p>Supply was coordinated across multiple active construction fronts, with delivery logistics managed to avoid conflict with live rail installation works. All documentation met the multi-authority requirements of DoT Abu Dhabi and RTA Dubai.</p><h3>Scope of Work</h3><ul><li>Custom reinforced concrete barriers — rail right-of-way protection</li><li>Enhanced mix design for desert durability and impact resistance</li><li>Multi-front delivery co-ordination across Abu Dhabi and Dubai</li><li>DoT Abu Dhabi + RTA Dubai compliance documentation</li></ul>',
+            'cats'     => ['Rail', 'Infrastructure', 'Mega Project'],
             'client'   => 'Etihad Rail',
-            'emirate'  => 'abu-dhabi',
-            'scale'    => '12,000 Barriers',
+            'emirate'  => 'uae',
+            'scale'    => 'National Rail Network',
             'value'    => 'AED 14.4M',
             'status'   => 'completed',
-            'date'     => '2024-01-10',
-            'products' => ['jersey-barrier', 'plastic-barrier'],
-            'images'   => [
-                $B . '/images/barrier_slide_2_hu_d6aa501998fc4774.webp',
-                $B . '/images/barrier_stockpile_hu_c2f8772c5563f12.webp',
-                $B . '/images/feature_delivery_new_hu_434855aada6d92f4.webp',
-            ],
-        ],
-
-        [
-            'slug'     => 'expo-city-dubai-perimeter',
-            'title'    => 'Expo City Dubai — Perimeter Hoarding & Traffic Works',
-            'excerpt'  => '2,800 hoarding base blocks and jersey barriers securing the Expo City construction perimeter during the post-Expo legacy conversion works.',
-            'content'  => '<p>The Expo City Dubai legacy conversion programme required a comprehensive perimeter hoarding solution across the 4.38 km site boundary. Our supply included 1,800 DM-compliant hoarding base blocks and 1,000 Jersey Barriers, creating a continuous and highly visible site perimeter that met Dubai Municipality requirements.</p><p>Delivery was co-ordinated around live public access zones on the former Expo site — all drops were completed during approved low-footfall windows and with traffic management support.</p><h3>Scope of Work</h3><ul><li>1,800 DM hoarding base blocks — 600kg and 1000kg variants</li><li>1,000 Jersey Barriers for traffic segregation zones</li><li>DM compliance documentation for perimeter hoarding approval</li><li>Site visit by technical team for placement layout and pole alignment</li></ul>',
-            'cats'     => ['Commercial'],
-            'client'   => 'Expo City Dubai Authority',
-            'emirate'  => 'dubai',
-            'scale'    => '2,800 Units',
-            'value'    => 'AED 3.4M',
-            'status'   => 'completed',
-            'date'     => '2023-06-30',
-            'products' => ['hoarding-block', 'jersey-barrier'],
-            'images'   => [
-                $B . '/images/hoarding_slide_1_hu_5cadc1f4e76901c6.webp',
-                $B . '/images/hoarding_slide_2_hu_4e633d0611b3f983.webp',
-                $B . '/images/feature_docs_hu_27e801fac11363c.webp',
-            ],
-        ],
-
-        [
-            'slug'     => 'yas-island-aldar-residential',
-            'title'    => 'Yas Island — Aldar Residential Development',
-            'excerpt'  => '18,000 masonry blocks across six residential towers at Yas Island, with consolidated deliveries of blocks, stoppers, and hoarding base units on shared loads.',
-            'content'  => '<p>Aldar\'s Yas Island residential development required 18,000 masonry blocks across six towers, with block sizes ranging from 100mm partition blocks to 200mm structural hollow units. Our consolidated delivery model combined block deliveries with wheel stoppers for the basement car parks — reducing Aldar\'s site co-ordination burden to a single supplier.</p><p>The block production programme ran in parallel with piling works, allowing block-laying to begin immediately after structural completion of each tower core. Full batch test certificates and ESMA compliance documentation were provided for the structural wall sections.</p><h3>Scope of Work</h3><ul><li>18,000 masonry blocks — solid, hollow, and half-block variants</li><li>360 wheel stoppers for basement and podium car parks</li><li>ESMA-certified batch test documentation</li><li>Consolidated delivery: blocks + stoppers on shared loads</li></ul>',
-            'cats'     => ['Residential'],
-            'client'   => 'Aldar Properties',
-            'emirate'  => 'abu-dhabi',
-            'scale'    => '18,360 Units',
-            'value'    => 'AED 6.1M',
-            'status'   => 'ongoing',
-            'date'     => '2025-06-01',
-            'products' => ['masonry-block', 'wheel-stopper'],
-            'images'   => [
-                $B . '/images/block_pallets_hu_42ef7d7a61cd9245.webp',
-                $B . '/images/stopper_installed_hu_1c46aea27f526b01.webp',
-                $B . '/images/feature_moulds_hu_e7cb04c5aeb7c48f.webp',
-            ],
-        ],
-
-        [
-            'slug'     => 'jebel-ali-port-perimeter',
-            'title'    => 'Jebel Ali Port — Security Perimeter Barriers',
-            'excerpt'  => '1,600 heavy-duty Jersey Barriers and hoarding blocks forming the expanded security perimeter at Jebel Ali Port Terminal 3.',
-            'content'  => '<p>DP World\'s Terminal 3 expansion at Jebel Ali Port required a robust security perimeter capable of withstanding vehicle impact at designated access control points. Our supply of 1,200 Jersey Barriers and 400 hoarding base blocks was completed in eight weekly deliveries across the 8-week perimeter construction programme.</p><p>All barriers were supplied with ADNOC-format traceability documentation alongside the standard RTA mill certificates — a requirement specified by DP World\'s security compliance team for port installations.</p><h3>Scope of Work</h3><ul><li>1,200 × 2m Jersey Barriers — impact-rated perimeter line</li><li>400 × 1000kg hoarding base blocks — access control points</li><li>ADNOC-format + RTA traceability documentation</li><li>Eight weekly delivery drops — crane-assisted placement</li></ul>',
-            'cats'     => ['Industrial'],
-            'client'   => 'DP World',
-            'emirate'  => 'dubai',
-            'scale'    => '1,600 Units',
-            'value'    => 'AED 2.4M',
-            'status'   => 'completed',
-            'date'     => '2023-04-15',
-            'products' => ['jersey-barrier', 'hoarding-block'],
-            'images'   => [
-                $B . '/images/hoarding_slide_3_hu_f02ed68089276a31.webp',
-                $B . '/images/barrier_slide_3_hu_d25108439516b5fb.webp',
-                $B . '/images/feature_lab_hu_9f78b2a1c3d4e5f6.webp',
-            ],
-        ],
-
-        [
-            'slug'     => 'sharjah-industrial-zone-perimeter',
-            'title'    => 'Sharjah Industrial Zone — Perimeter Works',
-            'excerpt'  => '1,800 RTA-standard barriers defining the eastern perimeter of the Sharjah Industrial Area expansion — delivered and placed within a 4-week window.',
-            'content'  => '<p>The Sharjah Economic Development Department (SEDD) required a clearly marked and impact-resistant perimeter for the eastern expansion of Sharjah Industrial Area. Our supply of 1,800 Jersey Barriers was completed in five deliveries over four weeks, with crane-assisted placement directly from the delivery trucks.</p><p>All barriers were supplied with Sharjah Roads Authority-compliant documentation alongside the standard RTA mill certificates, satisfying the dual-authority approval requirement for this cross-boundary site.</p><h3>Scope of Work</h3><ul><li>1,800 × 1m and 2m Jersey Barriers</li><li>Five crane-assisted delivery and placement drops</li><li>Sharjah Roads Authority + RTA compliance documentation</li><li>Site-to-site relocation option agreed for post-construction reuse</li></ul>',
-            'cats'     => ['Industrial'],
-            'client'   => 'SEDD',
-            'emirate'  => 'sharjah',
-            'scale'    => '1,800 Barriers',
-            'value'    => 'AED 2.2M',
-            'status'   => 'completed',
-            'date'     => '2023-09-30',
+            'date'     => '2023-09-01',
             'products' => ['jersey-barrier'],
             'images'   => [
-                $B . '/images/barrier_stockpile_hu_c2f8772c5563f12.webp',
-                $B . '/images/feature_site_support_hu_6f60d4b30e09f89c.webp',
-                $B . '/images/feature_delivery_new_hu_434855aada6d92f4.webp',
+                $B . '/images/project_etihad_rail_hu_7a010fd8c98f89f4.webp',
+            ],
+        ],
+
+        [
+            'slug'     => 'atlantis-the-royal',
+            'title'    => 'Atlantis The Royal',
+            'excerpt'  => 'Bespoke polished concrete wheel stoppers for the ultra-luxury resort\'s valet and guest parking zones on Palm Jumeirah, designed to complement the hotel\'s high-end architectural finish.',
+            'content'  => '<p>Supply of bespoke polished concrete wheel stoppers for the valet and guest parking zones at Atlantis The Royal, Palm Jumeirah. The stoppers were finished to a polished surface standard and colour-matched to the hotel\'s architectural palette, replacing the standard exposed-aggregate finish used in commercial car parks.</p><p>Each unit was pre-drilled for bolt-down fixing to the polished concrete parking deck, with low-profile chamfering to avoid damage to low-clearance luxury vehicles. Delivery was stage-managed around the hotel\'s pre-opening fitout programme.</p><h3>Scope of Work</h3><ul><li>Bespoke polished-finish concrete wheel stoppers</li><li>Colour-matched to hotel architectural specification</li><li>Pre-drilled bolt-down fixing — polished deck substrate</li><li>Low-profile chamfered profile for luxury vehicle clearance</li></ul>',
+            'cats'     => ['Hospitality', 'Luxury', 'Wheel Stoppers'],
+            'client'   => 'Kerzner International',
+            'emirate'  => 'dubai',
+            'scale'    => 'Valet & Guest Parking',
+            'value'    => 'AED 0.9M',
+            'status'   => 'completed',
+            'date'     => '2022-12-01',
+            'products' => ['wheel-stopper'],
+            'images'   => [
+                $B . '/images/project_atlantis_parking_hu_93e827b4a30f69fb.webp',
+            ],
+        ],
+
+        [
+            'slug'     => 'yas-marina-circuit',
+            'title'    => 'Yas Marina Circuit',
+            'excerpt'  => 'Rapid deployment of modular barrier systems for crowd control and track safety during the Formula 1 Etihad Airways Abu Dhabi Grand Prix.',
+            'content'  => '<p>Rapid deployment of modular precast barrier systems for crowd control and track safety during the Formula 1 Etihad Airways Abu Dhabi Grand Prix at Yas Marina Circuit, Yas Island. Barriers were installed across multiple spectator zones, pit lane access points, and paddock entries to meet FIA safety requirements and circuit crowd management standards.</p><p>Precision manufacturing ensured perfect alignment at every junction — critical for both safety compliance and the high-visibility broadcast environment of a Formula 1 event. Post-race barrier removal and reinstatement was completed within the circuit\'s tight post-event window.</p><h3>Scope of Work</h3><ul><li>Modular barrier systems — FIA crowd control and track safety zones</li><li>Precision-manufactured for perfect joint alignment</li><li>Rapid deployment and post-event removal programme</li><li>Pit lane, paddock, and spectator zone installations</li></ul>',
+            'cats'     => ['Events', 'Motorsport', 'Temporary Safety'],
+            'client'   => 'Yas Marina Circuit',
+            'emirate'  => 'abu-dhabi',
+            'scale'    => 'F1 Grand Prix',
+            'value'    => 'AED 1.4M',
+            'status'   => 'completed',
+            'date'     => '2023-11-25',
+            'products' => ['jersey-barrier', 'plastic-barrier'],
+            'images'   => [
+                $B . '/images/project_yas_marina_hu_435020567dbe2a9c.webp',
+            ],
+        ],
+
+        [
+            'slug'     => 'dubai-hills-estate',
+            'title'    => 'Dubai Hills Estate',
+            'excerpt'  => 'Supply chain coordination for 500+ villa boundary walls at Dubai Hills Estate, using high-strength hollow blocks for structural integrity and thermal insulation.',
+            'content'  => '<p>Massive supply chain coordination for the construction of boundary walls across 500+ villas at Dubai Hills Estate, Dubai. Our high-strength hollow masonry blocks were specified for all boundary wall and party-wall applications, providing the structural performance and thermal insulation values required by Emaar\'s design standards for this flagship master community.</p><p>Deliveries were sequenced across multiple active construction clusters simultaneously, with a dedicated site coordinator managing delivery windows to avoid congestion on the community\'s internal road network.</p><h3>Scope of Work</h3><ul><li>High-strength hollow masonry blocks — 500+ villa boundary walls</li><li>Multi-cluster simultaneous delivery co-ordination</li><li>Dedicated site coordinator for community access management</li><li>ESMA certificates and Emaar structural compliance documentation</li></ul>',
+            'cats'     => ['Residential', 'Mega Community', 'Masonry'],
+            'client'   => 'Emaar Properties',
+            'emirate'  => 'dubai',
+            'scale'    => '500+ Villa Walls',
+            'value'    => 'AED 5.6M',
+            'status'   => 'completed',
+            'date'     => '2024-04-01',
+            'products' => ['masonry-block'],
+            'images'   => [
+                $B . '/images/project_dubai_hills_hu_a7a4029162fb3f87.webp',
+            ],
+        ],
+
+        [
+            'slug'     => 'opus-tower-parking',
+            'title'    => 'Opus Tower Parking',
+            'excerpt'  => '2,500 premium painted wheel stoppers for the 3-level underground parking at the Opus Tower, Business Bay, with custom yellow/black epoxy finish.',
+            'content'  => '<p>Provision of 2,500 premium painted wheel stoppers for the three-level underground car park at the Opus Tower, Business Bay. The stoppers were supplied with a custom yellow and black two-tone epoxy finish applied to match the building\'s internal safety colour scheme, replacing the standard concrete-grey finish specified in the base design.</p><p>Delivery was co-ordinated with the fit-out contractor to arrive post-screed, allowing direct placement without the risk of surface damage during construction activity. Each stopper was pre-drilled for bolt-down fixing to the finished parking deck.</p><h3>Scope of Work</h3><ul><li>2,500 wheel stoppers — custom yellow/black epoxy finish</li><li>Colour scheme matched to building safety aesthetics</li><li>Pre-drilled for bolt-down fixing — finished deck substrate</li><li>Post-screed delivery staged with fit-out programme</li></ul>',
+            'cats'     => ['Commercial', 'Wheel Stoppers', 'Parking'],
+            'client'   => 'Omniyat',
+            'emirate'  => 'dubai',
+            'scale'    => '2,500 Wheel Stoppers',
+            'value'    => 'AED 1.1M',
+            'status'   => 'completed',
+            'date'     => '2023-05-15',
+            'products' => ['wheel-stopper'],
+            'images'   => [
+                $B . '/images/project_opus_parking_hu_e13269eee20651dd.webp',
             ],
         ],
 

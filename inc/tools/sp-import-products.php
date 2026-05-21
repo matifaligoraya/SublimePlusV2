@@ -27,7 +27,7 @@ function sp_importer_render() {
     ?>
     <div class="wrap" style="max-width:720px">
         <h1>📦 Import Products</h1>
-        <p style="color:#64748b">Imports 6 precast products with specs, descriptions, categories, and images — directly into <strong>sp_product</strong> posts.</p>
+        <p style="color:#64748b">Imports 15 precast products with specs, descriptions, categories, and images — directly into <strong>sp_product</strong> posts.</p>
 
         <?php if ($done) : ?>
             <div class="notice notice-success inline" style="margin:12px 0"><p>✅ Import complete — <a href="<?php echo esc_url(admin_url('edit.php?post_type=sp_product')); ?>">view products</a></p></div>
@@ -208,6 +208,195 @@ function sp_importer_data(): array {
                 ['Weight (Empty)',  '18 kg – 22 kg',               $TI . 'feather.svg'],
                 ['Weight (Filled)', 'Up to 500 kg',                $TI . 'weight.svg'],
                 ['Material',        'UV-Stabilised HDPE',          $TI . 'box.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'fence-base',
+            'title'    => 'Precast Mesh Fence Base Blocks',
+            'excerpt'  => 'Concrete footing blocks for mesh and chain-link fencing, with round or square post holes for rapid site deployment.',
+            'content'  => '<p>Our precast mesh fence base blocks provide a stable, no-dig footing for temporary and permanent mesh fencing on UAE construction sites and secure compounds. Manufactured from C25 concrete, each block accepts standard round and square fence posts through a precision-cast hole.</p><p>At 25–35 kg per block, they are easily handled by one or two operatives without lifting equipment. Simply drop the post into the hole and proceed — no ground anchoring or excavation required.</p><h3>Applications</h3><ul><li>Construction site perimeter mesh fencing</li><li>Temporary security enclosures</li><li>Utility compound boundaries</li><li>Event and crowd management barriers</li></ul>',
+            'cats'     => ['Site Safety'],
+            'certs'    => 'DM Compliant',
+            'material' => 'C25 Grade Concrete',
+            'finish'   => 'As-cast concrete finish',
+            'icon'     => $B . '/icons/icon_fence_base.svg',
+            'images'   => [
+                $B . '/images/fence_base_block_hu_719bcd79fad11c32.webp',
+            ],
+            'specs' => [
+                ['Common Name',   'Mesh Fence Footing',      $TI . 'fence.svg'],
+                ['Hole Options',  'Round & Square Post',     $TI . 'circle-dashed.svg'],
+                ['Weight',        '25 kg – 35 kg',           $TI . 'weight.svg'],
+                ['Durability',    'Concrete (Not Plastic)',  $TI . 'shield.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'ac-slab',
+            'title'    => 'Precast AC Unit Base Slabs (Anti-Vibration Plinths)',
+            'excerpt'  => 'Precision-cast concrete plinths for air-conditioning condensers and MEP plant, available in 600×600 and 900×900 sizes.',
+            'content'  => '<p>Our precast AC base slabs, also known as AC plinths, provide a solid, level mounting surface for split-unit condensers, VRF outdoor units, and other MEP plant. The smooth machine finish ensures level seating and reduces vibration transmission to the building structure.</p><p>Available in 600×600 mm and 900×900 mm footprints with 50 mm and 75 mm thicknesses to suit lightweight residential units through to large commercial condensers.</p><h3>Applications</h3><ul><li>Split-unit air-conditioning condensers</li><li>VRF and HVAC outdoor units</li><li>Pump and compressor bases</li><li>Rooftop and ground-level MEP plant</li></ul>',
+            'cats'     => ['MEP & Utility'],
+            'certs'    => 'DEWA Compliant',
+            'material' => 'C25 Grade Concrete',
+            'finish'   => 'Smooth machine-pressed finish',
+            'icon'     => $B . '/icons/icon_ac_pad.svg',
+            'images'   => [
+                $B . '/images/ac_slab_product_hu_68f6e6d030a0e6fb.webp',
+            ],
+            'specs' => [
+                ['Market Name',   'AC Base / Plinth',      $TI . 'air-conditioning.svg'],
+                ['Size Options',  '600×600 / 900×900 mm',  $TI . 'dimensions.svg'],
+                ['Thickness',     '50 mm – 75 mm',          $TI . 'layers-intersect.svg'],
+                ['Feature',       'Vibration Damped',       $TI . 'wave-square.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'light-footing',
+            'title'    => 'RTA Street Light Pole Footings',
+            'excerpt'  => 'Precast concrete bases for street light poles, compliant with RTA Type 1 and Type 2 specifications for UAE road lighting.',
+            'content'  => '<p>Our precast street light footings are manufactured to RTA Type 1 and Type 2 dimensional standards and are a direct drop-in replacement for in-situ concrete bases. Each footing incorporates a precision four-bolt cage (M24 or M30) cast to the exact bolt-circle diameter specified by the luminaire manufacturer.</p><p>Produced in controlled factory conditions, our footings achieve consistent concrete strength and cover depth — critical for long-term corrosion resistance in the UAE coastal environment. Site installation is reduced to excavation, placement, and backfill.</p><h3>Applications</h3><ul><li>RTA highway and arterial road lighting</li><li>Municipality street lighting</li><li>Dual-carriageway central reservation poles</li><li>Car park and site lighting masts</li></ul>',
+            'cats'     => ['Utility & Foundations'],
+            'certs'    => 'RTA Type 1 & Type 2 Approved',
+            'material' => 'C30 Grade Concrete',
+            'finish'   => 'As-cast concrete finish',
+            'icon'     => $B . '/icons/icon_foundation.svg',
+            'images'   => [
+                $B . '/images/foundation_slide_3_hu_d9d817731a41e7fd.webp',
+            ],
+            'specs' => [
+                ['Type',        'Precast Concrete Base',    $TI . 'building.svg'],
+                ['Pole Height', 'For 6 m – 12 m Poles',    $TI . 'arrows-vertical.svg'],
+                ['Standard',    'RTA Type 1 & Type 2',     $TI . 'certificate.svg'],
+                ['Fixing',      '4-Bolt Cage (M24 / M30)', $TI . 'tool.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'cable-marker',
+            'title'    => 'Precast Cable & Duct Markers',
+            'excerpt'  => 'Concrete flush and surface-mounted markers for underground utility routes, compliant with UAE utility authority specifications.',
+            'content'  => '<p>Our precast cable and duct markers identify the route and depth of buried services including power cables, telecom ducts, and water mains. Available in flush (in-ground) and post-mounted configurations to suit footpath and roadway installations.</p><p>The 100×75 mm recessed plate housing accepts standard marker plates from DEWA, Etisalat, and Du. The 760 mm post height is the UAE standard for surface-mounted utility markers in non-trafficked zones.</p><h3>Applications</h3><ul><li>HV and LV power cable route marking</li><li>Telecom duct route identification</li><li>Water and gas service markers</li><li>Streetwork and public realm installations</li></ul>',
+            'cats'     => ['Utility & Foundations'],
+            'certs'    => 'DEWA & Etisalat Approved',
+            'material' => 'C25 Grade Concrete',
+            'finish'   => 'As-cast with recessed plate housing',
+            'icon'     => $B . '/icons/icon_cable_marker.svg',
+            'images'   => [
+                $B . '/images/foundation_slide_1_hu_5796df9dd532af91.webp',
+            ],
+            'specs' => [
+                ['Known As',     'Cable / Duct Marker',   $TI . 'cable.svg'],
+                ['Types',        'Flush & Surface Post',  $TI . 'list.svg'],
+                ['Plate Size',   '100 × 75 mm Recess',    $TI . 'dimensions.svg'],
+                ['Post Height',  '760 mm Standard',        $TI . 'arrows-vertical.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'paving-slab',
+            'title'    => 'Hydraulic Concrete Paving Slabs',
+            'excerpt'  => 'Machine-pressed concrete paving slabs in 600×600 and 400×400 formats for roads, footpaths, and public realm areas.',
+            'content'  => '<p>Our hydraulic paving slabs are produced on high-pressure pressing machines to tight dimensional tolerances. The dense, low-absorption surface exceeds 35 MPa compressive strength and resists UAE heat cycling, chemical spills, and heavy wheel loads.</p><p>Standard 600×600 mm and 400×400 mm formats cover the full range of pedestrian plaza, driveway, and light vehicle applications. Smooth grey and exposed aggregate finishes available.</p><h3>Applications</h3><ul><li>Pedestrian footpaths and plazas</li><li>Driveway and parking apron surfaces</li><li>Villa and compound boundary paths</li><li>Retail and hospitality external areas</li></ul>',
+            'cats'     => ['Building Materials'],
+            'certs'    => 'ESMA Certified, ICV Certified',
+            'material' => 'C35+ Dense Aggregate Concrete',
+            'finish'   => 'Machine-pressed smooth / exposed aggregate',
+            'icon'     => $B . '/icons/icon_paving_slab.svg',
+            'images'   => [
+                $B . '/images/paving_slab_stack_hu_bcb71a30fc4cc101.webp',
+            ],
+            'specs' => [
+                ['Market Name',   'Hydraulic Pavers',           $TI . 'road.svg'],
+                ['Standard Size', '600×600 / 400×400 mm',       $TI . 'dimensions.svg'],
+                ['Thickness',     '50 mm / 40 mm',              $TI . 'layers-intersect.svg'],
+                ['Strength',      '> 35 MPa Compressive',       $TI . 'hammer.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'traffic-cone',
+            'title'    => 'PVC Traffic Cones (Class 2 Reflective)',
+            'excerpt'  => 'Flexible PVC cones with weighted black base and Class 2 prismatic reflective collars, approved for UAE road works.',
+            'content'  => '<p>Our PVC traffic cones combine a flexible orange body with a heavy black HDPE base that provides the ballast needed to withstand UAE desert wind conditions and vehicle wash. Class 2 prismatic retro-reflective collars ensure full visibility in night-time and low-light conditions.</p><p>Available in 750 mm and 1000 mm heights for standard delineation and high-speed motorway use respectively. Units are stackable for transport and storage.</p><h3>Applications</h3><ul><li>Highway maintenance and utility works</li><li>Road narrowings and lane closures</li><li>Construction site approach taper layouts</li><li>Event traffic management</li></ul>',
+            'cats'     => ['Traffic Management'],
+            'certs'    => 'RTA Approved, BS EN 13422',
+            'material' => 'Flexible PVC body, HDPE weighted base',
+            'finish'   => 'Orange with Class 2 reflective collar',
+            'icon'     => $B . '/icons/icon_traffic_cone.svg',
+            'images'   => [
+                $B . '/images/traffic_cones_pvc_hu_7892239f7e7d09d6.webp',
+            ],
+            'specs' => [
+                ['Height Options', '750 mm / 1000 mm',           $TI . 'arrows-vertical.svg'],
+                ['Material',       'Flexible PVC, Black Base',   $TI . 'box.svg'],
+                ['Weight',         '4.5 kg – 5.5 kg (Weighted)', $TI . 'weight.svg'],
+                ['Reflective',     'Class 2 Prismatic',          $TI . 'sun.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'relocation',
+            'title'    => 'Precast Asset Relocation & Crane Service',
+            'excerpt'  => 'Crane-assisted lifting and repositioning of precast concrete assets across all UAE emirates.',
+            'content'  => '<p>Our relocation service handles the safe lifting, transport, and re-placement of precast concrete assets using crane-equipped vehicles. Whether you need barriers moved between project phases, bunker units repositioned on site, or surplus stock transferred between depots, our crew manages the full operation.</p><p>All lifting plans are pre-approved and operatives are certified NPORS/CPCS. Coverage spans all seven UAE emirates with same-day and next-day mobilisation available.</p><h3>Service Scope</h3><ul><li>Crane lift-and-place for heavy precast units</li><li>Inter-site relocation during project phasing</li><li>Stock redeployment between UAE depots</li><li>Emergency redeployment for incident management</li></ul>',
+            'cats'     => ['Sourcing Services'],
+            'certs'    => 'NPORS / CPCS Certified Operators',
+            'material' => 'Service',
+            'finish'   => 'Service',
+            'icon'     => $B . '/icons/feature_delivery.svg',
+            'images'   => [
+                $B . '/images/feature_delivery_new_hu_434855aada6d92f4.webp',
+            ],
+            'specs' => [
+                ['Service',   'Crane Logistics',  $TI . 'crane.svg'],
+                ['Benefit',   'Asset Utilisation', $TI . 'chart-line.svg'],
+                ['Coverage',  'All Emirates',      $TI . 'map.svg'],
+                ['Handling',  'Lift & Place',      $TI . 'package.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'bulk-logistics',
+            'title'    => 'Bulk Precast Logistics & Flatbed Delivery',
+            'excerpt'  => 'High-volume precast concrete delivery on 40ft flatbed convoys for large-scale UAE projects.',
+            'content'  => '<p>For major infrastructure and construction projects requiring large quantities of precast units, our bulk logistics fleet provides 40 ft flatbed trailer delivery with convoy coordination. Multiple vehicles are dispatched simultaneously to keep site productivity high and reduce total haulage cost per unit.</p><p>Inter-emirate coverage across Abu Dhabi, Dubai, Sharjah, Ras Al Khaimah, Fujairah, Ajman, and Umm Al Quwain. All loads are secured and marked to UAE transport regulations.</p><h3>Service Scope</h3><ul><li>Large-volume jersey barrier supply for highway projects</li><li>Bulk masonry block and paving slab delivery</li><li>Multi-vehicle convoy dispatch for tight site schedules</li><li>Inter-emirate logistics coordination</li></ul>',
+            'cats'     => ['Sourcing Services'],
+            'certs'    => 'UAE RTA Licensed Haulier',
+            'material' => 'Service',
+            'finish'   => 'Service',
+            'icon'     => $B . '/icons/feature_delivery.svg',
+            'images'   => [
+                $B . '/images/bulk_logistics_hu_c65a377ea2eb9af1.webp',
+            ],
+            'specs' => [
+                ['Vehicle',    '40 ft Flatbed Trailer', $TI . 'truck.svg'],
+                ['Capacity',   'High Volume',            $TI . 'scale.svg'],
+                ['Mode',       'Convoy Fleet',           $TI . 'route.svg'],
+                ['Coverage',   'Inter-Emirate',          $TI . 'map.svg'],
+            ],
+        ],
+
+        [
+            'slug'     => 'consolidated-delivery',
+            'title'    => 'Consolidated Mixed-Load Delivery',
+            'excerpt'  => 'Cost-effective mixed-asset delivery combining multiple product types in a single trip for small to medium sites.',
+            'content'  => '<p>Our consolidated delivery service loads multiple product types — barriers, blocks, wheel stoppers, paving slabs, and more — onto a single vehicle, splitting the haulage cost across items. This is the most economical option for small and medium sites that need a variety of precast products without the cost of separate deliveries.</p><p>Orders are consolidated at our Sharjah facility and dispatched on a fixed weekly schedule, with priority dispatch available for urgent requirements.</p><h3>Service Scope</h3><ul><li>Mixed precast product orders on one vehicle</li><li>Weekly fixed-schedule dispatch from Sharjah</li><li>Ideal for villa, compound, and retail fit-out projects</li><li>Eliminates multiple delivery surcharges</li></ul>',
+            'cats'     => ['Sourcing Services'],
+            'certs'    => 'UAE RTA Licensed Haulier',
+            'material' => 'Service',
+            'finish'   => 'Service',
+            'icon'     => $B . '/icons/feature_delivery.svg',
+            'images'   => [
+                $B . '/images/mixed_truck_delivery_hu_28215e496b5ddf1.webp',
+            ],
+            'specs' => [
+                ['Benefit',    'Cost Efficiency',   $TI . 'currency-dollar.svg'],
+                ['Load',       'Mixed Assets',       $TI . 'package.svg'],
+                ['Ideal For',  'Small–Med Sites',    $TI . 'building.svg'],
+                ['Saves',      'Multi-Trip Fees',    $TI . 'coin.svg'],
             ],
         ],
     ];
