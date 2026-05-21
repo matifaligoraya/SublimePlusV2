@@ -24,13 +24,23 @@ function sp_importer_render() {
         $log  = sp_importer_run();
         $done = true;
     }
+
+    $patch_done = false;
+    if (isset($_POST['sp_do_patch_models']) && check_admin_referer('sp_patch_models_run')) {
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        $log        = sp_patch_models();
+        $patch_done = true;
+        $done       = true;
+    }
     ?>
     <div class="wrap" style="max-width:720px">
         <h1>📦 Import Products</h1>
         <p style="color:#64748b">Imports 15 precast products with specs, descriptions, categories, and images — directly into <strong>sp_product</strong> posts.</p>
 
         <?php if ($done) : ?>
-            <div class="notice notice-success inline" style="margin:12px 0"><p>✅ Import complete — <a href="<?php echo esc_url(admin_url('edit.php?post_type=sp_product')); ?>">view products</a></p></div>
+            <div class="notice notice-success inline" style="margin:12px 0"><p>✅ <?php echo $patch_done ? 'Model patch' : 'Import'; ?> complete — <a href="<?php echo esc_url(admin_url('edit.php?post_type=sp_product')); ?>">view products</a></p></div>
             <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px 18px;font-family:monospace;font-size:12px;line-height:1.9;max-height:460px;overflow-y:auto">
                 <?php foreach ($log as $line) :
                     $color = str_starts_with($line, 'ERR') ? '#dc2626'
@@ -48,6 +58,20 @@ function sp_importer_render() {
                 <input type="hidden" name="sp_do_import" value="1">
                 <button type="submit" class="button button-primary" style="height:44px;padding:0 28px;font-size:15px;font-weight:700">
                     🚀 Import All Products
+                </button>
+            </form>
+            <hr style="margin:24px 0">
+            <h2 style="font-size:15px;margin-bottom:6px">Fix 3D Models</h2>
+            <p style="color:#64748b;font-size:13px;margin-bottom:12px">
+                Sideloads the local <code>.glb</code> files from <code>assets/models/</code> into the
+                media library and assigns them to the matching products. Run this if products were imported
+                before models were wired up, or after re-importing.
+            </p>
+            <form method="post">
+                <?php wp_nonce_field('sp_patch_models_run'); ?>
+                <input type="hidden" name="sp_do_patch_models" value="1">
+                <button type="submit" class="button button-secondary" style="height:40px;padding:0 22px;font-size:14px;font-weight:600">
+                    🧊 Fix 3D Models (from theme assets)
                 </button>
             </form>
         <?php endif; ?>
@@ -72,6 +96,7 @@ function sp_importer_data(): array {
             'certs'    => 'RTA Approved, ICV Certified',
             'material' => 'C30 Grade Concrete',
             'finish'   => 'As-cast concrete finish',
+            'model'    => 'concrete_road_barrier.glb',
             'icon'     => $B . '/icons/icon_barrier.svg',
             'images'   => [
                 $B . '/images/barrier_stockpile_hu_c2f8772c5563f12.webp',
@@ -122,6 +147,7 @@ function sp_importer_data(): array {
             'certs'    => 'DM Approved',
             'material' => 'C25 Grade Concrete',
             'finish'   => 'Exposed aggregate, yellow marking optional',
+            'model'    => 'wheel_stopper.glb',
             'icon'     => $B . '/icons/icon_stopper.svg',
             'images'   => [
                 $B . '/images/stopper_installed_hu_1c46aea27f526b01.webp',
@@ -196,6 +222,7 @@ function sp_importer_data(): array {
             'certs'    => 'RTA Approved',
             'material' => 'UV-Stabilised HDPE Plastic',
             'finish'   => 'Red/White or Orange (RTA standard)',
+            'model'    => 'plastic_barrier.glb',
             'icon'     => $B . '/icons/icon_plastic.svg',
             'images'   => [
                 $B . '/images/plastic_slide_1_hu_553a2f6db1b5e2e0.webp',
@@ -475,6 +502,52 @@ function sp_importer_run(): array {
             }
         }
         if ($gids) update_post_meta($post_id, '_sp_product_gallery', implode(',', $gids));
+
+        // 3D model (.glb) — local theme asset
+        if (!empty($p['model'])) {
+            $model_path = get_template_directory() . '/assets/models/' . $p['model'];
+            $model_id   = sp_dl_glb($model_path, $post_id, $p['model']);
+            if ($model_id) {
+                update_post_meta($post_id, '_sp_product_model_id', $model_id);
+                update_post_meta($post_id, 'sp_model_url', wp_get_attachment_url($model_id));
+                $log[] = '  ✓ 3D Model';
+            } else {
+                $log[] = '  ✗ 3D Model (check assets/models/' . $p['model'] . ' exists)';
+            }
+        }
+    }
+
+    return $log;
+}
+
+// ─── Patch models on already-imported products ────────────────────────────────
+
+function sp_patch_models(): array {
+    $log = [];
+    $map = [
+        'jersey-barrier'  => 'concrete_road_barrier.glb',
+        'wheel-stopper'   => 'wheel_stopper.glb',
+        'plastic-barrier' => 'plastic_barrier.glb',
+    ];
+
+    foreach ($map as $slug => $filename) {
+        $post = get_page_by_path($slug, OBJECT, 'sp_product');
+        if (!$post) {
+            $log[] = 'SKIP (no post): ' . $slug;
+            continue;
+        }
+
+        $model_path = get_template_directory() . '/assets/models/' . $filename;
+        $log[]      = '── ' . $slug;
+        $model_id   = sp_dl_glb($model_path, $post->ID, $filename);
+
+        if ($model_id) {
+            update_post_meta($post->ID, '_sp_product_model_id', $model_id);
+            update_post_meta($post->ID, 'sp_model_url', wp_get_attachment_url($model_id));
+            $log[] = '  ✓ 3D Model set (attachment #' . $model_id . ')';
+        } else {
+            $log[] = '  ✗ Failed — check assets/models/' . $filename . ' exists in the theme';
+        }
     }
 
     return $log;
@@ -515,4 +588,34 @@ function sp_dl_headers(array $args): array {
     $args['headers']['Referer'] = 'https://precastuae.ae/';
     $args['headers']['Accept']  = 'image/webp,image/avif,image/*,*/*;q=0.8';
     return $args;
+}
+
+// Sideload a local .glb file from the theme into the WP media library.
+function sp_dl_glb(string $local_path, int $post_id, string $label): int {
+    if (!file_exists($local_path)) return 0;
+
+    // Deduplicate: reuse existing attachment sideloaded from same path
+    $existing = get_posts([
+        'post_type'      => 'attachment',
+        'posts_per_page' => 1,
+        'fields'         => 'ids',
+        'meta_key'       => '_sp_src',
+        'meta_value'     => $local_path,
+    ]);
+    if ($existing) return (int) $existing[0];
+
+    $filename = basename($local_path);
+    $tmp      = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $filename;
+    if (!copy($local_path, $tmp)) return 0;
+
+    $id = media_handle_sideload(
+        ['name' => $filename, 'tmp_name' => $tmp],
+        $post_id,
+        $label
+    );
+    @unlink($tmp);
+
+    if (is_wp_error($id)) return 0;
+    update_post_meta((int) $id, '_sp_src', $local_path);
+    return (int) $id;
 }
