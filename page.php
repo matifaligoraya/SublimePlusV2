@@ -15,6 +15,7 @@ $_sublime_tags = ['vc_row', 'sublime_hero', 'sublime_certificates', 'sublime_cli
                   'sublime_inquiry', 'sublime_projects', 'sublime_blog',
                   'sublime_contact', 'sublime_stats', 'sublime_features',
                   'sublime_about_intro'];
+$_sublime_tags = apply_filters('sp_fullwidth_shortcodes', $_sublime_tags);
 $_wpb = $post && array_reduce($_sublime_tags, function ($carry, $tag) use ($post) {
     return $carry || has_shortcode($post->post_content, $tag);
 }, false);

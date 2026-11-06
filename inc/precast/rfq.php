@@ -1,0 +1,213 @@
+<?php
+/**
+ * Precast — RFQ / Quotation form: handler, storage and emails.
+ * (Brief: Priority 17, 31, 32)
+ *
+ * The form itself is rendered by template-parts/precast/rfq-form.php.
+ * Submissions are stored as a private "RFQ" post type (admin only) and
+ * emailed to the company plus an automatic copy to the customer.
+ *
+ * @package SublimePlusV2
+ */
+defined('ABSPATH') || exit;
+
+/** Private CPT to keep every submission visible in wp-admin. */
+add_action('init', function () {
+    register_post_type('sp_rfq', [
+        'labels' => [
+            'name'          => 'RFQ Submissions',
+            'singular_name' => 'RFQ',
+            'menu_name'     => 'RFQ Inbox',
+        ],
+        'public'       => false,
+        'show_ui'      => true,
+        'show_in_menu' => true,
+        'menu_icon'    => 'dashicons-email-alt',
+        'menu_position'=> 26,
+        'supports'     => ['title', 'editor'],
+        'capability_type' => 'post',
+        'capabilities' => ['create_posts' => 'do_not_allow'],
+        'map_meta_cap' => true,
+    ]);
+});
+
+/** Allowed upload types (Brief: PDF DWG DXF Excel Word JPG PNG ZIP). */
+function sp_rfq_allowed_ext(): array {
+    return ['pdf', 'dwg', 'dxf', 'xls', 'xlsx', 'csv', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'webp', 'zip', 'rar', '7z'];
+}
+function sp_rfq_max_bytes(): int {
+    $ini = wp_max_upload_size();
+    return min($ini, 30 * MB_IN_BYTES);
+}
+
+/** Field definitions shared by renderer + handler. */
+function sp_rfq_fields(): array {
+    return [
+        'company'   => ['label' => 'Company Name',          'type' => 'text',  'required' => true],
+        'contact'   => ['label' => 'Contact Person',        'type' => 'text',  'required' => true],
+        'phone'     => ['label' => 'Phone Number',          'type' => 'tel',   'required' => true],
+        'email'     => ['label' => 'Email Address',         'type' => 'email', 'required' => true],
+        'project'   => ['label' => 'Project Name',          'type' => 'text',  'required' => false],
+        'location'  => ['label' => 'Project Location',      'type' => 'select','required' => false, 'options' => ['Abu Dhabi', 'Dubai', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain', 'Al Ain', 'Western Region', 'Other / Outside UAE']],
+        'product'   => ['label' => 'Product Required',      'type' => 'text',  'required' => true],
+        'quantity'  => ['label' => 'Quantity',              'type' => 'text',  'required' => false],
+        'delivery'  => ['label' => 'Required Delivery Date','type' => 'date',  'required' => false],
+        'message'   => ['label' => 'Message',               'type' => 'textarea', 'required' => false],
+    ];
+}
+function sp_rfq_checkboxes(): array {
+    return [
+        'custom_mould'    => 'Custom mould required',
+        'transport'       => 'Transport required',
+        'crane_loading'   => 'Crane loading required',
+        'crane_offload'   => 'Crane offloading required',
+        'submittal'       => 'Technical submittal required',
+        'shop_drawing'    => 'Shop drawing required',
+    ];
+}
+
+/** AJAX handler. */
+function sp_rfq_submit_handler() {
+    if (!check_ajax_referer('sp_rfq_nonce', 'sp_nonce', false)) {
+        wp_send_json_error(['message' => 'Security check failed. Please refresh the page and try again.']);
+    }
+    // Honeypot
+    if (!empty($_POST['website_url'])) {
+        wp_send_json_success(['message' => 'Thank you. Your request has been received.']);
+    }
+
+    $fields = sp_rfq_fields();
+    $data   = [];
+    $errors = [];
+    foreach ($fields as $key => $f) {
+        $raw = $_POST[$key] ?? '';
+        $val = $f['type'] === 'textarea' ? sanitize_textarea_field($raw) : ($f['type'] === 'email' ? sanitize_email($raw) : sanitize_text_field($raw));
+        if ($f['required'] && $val === '') $errors[] = $f['label'] . ' is required.';
+        if ($f['type'] === 'email' && $val && !is_email($val)) $errors[] = 'Please enter a valid email address.';
+        $data[$key] = $val;
+    }
+    if ($errors) wp_send_json_error(['message' => implode(' ', $errors)]);
+
+    $checks = [];
+    foreach (sp_rfq_checkboxes() as $k => $label) {
+        if (!empty($_POST['req'][$k])) $checks[] = $label;
+    }
+    $data['reference_project'] = sanitize_text_field($_POST['reference_project'] ?? '');
+    $data['intent']            = sanitize_text_field($_POST['intent'] ?? '');
+    $data['source_url']        = esc_url_raw($_POST['source_url'] ?? '');
+
+    // ── Files ─────────────────────────────────────────────────────────────────
+    $saved_files = [];
+    if (!empty($_FILES['files']) && is_array($_FILES['files']['name'])) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        $allowed = sp_rfq_allowed_ext();
+        $max     = sp_rfq_max_bytes();
+        $count   = count($_FILES['files']['name']);
+        if ($count > 10) wp_send_json_error(['message' => 'Please upload a maximum of 10 files.']);
+
+        // Dedicated folder, non-guessable, no directory listing.
+        $upload = wp_upload_dir();
+        $token  = wp_generate_password(16, false, false);
+        $subdir = '/rfq/' . date('Y/m') . '/' . $token;
+        $target = $upload['basedir'] . $subdir;
+        wp_mkdir_p($target);
+        if (!file_exists($upload['basedir'] . '/rfq/index.html')) {
+            @file_put_contents($upload['basedir'] . '/rfq/index.html', '');
+            @file_put_contents($upload['basedir'] . '/rfq/.htaccess', "Options -Indexes\n");
+        }
+
+        for ($i = 0; $i < $count; $i++) {
+            if ($_FILES['files']['error'][$i] === UPLOAD_ERR_NO_FILE) continue;
+            if ($_FILES['files']['error'][$i] !== UPLOAD_ERR_OK) {
+                wp_send_json_error(['message' => 'One of the files could not be uploaded (error ' . (int) $_FILES['files']['error'][$i] . ').']);
+            }
+            $name = sanitize_file_name($_FILES['files']['name'][$i]);
+            $ext  = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowed, true)) {
+                wp_send_json_error(['message' => "File type .$ext is not allowed. Allowed: PDF, DWG, DXF, Excel, Word, JPG, PNG, ZIP."]);
+            }
+            if ((int) $_FILES['files']['size'][$i] > $max) {
+                wp_send_json_error(['message' => "File $name is larger than " . size_format($max) . '.']);
+            }
+            $dest = $target . '/' . wp_unique_filename($target, $name);
+            if (!@move_uploaded_file($_FILES['files']['tmp_name'][$i], $dest)) {
+                wp_send_json_error(['message' => "File $name could not be saved. Please try again or email it to us."]);
+            }
+            @chmod($dest, 0644);
+            $saved_files[] = ['name' => basename($dest), 'url' => $upload['baseurl'] . $subdir . '/' . basename($dest), 'size' => filesize($dest)];
+        }
+    }
+
+    // ── Store submission ─────────────────────────────────────────────────────
+    $lines = [];
+    foreach ($fields as $key => $f) {
+        if ($data[$key] !== '') $lines[] = $f['label'] . ': ' . $data[$key];
+    }
+    if ($data['reference_project']) $lines[] = 'Reference Project: ' . $data['reference_project'];
+    if ($data['intent'])            $lines[] = 'Request Type: ' . $data['intent'];
+    if ($checks)                    $lines[] = 'Requirements: ' . implode(', ', $checks);
+    if ($saved_files) {
+        $lines[] = 'Files:';
+        foreach ($saved_files as $sf) $lines[] = '  - ' . $sf['name'] . ' (' . size_format($sf['size']) . '): ' . $sf['url'];
+    }
+    if ($data['source_url']) $lines[] = 'Submitted from: ' . $data['source_url'];
+    $lines[] = 'IP: ' . sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? '');
+    $body_txt = implode("\n", $lines);
+
+    $post_id = wp_insert_post([
+        'post_type'    => 'sp_rfq',
+        'post_status'  => 'private',
+        'post_title'   => sprintf('%s — %s (%s)', $data['company'], $data['product'], date_i18n('d M Y H:i')),
+        'post_content' => $body_txt,
+    ]);
+    if ($post_id) {
+        foreach ($data as $k => $v) update_post_meta($post_id, '_rfq_' . $k, $v);
+        update_post_meta($post_id, '_rfq_requirements', $checks);
+        update_post_meta($post_id, '_rfq_files', $saved_files);
+    }
+
+    // ── Emails ───────────────────────────────────────────────────────────────
+    $c  = sp_company();
+    $to = array_unique(array_filter([$c['email'], get_option('admin_email')]));
+    $subject = sprintf('[RFQ] %s — %s%s', $data['company'], $data['product'], $data['quantity'] ? ' × ' . $data['quantity'] : '');
+    $headers = ['Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $data['contact'] . ' <' . $data['email'] . '>'];
+    $admin_body  = "New quotation request from precastalturab.ae\n\n" . $body_txt . "\n\n";
+    if ($post_id) $admin_body .= 'View in WordPress: ' . admin_url('post.php?post=' . $post_id . '&action=edit') . "\n";
+    wp_mail($to, $subject, $admin_body, $headers);
+
+    // Customer copy (Brief: "send an automatic email copy to the customer")
+    $cust_body  = "Dear " . $data['contact'] . ",\n\n";
+    $cust_body .= "Thank you. Your request has been received by Precast Al Turab. Our team will review your drawing and project requirements and respond with a quotation.\n\n";
+    $cust_body .= "Summary of your request:\n" . implode("\n", array_filter($lines, function ($l) { return strpos($l, 'IP:') !== 0 && strpos($l, 'Submitted from') !== 0; })) . "\n\n";
+    $cust_body .= "Phone: " . $c['phone'] . "\nWhatsApp: https://wa.me/" . $c['wa_digits'] . "\nEmail: " . $c['email'] . "\n\nPrecast Al Turab\n" . home_url('/');
+    wp_mail($data['email'], 'Your quotation request — Precast Al Turab', $cust_body, ['Content-Type: text/plain; charset=UTF-8', 'From: Precast Al Turab <' . $c['email'] . '>']);
+
+    wp_send_json_success([
+        'message' => 'Thank you. Your request has been received by Precast Al Turab. Our team will review your drawing and project requirements.',
+    ]);
+}
+add_action('wp_ajax_sp_rfq_submit',        'sp_rfq_submit_handler');
+add_action('wp_ajax_nopriv_sp_rfq_submit', 'sp_rfq_submit_handler');
+
+/** Admin: show meta nicely on the RFQ post screen. */
+add_action('add_meta_boxes_sp_rfq', function () {
+    add_meta_box('sp_rfq_files', 'Uploaded Files', function ($post) {
+        $files = get_post_meta($post->ID, '_rfq_files', true);
+        if (!$files) { echo '<p>No files uploaded.</p>'; return; }
+        echo '<ul>';
+        foreach ($files as $f) echo '<li><a href="' . esc_url($f['url']) . '" target="_blank">' . esc_html($f['name']) . '</a> (' . esc_html(size_format($f['size'])) . ')</li>';
+        echo '</ul>';
+    }, 'sp_rfq', 'side');
+});
+
+/** Render the RFQ form (used by shortcode + contact page). */
+function sp_rfq_form_html(array $opts = []): string {
+    $o = wp_parse_args($opts, ['compact' => false, 'heading' => '', 'subtext' => '']);
+    ob_start();
+    get_template_part('template-parts/precast/rfq-form', null, $o);
+    return ob_get_clean();
+}
+add_shortcode('sublime_rfq_form', function ($atts) {
+    $atts = shortcode_atts(['heading' => 'Request a Precast Quotation', 'subtext' => '', 'compact' => '0'], $atts, 'sublime_rfq_form');
+    return sp_rfq_form_html(['heading' => $atts['heading'], 'subtext' => $atts['subtext'], 'compact' => $atts['compact'] === '1']);
+});

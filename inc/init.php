@@ -89,3 +89,8 @@ if (is_admin()) {
  * Elementor widgets
  */
 require SUBLIMEPLUS_DIR.'inc/elementor/elementor.php';
+
+/**
+ * Precast Al Turab website modules (Nov 2026 redesign)
+ */
+require SUBLIMEPLUS_DIR.'inc/precast/init.php';

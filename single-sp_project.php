@@ -1,278 +1,149 @@
 <?php
 /**
- * Single project detail page — sp_project CPT.
+ * Project case study page — Precast Al Turab (Brief: Priority 10, 31)
+ *
+ * Hero photo · summary table · scope of work · technical information ·
+ * manufacturing process photos · logistics photos · gallery · CTA
  *
  * @package SublimePlusV2
  */
+defined('ABSPATH') || exit;
 get_header();
 
-if (!have_posts()) { get_footer(); return; }
-the_post();
+while (have_posts()) : the_post();
+    $id      = get_the_ID();
+    $title   = get_the_title();
+    $content = get_the_content();
+    $hero    = get_the_post_thumbnail_url($id, 'full');
+    $g = fn($k) => get_post_meta($id, $k, true);
 
-$pid          = get_the_ID();
-$title        = get_the_title();
-$content      = get_the_content();
-$excerpt      = get_the_excerpt();
-$featured_url = get_the_post_thumbnail_url($pid, 'full') ?: '';
+    $emirate_map = ['dubai' => 'Dubai', 'abu-dhabi' => 'Abu Dhabi', 'sharjah' => 'Sharjah', 'ajman' => 'Ajman', 'ras-al-khaimah' => 'Ras Al Khaimah', 'fujairah' => 'Fujairah', 'umm-al-quwain' => 'Umm Al Quwain', 'western-region' => 'Western Region', 'al-ain' => 'Al Ain', 'uae' => 'UAE'];
+    $status_map  = ['completed' => 'Completed', 'ongoing' => 'Ongoing', 'upcoming' => 'Upcoming'];
+    $loc   = $emirate_map[$g('_sp_project_emirate')] ?? $g('_sp_project_emirate');
+    $date  = $g('_sp_project_date');
+    $year  = $date ? date('Y', strtotime($date)) : '';
+    $prod_ids = json_decode((string) $g('_sp_project_products'), true) ?: [];
+    $product  = $g('_sp_project_product') ?: implode(', ', array_filter(array_map('get_the_title', $prod_ids)));
+    $qty   = $g('_sp_project_quantity') ?: $g('_sp_project_scale');
+    $cats  = get_the_terms($id, 'sp_project_cat');
 
-// Meta fields
-$client       = get_post_meta($pid, '_sp_project_client',  true);
-$emirate_key  = get_post_meta($pid, '_sp_project_emirate', true);
-$status       = get_post_meta($pid, '_sp_project_status',  true);
-$scale        = get_post_meta($pid, '_sp_project_scale',   true);
-$value        = get_post_meta($pid, '_sp_project_value',   true);
-$date_raw     = get_post_meta($pid, '_sp_project_date',    true);
-$products_raw = get_post_meta($pid, '_sp_project_products', true);
-$gallery_raw  = get_post_meta($pid, '_sp_project_gallery',  true);
-
-$emirate_map = [
-    'dubai'          => 'Dubai',
-    'abu-dhabi'      => 'Abu Dhabi',
-    'sharjah'        => 'Sharjah',
-    'ajman'          => 'Ajman',
-    'ras-al-khaimah' => 'Ras Al Khaimah',
-    'fujairah'       => 'Fujairah',
-    'western-region' => 'Western Region',
-    'uae'            => 'UAE Nationwide',
-];
-$emirate_label = $emirate_map[$emirate_key] ?? $emirate_key;
-
-$status_label = ['completed' => 'Completed', 'ongoing' => 'Ongoing', 'upcoming' => 'Upcoming'][$status] ?? '';
-$date_label   = $date_raw ? date_i18n('F Y', strtotime($date_raw)) : '';
-
-// Gallery IDs
-$gallery_ids  = is_array($gallery_raw) ? array_filter(array_map('absint', $gallery_raw)) : [];
-if (empty($gallery_ids) && $featured_url) {
-    $thumb_id = get_post_thumbnail_id($pid);
-    if ($thumb_id) $gallery_ids = [$thumb_id];
-}
-
-// Active image: use first gallery item or featured
-$main_img_id  = !empty($gallery_ids) ? reset($gallery_ids) : get_post_thumbnail_id($pid);
-$main_img_url = $main_img_id ? wp_get_attachment_image_url($main_img_id, 'large') : $featured_url;
-
-// Categories
-$cats = get_the_terms($pid, 'sp_project_cat');
-
-// Related products
-$related_product_ids = $products_raw ? json_decode($products_raw, true) : [];
-if (!is_array($related_product_ids)) $related_product_ids = [];
-
-$related_products = [];
-if ($related_product_ids) {
-    $rq = new WP_Query([
-        'post_type'      => 'sp_product',
-        'post__in'       => $related_product_ids,
-        'posts_per_page' => 4,
-        'post_status'    => 'publish',
-        'orderby'        => 'post__in',
+    $summary = array_filter([
+        'Project'         => $title,
+        'Location'        => $loc,
+        'Year'            => $year,
+        'Product'         => $product,
+        'Quantity'        => $qty,
+        'Client'          => $g('_sp_project_client'),
+        'Main Contractor' => $g('_sp_project_contractor'),
+        'Consultant'      => $g('_sp_project_consultant'),
+        'Status'          => $status_map[$g('_sp_project_status')] ?? '',
     ]);
-    while ($rq->have_posts()) {
-        $rq->the_post();
-        $rpid = get_the_ID();
-        $related_products[] = [
-            'id'      => $rpid,
-            'title'   => get_the_title(),
-            'link'    => get_the_permalink(),
-            'img'     => get_the_post_thumbnail_url($rpid, 'medium') ?: '',
-            'excerpt' => get_the_excerpt(),
-        ];
-    }
-    wp_reset_postdata();
-}
+    $tech = json_decode((string) $g('_sp_project_tech'), true) ?: [];
+    if ($g('_sp_project_lifting')) $tech[] = ['Lifting Method', $g('_sp_project_lifting')];
+    if ($g('_sp_project_period'))  $tech[] = ['Production Period', $g('_sp_project_period')];
+    if ($qty && !in_array('Quantity', array_column($tech, 0), true)) $tech[] = ['Quantity', $qty];
 
-// Inquiry page URL (best effort)
-$inquiry_url = get_the_permalink(get_page_by_path('contact')) ?: home_url('/#inquiry');
+    $ids = fn($k) => array_values(array_filter(array_map('absint', explode(',', (string) $g($k)))));
+    $process_ids   = $ids('_sp_project_process_gallery');
+    $logistics_ids = $ids('_sp_project_logistics_gallery');
+    $gallery_raw   = $g('_sp_project_gallery');
+    $gallery_ids   = is_array($gallery_raw) ? array_values(array_filter(array_map('absint', $gallery_raw))) : $ids('_sp_project_gallery');
+    $thumb = get_post_thumbnail_id($id);
+    if ($thumb && !in_array($thumb, $gallery_ids, true)) array_unshift($gallery_ids, (int) $thumb);
+
+    $scope = $g('_sp_project_scope');
+    $gallery_block = function (array $ids, string $heading, string $sub = '') use ($title) {
+        if (!$ids) return;
+        echo '<section class="pc-section pc-project__photos"><div class="container"><h2 class="pc-h3">' . esc_html($heading) . '</h2>';
+        if ($sub) echo '<p class="pc-sub">' . esc_html($sub) . '</p>';
+        echo '<div class="pc-gallery">';
+        foreach ($ids as $gid) {
+            $m = sp_img_url($gid, 'medium_large'); $l = sp_img_url($gid, 'large'); if (!$m) continue;
+            $alt = get_post_meta($gid, '_wp_attachment_image_alt', true) ?: $title;
+            echo '<a href="' . esc_url($l) . '" class="pc-gallery__item" target="_blank" rel="noopener"><img src="' . esc_url($m) . '" alt="' . esc_attr($alt) . '" loading="lazy" decoding="async"></a>';
+        }
+        echo '</div></div></section>';
+    };
+    $related = get_posts(['post_type' => 'sp_project', 'posts_per_page' => 3, 'post__not_in' => [$id], 'meta_key' => '_thumbnail_id']);
 ?>
+<main id="primary" class="site-main pc-project">
 
-<main id="primary" class="content-area sp-single-project">
-
-  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
-  <div class="sp-proj-hero"<?php if ($featured_url) : ?> style="background-image:url(<?php echo esc_url($featured_url); ?>)"<?php endif; ?>>
-    <div class="sp-proj-hero__overlay"></div>
+  <section class="pc-project__hero<?php echo $hero ? ' pc-project__hero--img' : ''; ?>">
+    <?php if ($hero) : ?><img class="pc-project__bg" src="<?php echo esc_url($hero); ?>" alt="" fetchpriority="high" decoding="async"><div class="pc-project__shade"></div><?php endif; ?>
     <div class="container">
-      <nav class="sp-proj-breadcrumb" aria-label="Breadcrumb">
-        <a href="<?php echo esc_url(home_url('/')); ?>"><?php _e('Home', 'sublimeplus'); ?></a>
-        <span>›</span>
-        <a href="<?php echo esc_url(get_post_type_archive_link('sp_project')); ?>"><?php _e('Projects', 'sublimeplus'); ?></a>
-        <span>›</span>
-        <span><?php echo esc_html($title); ?></span>
-      </nav>
-
-      <?php if ($cats && !is_wp_error($cats)) : ?>
-      <div class="sp-proj-hero__cats">
-        <?php foreach ($cats as $cat) : ?>
-        <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="sp-proj-cat-tag">
-          <?php echo esc_html($cat->name); ?>
-        </a>
-        <?php endforeach; ?>
-        <?php if ($status_label) : ?>
-        <span class="sp-proj-hero__status sp-proj-hero__status--<?php echo esc_attr($status); ?>">
-          <?php echo esc_html($status_label); ?>
-        </span>
-        <?php endif; ?>
-      </div>
-      <?php endif; ?>
-
-      <h1 class="sp-proj-hero__title"><?php echo esc_html($title); ?></h1>
-
-      <?php if ($excerpt) : ?>
-      <p class="sp-proj-hero__excerpt"><?php echo esc_html($excerpt); ?></p>
-      <?php endif; ?>
-
-      <div class="sp-proj-hero__stats">
-        <?php if ($client) : ?>
-        <div class="sp-proj-hero__stat">
-          <span class="sp-proj-hero__stat-label"><?php _e('Client', 'sublimeplus'); ?></span>
-          <span class="sp-proj-hero__stat-value"><?php echo esc_html($client); ?></span>
+      <?php echo sp_breadcrumb_html(); ?>
+      <div class="pc-project__hero-inner">
+        <?php if ($cats && !is_wp_error($cats)) : ?><div class="pc-project__cats"><?php foreach ($cats as $ct) : ?><a class="pc-tag pc-tag--static" href="<?php echo esc_url(get_term_link($ct)); ?>"><?php echo esc_html($ct->name); ?></a><?php endforeach; ?></div><?php endif; ?>
+        <h1 class="pc-phero__title"><?php echo esc_html($title); ?></h1>
+        <?php if (has_excerpt()) : ?><p class="pc-phero__sub"><?php echo esc_html(get_the_excerpt()); ?></p><?php endif; ?>
+        <div class="pc-project__hero-cta">
+          <a class="pc-btn pc-btn--accent" href="<?php echo esc_url(sp_rfq_url($product ?: 'Similar product', $title)); ?>" data-track="rfq_click"><?php echo sp_icon('quote', 16); ?> Request Similar Product</a>
+          <a class="pc-btn pc-btn--wa" href="<?php echo esc_url(sp_wa_url('Hello Precast Al Turab, I need a quotation for a product similar to your project: ' . $title . '.')); ?>" target="_blank" rel="noopener" data-track="whatsapp_click"><?php echo sp_icon('whatsapp', 16); ?> WhatsApp</a>
         </div>
-        <?php endif; ?>
-        <?php if ($emirate_label) : ?>
-        <div class="sp-proj-hero__stat">
-          <span class="sp-proj-hero__stat-label"><?php _e('Location', 'sublimeplus'); ?></span>
-          <span class="sp-proj-hero__stat-value"><?php echo esc_html($emirate_label); ?></span>
-        </div>
-        <?php endif; ?>
-        <?php if ($scale) : ?>
-        <div class="sp-proj-hero__stat">
-          <span class="sp-proj-hero__stat-label"><?php _e('Scale', 'sublimeplus'); ?></span>
-          <span class="sp-proj-hero__stat-value"><?php echo esc_html($scale); ?></span>
-        </div>
-        <?php endif; ?>
-        <?php if ($value) : ?>
-        <div class="sp-proj-hero__stat">
-          <span class="sp-proj-hero__stat-label"><?php _e('Contract Value', 'sublimeplus'); ?></span>
-          <span class="sp-proj-hero__stat-value"><?php echo esc_html($value); ?></span>
-        </div>
-        <?php endif; ?>
-        <?php if ($date_label) : ?>
-        <div class="sp-proj-hero__stat">
-          <span class="sp-proj-hero__stat-label"><?php _e('Completed', 'sublimeplus'); ?></span>
-          <span class="sp-proj-hero__stat-value"><?php echo esc_html($date_label); ?></span>
-        </div>
-        <?php endif; ?>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ── Content + Gallery ────────────────────────────────────────────────── -->
-  <div class="sp-proj-body">
+  <section class="pc-section">
     <div class="container">
-      <div class="sp-proj-layout">
-
-        <!-- Gallery column -->
-        <?php if (!empty($gallery_ids) || $main_img_url) : ?>
-        <div class="sp-proj-gallery">
-          <div class="sp-proj-gallery__main" id="sp-proj-main-img">
-            <?php if ($main_img_url) : ?>
-            <img src="<?php echo esc_url($main_img_url); ?>"
-                 alt="<?php echo esc_attr($title); ?>"
-                 id="sp-proj-main-src"
-                 loading="eager" decoding="async">
+      <div class="pc-project__grid">
+        <div class="pc-project__main">
+          <h2 class="pc-h3">Scope of Work</h2>
+          <div class="pc-prose">
+            <?php if ($scope) echo wpautop(esc_html($scope)); ?>
+            <?php if ($content) echo wp_kses_post(apply_filters('the_content', $content)); ?>
+            <?php if (!$scope && !$content) : ?><p>Manufacture of reinforced precast components including mould preparation, reinforcement fabrication, concrete casting, curing, finishing and crane loading.</p><?php endif; ?>
+          </div>
+          <?php if ($tech) : ?>
+          <h2 class="pc-h3">Technical Information</h2>
+          <table class="pc-table"><tbody>
+            <?php foreach ($tech as $row) : if (empty($row[0])) continue; ?><tr><th scope="row"><?php echo esc_html($row[0]); ?></th><td><?php echo esc_html($row[1] ?? ''); ?></td></tr><?php endforeach; ?>
+          </tbody></table>
+          <?php endif; ?>
+        </div>
+        <aside class="pc-project__side">
+          <div class="pc-summary">
+            <h2 class="pc-h3">Project Summary</h2>
+            <table class="pc-table pc-table--compact"><tbody>
+              <?php foreach ($summary as $k => $v) : ?><tr><th scope="row"><?php echo esc_html($k); ?></th><td><?php echo esc_html($v); ?></td></tr><?php endforeach; ?>
+            </tbody></table>
+            <?php if ($prod_ids) : ?>
+            <p class="pc-summary__label">Products used</p>
+            <ul class="pc-summary__links"><?php foreach ($prod_ids as $pid) : if (get_post_status($pid) !== 'publish') continue; ?><li><a href="<?php echo esc_url(get_permalink($pid)); ?>"><?php echo esc_html(get_the_title($pid)); ?> <?php echo sp_icon('arrow', 14); ?></a></li><?php endforeach; ?></ul>
             <?php endif; ?>
+            <a class="pc-btn pc-btn--accent pc-btn--block" href="<?php echo esc_url(sp_rfq_url($product ?: 'Similar product', $title)); ?>" data-track="rfq_click">Request Similar Product</a>
           </div>
-          <?php if (count($gallery_ids) > 1) : ?>
-          <div class="sp-proj-gallery__thumbs" role="list">
-            <?php foreach ($gallery_ids as $gid) :
-              $thumb   = wp_get_attachment_image_url($gid, 'thumbnail');
-              $full    = wp_get_attachment_image_url($gid, 'large');
-              $alt     = get_post_meta($gid, '_wp_attachment_image_alt', true) ?: $title;
-              if (!$thumb) continue;
-            ?>
-            <button type="button"
-                    class="sp-proj-gallery__thumb<?php echo ($gid === $main_img_id) ? ' active' : ''; ?>"
-                    data-full="<?php echo esc_url($full); ?>"
-                    aria-label="<?php echo esc_attr($alt); ?>"
-                    role="listitem">
-              <img src="<?php echo esc_url($thumb); ?>" alt="<?php echo esc_attr($alt); ?>">
-            </button>
-            <?php endforeach; ?>
-          </div>
-          <?php endif; ?>
-        </div>
-        <?php endif; ?>
-
-        <!-- Content column -->
-        <div class="sp-proj-content">
-          <?php if ($content) : ?>
-          <div class="sp-proj-content__body entry-content">
-            <?php echo wp_kses_post(apply_filters('the_content', $content)); ?>
-          </div>
-          <?php endif; ?>
-        </div>
-
+        </aside>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ── Related Products ─────────────────────────────────────────────────── -->
-  <?php if (!empty($related_products)) : ?>
-  <div class="sp-proj-related">
+  <?php
+  $gallery_block($process_ids,   'Manufacturing Process', 'Mould, reinforcement, casting, curing, demoulding, finishing and inspection.');
+  $gallery_block($logistics_ids, 'Logistics',             'Crane lifting, trailer loading, transport and site delivery.');
+  $gallery_block($gallery_ids,   'Project Gallery');
+  ?>
+
+  <section class="pc-section pc-final">
     <div class="container">
-      <h2 class="sp-proj-related__heading"><?php _e('Products Used in This Project', 'sublimeplus'); ?></h2>
-      <div class="sp-proj-related__grid">
-        <?php foreach ($related_products as $rp) : ?>
-        <a href="<?php echo esc_url($rp['link']); ?>" class="sp-proj-related__card">
-          <?php if ($rp['img']) : ?>
-          <div class="sp-proj-related__card-img">
-            <img src="<?php echo esc_url($rp['img']); ?>"
-                 alt="<?php echo esc_attr($rp['title']); ?>"
-                 loading="lazy" decoding="async">
-          </div>
-          <?php endif; ?>
-          <div class="sp-proj-related__card-body">
-            <h3><?php echo esc_html($rp['title']); ?></h3>
-            <?php if ($rp['excerpt']) : ?>
-            <p><?php echo esc_html($rp['excerpt']); ?></p>
-            <?php endif; ?>
-            <span class="sp-proj-related__cta">
-              <?php _e('View Product', 'sublimeplus'); ?>
-              <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9 3 14 8 9 13"/></svg>
-            </span>
-          </div>
-        </a>
-        <?php endforeach; ?>
+      <div class="pc-final__inner pc-final__inner--simple">
+        <div class="pc-final__text">
+          <h2 class="pc-h2 pc-h2--light">Need a Similar Product for Your Project?</h2>
+          <p class="pc-final__sub">The enquiry form will carry this project as your reference.</p>
+          <?php echo sp_cta_buttons(['product' => $product ?: '', 'project' => $title, 'labels' => ['quote' => 'Request Similar Product', 'drawing' => 'Upload Drawing', 'wa' => 'WhatsApp']]); ?>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <?php if ($related) : ?>
+  <section class="pc-section">
+    <div class="container">
+      <h2 class="pc-h3">More Projects</h2>
+      <div class="pc-proj-grid"><?php foreach ($related as $rp) echo sp_pc_project_card($rp->ID); ?></div>
+    </div>
+  </section>
   <?php endif; ?>
-
-  <!-- ── CTA ──────────────────────────────────────────────────────────────── -->
-  <div class="sp-proj-cta-section">
-    <div class="container">
-      <div class="sp-proj-cta-inner">
-        <div class="sp-proj-cta-text">
-          <h2><?php _e('Need a Similar Solution?', 'sublimeplus'); ?></h2>
-          <p><?php _e('Our team delivers across all UAE emirates — from single-site orders to large multi-phase programmes. Get a quote within 24 hours.', 'sublimeplus'); ?></p>
-        </div>
-        <div class="sp-proj-cta-actions">
-          <a href="<?php echo esc_url($inquiry_url); ?>" class="cta-primary">
-            <?php _e('Get a Quote', 'sublimeplus'); ?>
-            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="9 3 14 8 9 13"/></svg>
-          </a>
-          <a href="<?php echo esc_url(get_post_type_archive_link('sp_project')); ?>" class="cta-outline">
-            <?php _e('All Projects', 'sublimeplus'); ?>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </main>
-
-<script>
-(function() {
-    var mainImg = document.getElementById('sp-proj-main-src');
-    if (!mainImg) return;
-    document.querySelectorAll('.sp-proj-gallery__thumb').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var full = this.getAttribute('data-full');
-            if (full) mainImg.src = full;
-            document.querySelectorAll('.sp-proj-gallery__thumb').forEach(function(b) { b.classList.remove('active'); });
-            this.classList.add('active');
-        });
-    });
-})();
-</script>
-
-<?php get_footer(); ?>
+<?php endwhile;
+get_footer(); ?>
