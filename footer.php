@@ -43,7 +43,7 @@ $terms   = sp_page_url('terms-and-conditions', '/terms-and-conditions/');
         <?php if ($logo) : ?>
           <a href="<?php echo esc_url(home_url('/')); ?>" class="pc-foot__logo"><img src="<?php echo esc_url($logo); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" height="48" loading="lazy"></a>
         <?php endif; ?>
-        <strong class="pc-foot__name">PRECAST AL TURAB</strong>
+        <strong class="pc-foot__name notranslate" translate="no">PRECAST AL TURAB</strong>
         <p class="pc-foot__tag">UAE Precast Concrete Manufacturing</p>
         <a href="<?php echo esc_url(sp_profile_url()); ?>" class="pc-link pc-link--light" data-track="profile_download"><?php echo sp_icon('download', 16); ?> Download Company Profile</a>
         <?php if ($c['linkedin'] || $c['instagram'] || $c['facebook']) : ?>

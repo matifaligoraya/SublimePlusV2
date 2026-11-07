@@ -40,7 +40,7 @@ $rfq     = sp_rfq_url(is_singular('sp_product') ? get_the_title() : '');
           <?php if ($logo) : ?>
             <img src="<?php echo esc_url($logo); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" width="180" height="56" decoding="async">
           <?php else : ?>
-            <span class="pc-hdr__wordmark">PRECAST AL TURAB</span>
+            <span class="pc-hdr__wordmark notranslate" translate="no">PRECAST AL TURAB</span>
           <?php endif; ?>
         </a>
 
@@ -49,6 +49,10 @@ $rfq     = sp_rfq_url(is_singular('sp_product') ? get_the_title() : '');
         </nav>
 
         <div class="pc-hdr__actions">
+          <div class="pc-lang notranslate" translate="no" role="group" aria-label="Language">
+            <a href="#" data-lang="en" lang="en" class="is-active">EN</a>
+            <a href="#" data-lang="ar" lang="ar">العربية</a>
+          </div>
           <a href="<?php echo esc_url($wa); ?>" class="pc-hdr__wa" target="_blank" rel="noopener" aria-label="WhatsApp" data-track="whatsapp_click">
             <?php echo sp_icon('whatsapp', 20); ?><span>WhatsApp</span>
           </a>
@@ -70,6 +74,10 @@ $rfq     = sp_rfq_url(is_singular('sp_product') ? get_the_title() : '');
       <button type="button" class="pc-offcanvas__close" data-bs-dismiss="offcanvas" aria-label="Close menu"><?php echo sp_icon('close', 24); ?></button>
     </div>
     <div class="pc-offcanvas__body">
+      <div class="pc-lang pc-lang--mobile notranslate" translate="no" role="group" aria-label="Language">
+        <a href="#" data-lang="en" lang="en" class="is-active">English</a>
+        <a href="#" data-lang="ar" lang="ar">العربية</a>
+      </div>
       <?php echo sp_nav_html('pc-nav pc-nav--mobile'); ?>
       <div class="pc-offcanvas__cta">
         <a href="<?php echo esc_url($rfq); ?>" class="pc-btn pc-btn--accent" data-track="rfq_click"><?php echo sp_icon('quote', 16); ?> Request a Quotation</a>

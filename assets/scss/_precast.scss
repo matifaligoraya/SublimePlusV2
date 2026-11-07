@@ -119,6 +119,34 @@ body.pc-site .container { max-width: 1240px; }
 .pc-crumb a:hover { color: var(--pc-accent); }
 .pc-phero .pc-crumb, .pc-project__hero .pc-crumb { color: rgba(255,255,255,.75); }
 
+// Sticky header fix: an old stylesheet sets html/body to 100% height, which stops
+// position:sticky after one screen. Auto height lets the header stay on top.
+html, body.pc-site { height: auto; }
+body.pc-site { overflow-x: clip; }
+
+// Language switch (EN | العربية)
+.pc-lang { display: inline-flex; align-items: center; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; overflow: hidden; }
+.pc-lang a { font-size: .8rem; font-weight: 600; padding: .4rem .7rem; color: rgba(255,255,255,.8) !important; text-decoration: none !important; line-height: 1; }
+.pc-lang a.is-active { background: #fff; color: var(--pc-charcoal) !important; }
+.pc-lang a[lang="ar"] { font-family: Tahoma, 'Segoe UI', sans-serif; }
+.pc-lang--mobile { margin: 0 0 1rem; }
+.pc-lang--mobile a { padding: .55rem 1.1rem; font-size: .9rem; }
+@media (max-width: 991.98px) { .pc-hdr__actions .pc-lang { display: none; } }
+// Hide Google Translate's own toolbar and tooltips
+.goog-te-banner-frame, .skiptranslate > iframe, #goog-gt-tt, .goog-te-balloon-frame, .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+body.pc-site { top: 0 !important; }
+font[style] { background: none !important; box-shadow: none !important; }
+// Right-to-left adjustments for Arabic
+.pc-rtl body.pc-site { text-align: right; }
+.pc-rtl .pc-eyebrow { padding-left: 0; padding-right: 1.6rem; }
+.pc-rtl .pc-eyebrow::before { left: auto; right: 0; }
+.pc-rtl .pc-btn svg[viewBox] path[d^="M5 12h14"], .pc-rtl .pc-link svg { transform: scaleX(-1); }
+.pc-rtl .pc-capab__item { border-left: 1px solid var(--pc-line); border-right: 5px solid var(--pc-accent); }
+.pc-rtl .pc-capab__num, .pc-rtl .pc-step__num { right: auto; left: 1rem; }
+.pc-rtl .pc-tag { left: auto; right: .8rem; }
+.pc-rtl .pc-status { right: auto; left: .8rem; }
+.pc-rtl .pc-wa-float { right: auto; left: 20px; }
+
 // ── Header ───────────────────────────────────────────────────────────────────
 .pc-hdr { position: sticky; top: 0; z-index: 1030; background: var(--pc-charcoal); color: #fff; box-shadow: 0 2px 0 rgba(255,255,255,.04), 0 6px 20px rgba(0,0,0,.25); }
 .admin-bar .pc-hdr { top: 32px; }

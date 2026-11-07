@@ -98,7 +98,33 @@
     });
   }
 
+  // ── Language switch: English ⇄ Arabic (Google Translate, loaded only when Arabic is chosen) ──
+  function getLang() { return /(^|;\s*)googtrans=\/en\/ar/.test(document.cookie) ? 'ar' : 'en'; }
+  function setLang(lang) {
+    var host = location.hostname, exp = lang === 'ar' ? '' : '; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    var val = lang === 'ar' ? '/en/ar' : '';
+    // Google reads the cookie on both the bare host and the dotted domain.
+    document.cookie = 'googtrans=' + val + '; path=/' + exp;
+    document.cookie = 'googtrans=' + val + '; path=/; domain=.' + host + exp;
+    location.reload();
+  }
+  function initLang() {
+    var lang = getLang();
+    document.querySelectorAll('.pc-lang [data-lang]').forEach(function (a) {
+      a.classList.toggle('is-active', a.getAttribute('data-lang') === lang);
+      a.addEventListener('click', function (e) { e.preventDefault(); if (a.getAttribute('data-lang') !== getLang()) setLang(a.getAttribute('data-lang')); });
+    });
+    if (lang !== 'ar') return;
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'ar');
+    document.documentElement.classList.add('pc-rtl');
+    var holder = document.createElement('div'); holder.id = 'pc-gt'; holder.style.display = 'none'; document.body.appendChild(holder);
+    window.pcGtInit = function () { new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'ar', autoDisplay: false }, 'pc-gt'); };
+    var s = document.createElement('script'); s.src = 'https://translate.google.com/translate_a/element.js?cb=pcGtInit'; s.async = true; document.body.appendChild(s);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    initLang();
     document.querySelectorAll('form[data-rfq]').forEach(initForm);
 
     // Scroll to the form when linked with #rfq-files / #rfq-form
