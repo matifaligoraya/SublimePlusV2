@@ -83,6 +83,7 @@ $rfq     = sp_rfq_url(is_singular('sp_product') ? get_the_title() : '');
         <a href="<?php echo esc_url($rfq); ?>" class="pc-btn pc-btn--accent" data-track="rfq_click"><?php echo sp_icon('quote', 16); ?> Request a Quotation</a>
         <a href="<?php echo esc_url($wa); ?>" class="pc-btn pc-btn--wa" target="_blank" rel="noopener" data-track="whatsapp_click"><?php echo sp_icon('whatsapp', 16); ?> WhatsApp</a>
         <a href="tel:<?php echo esc_attr($c['phone_tel']); ?>" class="pc-btn pc-btn--ghost"><?php echo sp_icon('phone', 16); ?> <?php echo esc_html($c['phone']); ?></a>
+        <?php if ($c['phone2']) : ?><a href="tel:<?php echo esc_attr($c['phone2_tel']); ?>" class="pc-btn pc-btn--ghost"><?php echo sp_icon('phone', 16); ?> <?php echo esc_html($c['phone2']); ?></a><?php endif; ?>
       </div>
       <p class="pc-offcanvas__meta"><?php echo esc_html($c['email']); ?><br><?php echo esc_html($c['hours']); ?></p>
     </div>

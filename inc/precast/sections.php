@@ -56,7 +56,7 @@ $sp_pc_shortcodes = [
     'sublime_capabilities'   => ['tpl' => 'capabilities',    'atts' => ['blocks' => '']],
     'sublime_tech_resources' => ['tpl' => 'tech-resources',  'atts' => ['docs' => '']],
     'sublime_contact_pc'     => ['tpl' => 'contact',         'atts' => ['heading' => '', 'description' => '']],
-    'sublime_why'            => ['tpl' => 'why',             'atts' => ['heading' => '', 'subtext' => '', 'items' => '']],
+    'sublime_why'            => ['tpl' => 'why',             'atts' => ['eyebrow' => '', 'heading' => '', 'subtext' => '', 'items' => '', 'bg' => '']],
     'sublime_featured_projects' => ['tpl' => 'featured-projects', 'atts' => ['heading' => '', 'subtext' => '', 'count' => '4']],
     'sublime_partners'       => ['tpl' => 'partners',        'atts' => ['heading' => '', 'subtext' => '', 'logos' => '']],
     'sublime_about_capabilities' => ['tpl' => 'about-capabilities', 'atts' => ['heading' => '', 'items' => '']],

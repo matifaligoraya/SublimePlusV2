@@ -56,6 +56,9 @@ $insights = [
           <h3>Talk to Our Team</h3>
           <p>We're here to help with your project</p>
           <a class="pc-quote__line" href="tel:<?php echo esc_attr($c['phone_tel']); ?>" data-track="phone_click"><span class="pc-quote__ic"><?php echo sp_icon('phone', 18); ?></span><span><small>Call Us</small><?php echo esc_html($c['phone']); ?></span></a>
+          <?php if ($c['phone2']) : ?>
+          <a class="pc-quote__line" href="tel:<?php echo esc_attr($c['phone2_tel']); ?>" data-track="phone_click"><span class="pc-quote__ic"><?php echo sp_icon('phone', 18); ?></span><span><small>Call Us (Line 2)</small><?php echo esc_html($c['phone2']); ?></span></a>
+          <?php endif; ?>
           <a class="pc-quote__line pc-quote__line--wa" href="<?php echo esc_url(sp_wa_url()); ?>" target="_blank" rel="noopener" data-track="whatsapp_click"><span class="pc-quote__ic"><?php echo sp_icon('whatsapp', 18); ?></span><span><small>WhatsApp</small>Chat on WhatsApp</span></a>
           <a class="pc-quote__line" href="mailto:<?php echo esc_attr($c['email']); ?>" data-track="email_click"><span class="pc-quote__ic"><?php echo sp_icon('mail', 18); ?></span><span><small>Email Us</small><?php echo esc_html($c['email']); ?></span></a>
         </div>

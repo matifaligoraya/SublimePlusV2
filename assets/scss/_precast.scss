@@ -681,6 +681,19 @@ font[style] { background: none !important; box-shadow: none !important; }
 .pc-foot__name { display: block; font-family: var(--pc-font-head); font-size: 1.4rem; letter-spacing: .12em; color: #fff; }
 .pc-foot__tag { font-family: var(--pc-font-head); letter-spacing: .1em; text-transform: uppercase; color: #ffb27a; font-size: .85rem; margin: .25rem 0 1rem; }
 .pc-foot__line { font-size: .9rem; margin: 0 0 .6rem; }
+.pc-foot__sectors { font-size: .82rem; letter-spacing: .04em; color: rgba(255,255,255,.75); margin: 0 0 .4rem; }
+.pc-foot__slogan { font-size: .82rem; font-style: italic; color: rgba(255,255,255,.55); margin: 0 0 1rem; }
+// About page: client text blocks (lists + mission/vision)
+.pc-prose ul.pc-ticks { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: .5rem; }
+.pc-prose ul.pc-ticks li { position: relative; padding-left: 1.6rem; margin: 0; }
+.pc-prose ul.pc-ticks li::before { content: ""; position: absolute; left: 0; top: .45em; width: .7rem; height: .7rem; border-radius: 2px; background: var(--pc-accent); }
+.pc-prose .pc-lead { font-family: var(--pc-font-head); font-size: 1.15rem; letter-spacing: .03em; color: var(--pc-accent-dk); text-transform: uppercase; margin-bottom: 1rem; }
+.pc-mv { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: .5rem 0 0; }
+.pc-mv > div { background: var(--pc-concrete-3); border: 1px solid var(--pc-line); border-top: 4px solid var(--pc-accent); border-radius: var(--pc-radius); padding: 1.25rem; }
+.pc-mv h3 { margin: 0 0 .5rem !important; font-size: 1.2rem; }
+.pc-mv p { margin: 0 !important; }
+.pc-closing { font-family: var(--pc-font-head); font-size: 1.25rem; letter-spacing: .03em; text-transform: uppercase; color: var(--pc-charcoal); line-height: 1.4; }
+@media (max-width: 767.98px) { .pc-mv { grid-template-columns: 1fr; } }
 .pc-foot__line--muted { color: rgba(255,255,255,.55); font-size: .82rem; margin-bottom: 1rem; }
 .pc-foot__social { display: flex; gap: .5rem; margin-top: 1rem; }
 .pc-foot__social a { display: inline-flex; width: 38px; height: 38px; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.2); border-radius: var(--pc-radius); }
@@ -721,3 +734,4 @@ font[style] { background: none !important; box-shadow: none !important; }
 .vc_row.no-pad-row { margin-left: 0 !important; margin-right: 0 !important; }
 .vc_row.no-pad-row > .vc_column_container > .vc_column-inner { padding: 0 !important; }
 .vc_row[data-vc-full-width] { overflow: visible !important; }
+.pc-why--white { background: #fff; }

@@ -24,7 +24,11 @@ function sp_company(): array {
     $c = [
         'name'       => 'Precast Al Turab',
         'legal'      => get_theme_mod('sp_legal_name', 'Al Turab Concrete Products Manufacturing L.L.C. S.P.'),
-        'tagline'    => get_theme_mod('sp_footer_tagline', 'UAE Precast Concrete Manufacturing'),
+        'tagline'    => get_theme_mod('sp_footer_tagline', 'Specialists in Customized Precast Concrete Solutions'),
+        'sectors'    => 'Government | Defence | Infrastructure | Industrial | Commercial',
+        'slogan'     => 'Engineered for Challenges. Built for Strength. Trusted for Quality.',
+        'phone2'     => get_theme_mod('sp_phone2', '+971 54 348 8946'),
+        'phone2_tel' => preg_replace('/[^+\d]/', '', (string) get_theme_mod('sp_phone2', '+971 54 348 8946')),
         'phone'      => $phone,
         'phone_tel'  => preg_replace('/[^+\d]/', '', $phone),
         'email'      => get_theme_mod('sp_footer_email', 'info@precastalturab.ae'),
@@ -187,6 +191,7 @@ add_action('customize_register', function ($wp_customize) {
     $wp_customize->add_section('sp_company', ['title' => 'Precast — Company Details', 'priority' => 5]);
     $fields = [
         'sp_footer_phone'       => ['Phone', 'text'],
+        'sp_phone2'             => ['Second phone', 'text'],
         'sp_footer_whatsapp'    => ['WhatsApp URL (https://wa.me/9715...)', 'text'],
         'sp_footer_email'       => ['Email', 'text'],
         'sp_footer_address'     => ['Office address', 'textarea'],

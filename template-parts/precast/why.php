@@ -6,25 +6,25 @@
  */
 defined('ABSPATH') || exit;
 
-$heading = $args['heading'] ?: 'Why Choose Precast Al Turab';
-$subtext = $args['subtext'] ?: 'A manufacturer built for project-specific precast, not only standard stock.';
+$heading = $args['heading'] ?: 'Why Precast Al Turab?';
+$subtext = $args['subtext'] ?: 'When standard products are not enough, our customized manufacturing expertise makes the difference.';
 $rows = sp_pc_rows($args['items'] ?? '');
 $items = [];
 foreach ($rows as $r) if (!empty($r['title'])) $items[] = ['title' => $r['title'], 'desc' => $r['desc'] ?? '', 'icon' => $r['icon'] ?? 'check'];
 if (!$items) {
     $items = [
-        ['title' => 'Heavy & Custom Precast',     'icon' => 'heavy',   'desc' => 'Large reinforced units manufactured from your drawings, including bunkers, T-Walls, culverts and structural panels.'],
-        ['title' => 'In-House Mould Fabrication', 'icon' => 'mould',   'desc' => 'Project-specific steel moulds engineered and built in-house, so non-standard sections do not depend on third parties.'],
-        ['title' => 'Drawing-to-Delivery Control','icon' => 'drawing', 'desc' => 'One team handles technical review, production planning, QA/QC, lifting and transport coordination.'],
-        ['title' => 'Documented QA/QC',           'icon' => 'qa',      'desc' => 'Inspection records at mould, reinforcement, casting and finished-product stages, available with deliveries on request.'],
-        ['title' => 'Heavy Lifting & Logistics',  'icon' => 'crane',   'desc' => 'Planned crane lifting, trailer loading and UAE-wide transport for units weighing several tonnes.'],
-        ['title' => 'UAE Manufacturing',          'icon' => 'factory', 'desc' => 'Manufactured in the UAE for government, main contractor, consultant and industrial project requirements.'],
+        ['title' => 'Expertise in Customized Manufacturing',   'icon' => 'custom',  'desc' => 'Our key advantage is our ability to manufacture specialized and non-standard precast components where conventional off-the-shelf solutions may not meet project requirements.'],
+        ['title' => 'Government & Defence Vendor Registration','icon' => 'shield',  'desc' => 'Our registered vendor status with government and defence institutions demonstrates our involvement in professional procurement environments serving demanding sectors.'],
+        ['title' => 'Technical Knowledge & Manufacturing Experience', 'icon' => 'drawing', 'desc' => 'We combine practical engineering knowledge, skilled manufacturing personnel, and production experience to address complex precast concrete requirements.'],
+        ['title' => 'High-Quality Materials & Production Standards', 'icon' => 'qa', 'desc' => 'We focus on concrete quality, appropriate reinforcement, manufacturing accuracy, and quality control in accordance with agreed project specifications.'],
+        ['title' => 'Flexible Manufacturing Capabilities',     'icon' => 'mould',   'desc' => 'Whether the requirement involves a single prototype, a specialized structure, or bulk production, we tailor our manufacturing approach to the scale and complexity of the project.'],
+        ['title' => 'Direct Manufacturer Advantage',           'icon' => 'factory', 'desc' => 'Working directly with a manufacturer provides better technical coordination, flexible customization, competitive pricing, and effective production planning.'],
     ];
 }
 ?>
-<section class="pc-section pc-why" id="why">
+<section class="pc-section pc-why<?php echo ($args['bg'] ?? '') === 'white' ? ' pc-why--white' : ''; ?>"<?php echo empty($args['eyebrow']) ? ' id="why"' : ''; ?>>
   <div class="container">
-    <?php echo sp_section_head('Why Us', $heading, $subtext, 'center'); ?>
+    <?php echo sp_section_head($args['eyebrow'] ?: 'Why Us', $heading, $subtext, 'center'); ?>
     <div class="pc-why__grid">
       <?php foreach ($items as $it) : ?>
       <div class="pc-why__item">

@@ -44,7 +44,9 @@ $terms   = sp_page_url('terms-and-conditions', '/terms-and-conditions/');
           <a href="<?php echo esc_url(home_url('/')); ?>" class="pc-foot__logo"><img src="<?php echo esc_url($logo); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" height="48" loading="lazy"></a>
         <?php endif; ?>
         <strong class="pc-foot__name notranslate" translate="no">PRECAST AL TURAB</strong>
-        <p class="pc-foot__tag">UAE Precast Concrete Manufacturing</p>
+        <p class="pc-foot__tag"><?php echo esc_html($c['tagline']); ?></p>
+        <p class="pc-foot__sectors"><?php echo esc_html($c['sectors']); ?></p>
+        <p class="pc-foot__slogan"><?php echo esc_html($c['slogan']); ?></p>
         <a href="<?php echo esc_url(sp_profile_url()); ?>" class="pc-link pc-link--light" data-track="profile_download"><?php echo sp_icon('download', 16); ?> Download Company Profile</a>
         <?php if ($c['linkedin'] || $c['instagram'] || $c['facebook']) : ?>
         <div class="pc-foot__social">
@@ -79,7 +81,7 @@ $terms   = sp_page_url('terms-and-conditions', '/terms-and-conditions/');
       <div class="pc-foot__col pc-foot__contact">
         <h4>Contact</h4>
         <ul>
-          <li><?php echo sp_icon('phone', 16); ?><a href="tel:<?php echo esc_attr($c['phone_tel']); ?>"><?php echo esc_html($c['phone']); ?></a></li>
+          <li><?php echo sp_icon('phone', 16); ?><span><a href="tel:<?php echo esc_attr($c['phone_tel']); ?>"><?php echo esc_html($c['phone']); ?></a><?php if ($c['phone2']) : ?><br><a href="tel:<?php echo esc_attr($c['phone2_tel']); ?>"><?php echo esc_html($c['phone2']); ?></a><?php endif; ?></span></li>
           <li><?php echo sp_icon('whatsapp', 16); ?><a href="<?php echo esc_url(sp_wa_url()); ?>" target="_blank" rel="noopener">WhatsApp +<?php echo esc_html($c['wa_digits']); ?></a></li>
           <li><?php echo sp_icon('mail', 16); ?><a href="mailto:<?php echo esc_attr($c['email']); ?>"><?php echo esc_html($c['email']); ?></a></li>
           <li><?php echo sp_icon('pin', 16); ?><span><small class="pc-foot__lbl">Office</small><?php echo esc_html($c['address']); ?></span></li>
