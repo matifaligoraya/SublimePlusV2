@@ -19,17 +19,18 @@ foreach ($rows as $r) {
     ];
 }
 if (!$cards) {
+    // 'img' = card photo (existing media library images, one per card, no repeats on the homepage).
     $defaults = [
-        ['slug' => 'precast-bunker',   'cat' => '',                          'title' => 'Precast Bunkers & Shelters',     'desc' => 'Heavy reinforced precast structures manufactured according to project-specific drawings and requirements.', 'btn' => 'View Bunkers',   'icon' => 'bunker'],
-        ['slug' => 't-wall',           'cat' => '',                          'title' => 'T-Walls & Protective Barriers',  'desc' => 'Heavy reinforced wall systems for perimeter protection, separation and infrastructure applications.',          'btn' => 'View T-Walls',   'icon' => 'wall'],
-        ['slug' => 'box-culvert',      'cat' => '',                          'title' => 'Box Culverts & Channels',        'desc' => 'Box culverts, C-Type structures and U-Channels manufactured in standard and custom dimensions.',                'btn' => 'View Culverts',  'icon' => 'culvert'],
-        ['slug' => 'jersey-barrier',   'cat' => 'concrete-barriers',         'title' => 'Concrete Road Barriers',         'desc' => 'Jersey barriers, security barriers and precast traffic-control products.',                                      'btn' => 'View Barriers',  'icon' => 'barrier'],
-        ['slug' => 'manhole',          'cat' => 'manholes-utility-structures','title' => 'Manholes & Utility Structures',  'desc' => 'Manholes, chambers, cable troughs, utility bases and related infrastructure products.',                         'btn' => 'View Utilities', 'icon' => 'manhole'],
-        ['slug' => 'custom-precast',   'cat' => '',                          'title' => 'Custom Precast',                 'desc' => 'Custom reinforced precast products manufactured according to client drawings, BOQ and technical specifications.', 'btn' => 'Send Drawing',   'icon' => 'custom', 'rfq' => true],
+        ['img' => 13,  'slug' => 'precast-bunker',   'cat' => '',                          'title' => 'Precast Bunkers & Shelters',     'desc' => 'Heavy reinforced precast structures manufactured according to project-specific drawings and requirements.', 'btn' => 'View Bunkers',   'icon' => 'bunker'],
+        ['img' => 29,  'slug' => 't-wall',           'cat' => '',                          'title' => 'T-Walls & Protective Barriers',  'desc' => 'Heavy reinforced wall systems for perimeter protection, separation and infrastructure applications.',          'btn' => 'View T-Walls',   'icon' => 'wall'],
+        ['img' => 14,  'slug' => 'box-culvert',      'cat' => '',                          'title' => 'Box Culverts & Channels',        'desc' => 'Box culverts, C-Type structures and U-Channels manufactured in standard and custom dimensions.',                'btn' => 'View Culverts',  'icon' => 'culvert'],
+        ['img' => 9,   'slug' => 'jersey-barrier',   'cat' => 'concrete-barriers',         'title' => 'Concrete Road Barriers',         'desc' => 'Jersey barriers, security barriers and precast traffic-control products.',                                      'btn' => 'View Barriers',  'icon' => 'barrier'],
+        ['img' => 125, 'slug' => 'manhole',          'cat' => 'manholes-utility-structures','title' => 'Manholes & Utility Structures',  'desc' => 'Manholes, chambers, cable troughs, utility bases and related infrastructure products.',                         'btn' => 'View Utilities', 'icon' => 'manhole'],
+        ['img' => 15,  'slug' => 'custom-precast',   'cat' => '',                          'title' => 'Custom Precast',                 'desc' => 'Custom reinforced precast products manufactured according to client drawings, BOQ and technical specifications.', 'btn' => 'Send Drawing',   'icon' => 'custom', 'rfq' => true],
     ];
     foreach ($defaults as $d) {
         $p    = sp_pc_product_by_slug($d['slug']);
-        $img  = $p ? get_the_post_thumbnail_url($p->ID, 'large') : '';
+        $img  = !empty($d['img']) ? sp_img_url($d['img'], 'large') : ($p ? get_the_post_thumbnail_url($p->ID, 'large') : '');
         $link = '#';
         if (!empty($d['rfq']))           $link = sp_rfq_url('Custom Precast', '', 'Send Drawing') . '#rfq-files';
         elseif ($d['cat'] && ($term = get_term_by('slug', $d['cat'], 'sp_product_cat'))) $link = get_term_link($term);
