@@ -80,14 +80,26 @@ add_action('wp_enqueue_scripts', function () {
     // jQuery Migrate is not needed by any theme script.
     wp_dequeue_script('jquery-migrate-js');
     wp_dequeue_script('jquery-migrate');
-    // Unused legacy vendor scripts
-    foreach (['main', 'defer-js', 'sublimeplus-scripts'] as $h) {
+    // Legacy "wave" main.js calls WOW(), which is never loaded, so it only throws an error.
+    wp_dequeue_script('main');
+    // Unused legacy vendor scripts whose files are missing.
+    foreach (['defer-js', 'sublimeplus-scripts'] as $h) {
         $src = wp_scripts()->registered[$h]->src ?? '';
         if ($src && !file_exists(str_replace(SUBLIMEPLUS_URI, SUBLIMEPLUS_DIR, $src))) {
             wp_dequeue_script($h);
         }
     }
+    // Clever icon font stylesheet is referenced by the old framework but not shipped (404).
+    if (!file_exists(SUBLIMEPLUS_DIR . 'assets/vendor/cleverfont/style.min.css')) {
+        wp_dequeue_style('clever-font');
+    }
 }, 1000);
+
+/** Drop jQuery Migrate on the front end (no theme or plugin script needs it). */
+add_action('wp_default_scripts', function ($scripts) {
+    if (is_admin() || empty($scripts->registered['jquery'])) return;
+    $scripts->registered['jquery']->deps = array_diff($scripts->registered['jquery']->deps, ['jquery-migrate']);
+});
 add_filter('script_loader_tag', function ($tag, $handle) {
     if (is_admin()) return $tag;
     $defer = ['bootstrap', 'bootscore-theme', 'wpb_composer_front_js', 'vc_woocommerce-add-to-cart-js'];
