@@ -11,26 +11,6 @@
  */
 defined('ABSPATH') || exit;
 
-/** Private CPT to keep every submission visible in wp-admin. */
-add_action('init', function () {
-    register_post_type('sp_rfq', [
-        'labels' => [
-            'name'          => 'RFQ Submissions',
-            'singular_name' => 'RFQ',
-            'menu_name'     => 'RFQ Inbox',
-        ],
-        'public'       => false,
-        'show_ui'      => true,
-        'show_in_menu' => true,
-        'menu_icon'    => 'dashicons-email-alt',
-        'menu_position'=> 26,
-        'supports'     => ['title', 'editor'],
-        'capability_type' => 'post',
-        'capabilities' => ['create_posts' => 'do_not_allow'],
-        'map_meta_cap' => true,
-    ]);
-});
-
 /** Allowed upload types (Brief: PDF DWG DXF Excel Word JPG PNG ZIP). */
 function sp_rfq_allowed_ext(): array {
     return ['pdf', 'dwg', 'dxf', 'xls', 'xlsx', 'csv', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'webp', 'zip', 'rar', '7z'];
@@ -225,20 +205,6 @@ function sp_rfq_submit_handler() {
         'message' => 'Thank you. Your request has been received by Precast Al Turab. Our team will review your drawing and project requirements.',
     ]);
 }
-add_action('wp_ajax_sp_rfq_submit',        'sp_rfq_submit_handler');
-add_action('wp_ajax_nopriv_sp_rfq_submit', 'sp_rfq_submit_handler');
-
-/** Admin: show meta nicely on the RFQ post screen. */
-add_action('add_meta_boxes_sp_rfq', function () {
-    add_meta_box('sp_rfq_files', 'Uploaded Files', function ($post) {
-        $files = get_post_meta($post->ID, '_rfq_files', true);
-        if (!$files) { echo '<p>No files uploaded.</p>'; return; }
-        echo '<ul>';
-        foreach ($files as $f) echo '<li><a href="' . esc_url($f['url']) . '" target="_blank">' . esc_html($f['name']) . '</a> (' . esc_html(size_format($f['size'])) . ')</li>';
-        echo '</ul>';
-    }, 'sp_rfq', 'side');
-});
-
 /** Render the RFQ form (used by shortcode + contact page). */
 function sp_rfq_form_html(array $opts = []): string {
     $o = wp_parse_args($opts, ['compact' => false, 'heading' => '', 'subtext' => '']);
@@ -246,7 +212,3 @@ function sp_rfq_form_html(array $opts = []): string {
     get_template_part('template-parts/precast/rfq-form', null, $o);
     return ob_get_clean();
 }
-add_shortcode('sublime_rfq_form', function ($atts) {
-    $atts = shortcode_atts(['heading' => 'Request a Precast Quotation', 'subtext' => '', 'compact' => '0'], $atts, 'sublime_rfq_form');
-    return sp_rfq_form_html(['heading' => $atts['heading'], 'subtext' => $atts['subtext'], 'compact' => $atts['compact'] === '1']);
-});

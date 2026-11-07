@@ -10,12 +10,6 @@
  */
 defined('ABSPATH') || exit;
 
-add_action('add_meta_boxes', function () {
-    add_meta_box('sp_pc_product', 'Product Page Content (Precast)', 'sp_pc_product_box', 'sp_product', 'normal', 'high');
-    add_meta_box('sp_pc_project', 'Case Study Details (Precast)',   'sp_pc_project_box', 'sp_project', 'normal', 'high');
-    add_meta_box('sp_pc_seo',     'SEO',                            'sp_pc_seo_box',     ['sp_product', 'sp_project', 'page', 'post'], 'side', 'default');
-});
-
 function sp_pc_field_text($name, $label, $value, $placeholder = '') {
     printf('<p><label for="%1$s"><strong>%2$s</strong></label><br><input type="text" class="widefat" id="%1$s" name="%1$s" value="%3$s" placeholder="%4$s"></p>',
         esc_attr($name), esc_html($label), esc_attr($value), esc_attr($placeholder));
@@ -94,34 +88,3 @@ function sp_pc_admin_js() {
     </script>
     <?php
 }
-
-add_action('save_post', function ($post_id, $post) {
-    if (!isset($_POST['sp_pc_nonce']) || !wp_verify_nonce($_POST['sp_pc_nonce'], 'sp_pc_save')) return;
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-    if (!current_user_can('edit_post', $post_id)) return;
-
-    $text_keys = ['_sp_applications', '_sp_wa_message', '_sp_seo_title', '_sp_project_product', '_sp_project_quantity', '_sp_project_contractor', '_sp_project_consultant', '_sp_project_period', '_sp_project_lifting', '_sp_project_process_gallery', '_sp_project_logistics_gallery'];
-    foreach ($text_keys as $k) {
-        if (isset($_POST[$k])) update_post_meta($post_id, $k, sanitize_text_field($_POST[$k]));
-    }
-    $area_keys = ['_sp_overview', '_sp_seo_desc', '_sp_project_scope'];
-    foreach ($area_keys as $k) {
-        if (isset($_POST[$k])) update_post_meta($post_id, $k, sanitize_textarea_field($_POST[$k]));
-    }
-    if (isset($_POST['sp_faq_q'])) {
-        $faqs = [];
-        foreach ((array) $_POST['sp_faq_q'] as $i => $q) {
-            $q = sanitize_text_field($q); $a = sanitize_textarea_field($_POST['sp_faq_a'][$i] ?? '');
-            if ($q !== '' && $a !== '') $faqs[] = [$q, $a];
-        }
-        update_post_meta($post_id, '_sp_faqs', wp_json_encode($faqs, JSON_UNESCAPED_UNICODE));
-    }
-    if (isset($_POST['sp_tech_k'])) {
-        $rows = [];
-        foreach ((array) $_POST['sp_tech_k'] as $i => $k) {
-            $k = sanitize_text_field($k); $v = sanitize_text_field($_POST['sp_tech_v'][$i] ?? '');
-            if ($k !== '' && $v !== '') $rows[] = [$k, $v];
-        }
-        update_post_meta($post_id, '_sp_project_tech', wp_json_encode($rows, JSON_UNESCAPED_UNICODE));
-    }
-}, 10, 2);
