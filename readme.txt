@@ -3,7 +3,7 @@ Contributors: bitandbytelab
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,10 @@ Settings, Sections). Template helper functions are in the matching
 settings.php / seo.php / meta.php / rfq.php / site.php / sections.php files.
 
 == Changelog ==
+
+= 1.2.1 — 2026-11-07 =
+* Product category pages use the products layout (category filter, product
+  cards, quotation CTA) instead of the generic archive.
 
 = 1.2.0 — 2026-11-07 =
 * New "Foundation Blocks" product category listed after Manholes & Utility

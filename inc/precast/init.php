@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 if (!defined('PRECAST_VERSION')) {
-    define('PRECAST_VERSION', '1.2.0');
+    define('PRECAST_VERSION', '1.2.1');
 }
 
 require_once __DIR__ . '/class-precast.php';
