@@ -16,7 +16,7 @@ $heading  = !empty($args['heading']) ? $args['heading'] : 'Start Your Next Proje
 $subtext  = !empty($args['subtext']) ? $args['subtext'] : 'From custom barrier solutions to large-scale supply contracts — our team is ready to quote, plan, and deliver anywhere in the UAE within 24 hours.';
 $btn_text = !empty($args['btn_text']) ? $args['btn_text'] : 'Start a Project';
 $phone    = !empty($args['phone'])    ? $args['phone']    : get_theme_mod('sp_footer_phone',    '+971 54 350 7724');
-$whatsapp = !empty($args['whatsapp']) ? $args['whatsapp'] : get_theme_mod('sp_footer_whatsapp', 'https://wa.me/971543507724');
+$whatsapp = !empty($args['whatsapp']) ? $args['whatsapp'] : get_theme_mod('sp_footer_whatsapp', 'https://wa.me/971543488946');
 
 $_contact_pg = get_page_by_path('contact-us') ?: get_page_by_path('contact');
 $inquiry_url = ($_contact_pg ? get_permalink($_contact_pg) : home_url('/')) . '#inquiry';

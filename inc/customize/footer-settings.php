@@ -83,8 +83,8 @@ add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
         'section' => 'sp_footer_contact',
         'type'    => 'textarea',
     ]);
-    $url('sp_footer_whatsapp', __('WhatsApp URL', 'sublimeplus'), 'sp_footer_contact', 'https://wa.me/971543507724',
-        __('e.g. https://wa.me/971543507724', 'sublimeplus'));
+    $url('sp_footer_whatsapp', __('WhatsApp URL', 'sublimeplus'), 'sp_footer_contact', 'https://wa.me/971543488946',
+        __('e.g. https://wa.me/971543488946', 'sublimeplus'));
 
     $text('sp_footer_form_heading', __('Form Column Heading', 'sublimeplus'), 'sp_footer_contact', 'Request a Project Quote');
     $text(

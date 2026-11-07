@@ -940,7 +940,7 @@ function sublime_register_vc_elements() {
                 'heading'     => __('WhatsApp URL', 'sublimeplus'),
                 'param_name'  => 'whatsapp',
                 'value'       => '',
-                'description' => __('e.g. https://wa.me/971543507724', 'sublimeplus'),
+                'description' => __('e.g. https://wa.me/971543488946', 'sublimeplus'),
                 'group'       => __('Contact Details', 'sublimeplus'),
             ],
             [
@@ -1081,7 +1081,7 @@ function sublime_register_vc_elements() {
                 'heading'     => __('WhatsApp URL', 'sublimeplus'),
                 'param_name'  => 'whatsapp',
                 'value'       => '',
-                'description' => __('e.g. https://wa.me/971543507724', 'sublimeplus'),
+                'description' => __('e.g. https://wa.me/971543488946', 'sublimeplus'),
             ],
             [
                 'type'       => 'textfield',
@@ -1138,7 +1138,7 @@ function sublime_register_vc_elements() {
                 'heading'     => __('WhatsApp URL', 'sublimeplus'),
                 'param_name'  => 'whatsapp',
                 'value'       => '',
-                'description' => __('e.g. https://wa.me/971543507724. Leave empty to use Customizer value.', 'sublimeplus'),
+                'description' => __('e.g. https://wa.me/971543488946. Leave empty to use Customizer value.', 'sublimeplus'),
             ],
         ],
     ]);

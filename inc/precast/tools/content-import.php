@@ -467,7 +467,7 @@ $log('Menu rebuilt');
 // 6. Theme mods / options
 // ─────────────────────────────────────────────────────────────────────────────
 set_theme_mod('sp_footer_phone', '+971 54 350 7724');
-set_theme_mod('sp_footer_whatsapp', 'https://wa.me/971543507724');
+set_theme_mod('sp_footer_whatsapp', 'https://wa.me/971543488946');
 set_theme_mod('sp_footer_email', 'info@precastalturab.ae');
 set_theme_mod('sp_footer_tagline', 'UAE Precast Concrete Manufacturing');
 set_theme_mod('sp_footer_address', 'MAZYAD Offices 2, 75 Sultan Bin Mohammed Al Qubaisi St (Street 207), Mohamed Bin Zayed City, Abu Dhabi 20614, UAE');

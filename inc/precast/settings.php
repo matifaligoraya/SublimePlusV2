@@ -17,7 +17,7 @@ function sp_company(): array {
     if ($c !== null) return $c;
 
     $phone     = get_theme_mod('sp_footer_phone',    '+971 54 350 7724');
-    $whatsapp  = get_theme_mod('sp_footer_whatsapp', 'https://wa.me/971543507724');
+    $whatsapp  = get_theme_mod('sp_footer_whatsapp', 'https://wa.me/971543488946');
     $wa_digits = preg_replace('/\D+/', '', (string) parse_url($whatsapp, PHP_URL_PATH));
     if (!$wa_digits) $wa_digits = preg_replace('/\D+/', '', $phone);
 
