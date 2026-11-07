@@ -93,7 +93,25 @@ add_action('wp_enqueue_scripts', function () {
     if (!file_exists(SUBLIMEPLUS_DIR . 'assets/vendor/cleverfont/style.min.css')) {
         wp_dequeue_style('clever-font');
     }
+    // Montserrat is loaded by the old Customizer typography but no element uses it (Oswald + Inter are the site fonts).
+    wp_dequeue_style('Montserrat-font');
+    // Formidable's stylesheet is only needed where a [formidable] form is actually on the page.
+    $post = get_queried_object();
+    $has_frm = ($post instanceof WP_Post) && has_shortcode($post->post_content, 'formidable');
+    if (!$has_frm) wp_dequeue_style('formidable');
 }, 1000);
+
+/** Projects taken off the site (drafted) → 301 to the projects portfolio instead of a 404. */
+add_action('template_redirect', function () {
+    if (!is_404()) return;
+    $path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH), '/');
+    if (!preg_match('#^projects/([a-z0-9-]+)$#', $path, $m)) return;
+    $p = get_page_by_path($m[1], OBJECT, 'sp_project');
+    if ($p && $p->post_status !== 'publish') {
+        wp_safe_redirect(get_post_type_archive_link('sp_project'), 301);
+        exit;
+    }
+}, 1);
 
 /** Drop jQuery Migrate on the front end (no theme or plugin script needs it). */
 add_action('wp_default_scripts', function ($scripts) {

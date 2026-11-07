@@ -170,7 +170,7 @@ function sp_rfq_submit_handler() {
     $c  = sp_company();
     $to = array_unique(array_filter([$c['email'], get_option('admin_email')]));
     $subject = sprintf('[RFQ] %s — %s%s', $data['company'], $data['product'], $data['quantity'] ? ' × ' . $data['quantity'] : '');
-    $headers = ['Content-Type: text/plain; charset=UTF-8', 'Reply-To: ' . $data['contact'] . ' <' . $data['email'] . '>'];
+    $headers = ['Content-Type: text/plain; charset=UTF-8', 'From: Precast Al Turab Website <' . $c['email'] . '>', 'Reply-To: ' . $data['contact'] . ' <' . $data['email'] . '>'];
     $admin_body  = "New quotation request from precastalturab.ae\n\n" . $body_txt . "\n\n";
     if ($post_id) $admin_body .= 'View in WordPress: ' . admin_url('post.php?post=' . $post_id . '&action=edit') . "\n";
     wp_mail($to, $subject, $admin_body, $headers);
