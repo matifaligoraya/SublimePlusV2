@@ -45,8 +45,6 @@ $terms   = sp_page_url('terms-and-conditions', '/terms-and-conditions/');
         <?php endif; ?>
         <strong class="pc-foot__name">PRECAST AL TURAB</strong>
         <p class="pc-foot__tag">UAE Precast Concrete Manufacturing</p>
-        <p class="pc-foot__line">Bunkers • T-Walls • Barriers • Culverts • Utility Structures • Custom Precast</p>
-        <p class="pc-foot__line pc-foot__line--muted">From Drawing to Delivery: Technical Review • Custom Moulds • Reinforcement • Casting • QA/QC • Heavy Lifting • Logistics</p>
         <a href="<?php echo esc_url(sp_profile_url()); ?>" class="pc-link pc-link--light" data-track="profile_download"><?php echo sp_icon('download', 16); ?> Download Company Profile</a>
         <?php if ($c['linkedin'] || $c['instagram'] || $c['facebook']) : ?>
         <div class="pc-foot__social">

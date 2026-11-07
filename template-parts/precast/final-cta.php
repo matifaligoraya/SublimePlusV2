@@ -23,16 +23,7 @@ $c = sp_company();
           <?php foreach ($items as $it) : ?><li><?php echo sp_icon('check', 15); ?><?php echo esc_html($it); ?></li><?php endforeach; ?>
         </ul>
         <?php echo sp_cta_buttons(['labels' => ['quote' => 'Request Quotation', 'drawing' => 'Upload Drawing', 'wa' => 'WhatsApp Our Team'], 'show' => ['drawing', 'quote', 'wa']]); ?>
-      </div>
-      <div class="pc-final__side">
-        <div class="pc-final__card">
-          <h3>Direct Contact</h3>
-          <a href="tel:<?php echo esc_attr($c['phone_tel']); ?>"><?php echo sp_icon('phone', 18); ?><?php echo esc_html($c['phone']); ?></a>
-          <a href="<?php echo esc_url(sp_wa_url()); ?>" target="_blank" rel="noopener"><?php echo sp_icon('whatsapp', 18); ?>WhatsApp +<?php echo esc_html($c['wa_digits']); ?></a>
-          <a href="mailto:<?php echo esc_attr($c['email']); ?>"><?php echo sp_icon('mail', 18); ?><?php echo esc_html($c['email']); ?></a>
-          <span><?php echo sp_icon('clock', 18); ?><?php echo esc_html($c['hours']); ?></span>
-          <p class="pc-final__formats">Accepted: PDF • DWG • DXF • Excel • Word • JPG • PNG • ZIP</p>
-        </div>
+        <p class="pc-final__formats">Accepted: PDF • DWG • DXF • Excel • Word • JPG • PNG • ZIP</p>
       </div>
     </div>
   </div>
