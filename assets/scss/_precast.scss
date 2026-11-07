@@ -689,6 +689,10 @@ font[style] { background: none !important; box-shadow: none !important; }
 .pc-foot__contact li { display: flex; gap: .6rem; align-items: flex-start; }
 .pc-foot__contact svg { color: var(--pc-accent); flex-shrink: 0; margin-top: .2rem; }
 .pc-foot__rfq { margin-top: 1.25rem; }
+.pc-foot__lbl { display: block; font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.5); }
+.pc-foot__map { display: inline-block; margin-top: .2rem; font-size: .85rem; color: #ffb27a !important; }
+.pc-foot__map:hover { color: #fff !important; }
+.pc-quote__maplink { display: inline-flex; align-items: center; gap: .3rem; font-size: .85rem; font-weight: 600; color: var(--pc-accent) !important; text-decoration: none !important; margin-top: .2rem; }
 .pc-foot__bottom { border-top: 1px solid rgba(255,255,255,.1); padding: 1.25rem 0; font-size: .82rem; color: rgba(255,255,255,.6); }
 .pc-foot__bottom .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1.5rem; }
 .pc-foot__bottom nav { display: flex; gap: 1.25rem; }

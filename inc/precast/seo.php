@@ -161,6 +161,14 @@ add_action('wp_head', function () {
         ],
         'areaServed' => ['Abu Dhabi', 'Dubai', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain'],
         'openingHours' => 'Mo-Sa 08:00-18:00',
+        'hasMap' => $c['factory_map_url'],
+        'location' => [
+            '@type' => 'Place',
+            'name'  => 'Precast Al Turab Factory',
+            'address' => ['@type' => 'PostalAddress', 'streetAddress' => 'Al Sajaa Industrial Area', 'addressLocality' => 'Sharjah', 'addressCountry' => 'AE'],
+            'geo'   => ['@type' => 'GeoCoordinates', 'latitude' => $c['factory_lat'], 'longitude' => $c['factory_lng']],
+            'hasMap' => $c['factory_map_url'],
+        ],
     ];
     if ($logo) $org['logo'] = $logo;
     $same = array_filter([$c['linkedin'], $c['instagram'], $c['facebook']]);

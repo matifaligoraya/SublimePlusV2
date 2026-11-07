@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
 
 $c = sp_company();
 $office_map  = 'https://maps.google.com/maps?q=' . rawurlencode('MAZYAD Offices 2, Mohamed Bin Zayed City, Abu Dhabi') . '&z=14&output=embed';
-$factory_map = 'https://maps.google.com/maps?q=' . rawurlencode('Sharjah Industrial Area, Sharjah') . '&z=13&output=embed';
+$factory_map = 'https://maps.google.com/maps?q=' . rawurlencode($c['factory_map_q']) . '&z=15&output=embed';
 $insights = [
     ['Office',     'Abu Dhabi Office',     'Our Abu Dhabi office in Mohamed Bin Zayed City supports quotations, submittals, and project follow-up for consultants, contractors, and procurement teams.', 'pin'],
     ['Production', 'Factory Output',       'Production is set up for repeat runs, bulk orders, and phased call-offs, with factory QA and delivery planning aligned to active project schedules.', 'factory'],
@@ -40,8 +40,9 @@ $insights = [
           </div>
           <div>
             <h4><?php echo sp_icon('factory', 16); ?> Sharjah Factory</h4>
-            <p>Sharjah Industrial Area, Sharjah</p>
+            <p><?php echo esc_html($c['factory']); ?></p>
             <p class="pc-quote__hours"><?php echo sp_icon('clock', 14); ?> Hours: Mon–Sat 7:00 AM – 6:00 PM</p>
+            <a class="pc-quote__maplink" href="<?php echo esc_url($c['factory_map_url']); ?>" target="_blank" rel="noopener" data-track="map_click"><?php echo sp_icon('pin', 14); ?> Open in Google Maps</a>
           </div>
         </div>
 

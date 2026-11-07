@@ -471,7 +471,7 @@ set_theme_mod('sp_footer_whatsapp', 'https://wa.me/971543507724');
 set_theme_mod('sp_footer_email', 'info@precastalturab.ae');
 set_theme_mod('sp_footer_tagline', 'UAE Precast Concrete Manufacturing');
 set_theme_mod('sp_footer_address', 'MAZYAD Offices 2, 75 Sultan Bin Mohammed Al Qubaisi St (Street 207), Mohamed Bin Zayed City, Abu Dhabi 20614, UAE');
-set_theme_mod('sp_factory_address', 'Sharjah Industrial Area, Sharjah, UAE');
+set_theme_mod('sp_factory_address', 'Al Sajaa Industrial Area, Sharjah, UAE');
 set_theme_mod('sp_hours', 'Mon – Sat: 8:00 AM – 6:00 PM');
 set_theme_mod('sp_legal_name', 'Al Turab Concrete Products Manufacturing L.L.C. S.P.');
 if (!get_theme_mod('custom_logo')) {

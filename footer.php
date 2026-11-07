@@ -82,7 +82,8 @@ $terms   = sp_page_url('terms-and-conditions', '/terms-and-conditions/');
           <li><?php echo sp_icon('phone', 16); ?><a href="tel:<?php echo esc_attr($c['phone_tel']); ?>"><?php echo esc_html($c['phone']); ?></a></li>
           <li><?php echo sp_icon('whatsapp', 16); ?><a href="<?php echo esc_url(sp_wa_url()); ?>" target="_blank" rel="noopener">WhatsApp +<?php echo esc_html($c['wa_digits']); ?></a></li>
           <li><?php echo sp_icon('mail', 16); ?><a href="mailto:<?php echo esc_attr($c['email']); ?>"><?php echo esc_html($c['email']); ?></a></li>
-          <li><?php echo sp_icon('pin', 16); ?><span><?php echo esc_html($c['address']); ?></span></li>
+          <li><?php echo sp_icon('pin', 16); ?><span><small class="pc-foot__lbl">Office</small><?php echo esc_html($c['address']); ?></span></li>
+          <li><?php echo sp_icon('factory', 16); ?><span><small class="pc-foot__lbl">Factory</small><?php echo esc_html($c['factory']); ?><br><a class="pc-foot__map" href="<?php echo esc_url($c['factory_map_url']); ?>" target="_blank" rel="noopener" data-track="map_click">View on Google Maps &rarr;</a></span></li>
           <li><?php echo sp_icon('clock', 16); ?><span><?php echo esc_html($c['hours']); ?></span></li>
         </ul>
         <a href="<?php echo esc_url(sp_rfq_url()); ?>" class="pc-btn pc-btn--accent pc-foot__rfq" data-track="rfq_click"><?php echo sp_icon('quote', 16); ?> Request Quotation</a>
