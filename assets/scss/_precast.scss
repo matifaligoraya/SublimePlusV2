@@ -86,9 +86,9 @@ body.pc-site .container { max-width: 1240px; }
 .pc-link--light { color: #ffb27a !important; }
 
 // Tags / status
-.pc-tag { position: absolute; top: .8rem; left: .8rem; background: rgba(31,36,38,.86); color: #fff; font-family: var(--pc-font-head); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 3px; }
+.pc-tag { position: absolute; top: .8rem; left: .8rem; background: rgba(31,36,38,.86); color: #fff; font-family: var(--pc-font-head); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 3px; }
 .pc-tag--static { position: static; display: inline-block; text-decoration: none !important; background: var(--pc-concrete); color: var(--pc-charcoal); margin: 0 .35rem .35rem 0; }
-.pc-status { position: absolute; top: .8rem; right: .8rem; font-family: var(--pc-font-head); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 3px; background: #16a34a; color: #fff; }
+.pc-status { position: absolute; top: .8rem; right: .8rem; font-family: var(--pc-font-head); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 3px; background: #16a34a; color: #fff; }
 .pc-status--ongoing { background: #2563eb; }
 .pc-status--upcoming { background: #b45309; }
 
@@ -195,8 +195,8 @@ body.pc-site .container { max-width: 1240px; }
 .pc-capbar__list li { display: flex; align-items: center; justify-content: center; gap: .65rem; padding: 1.1rem .75rem; font-family: var(--pc-font-head); font-size: .9rem; letter-spacing: .08em; line-height: 1.25; text-transform: uppercase; border-left: 1px solid rgba(255,255,255,.25); text-align: left; }
 .pc-capbar__list li:first-child { border-left: 0; }
 .pc-capbar__icon { display: inline-flex; flex-shrink: 0; }
-@media (max-width: 991.98px) { .pc-capbar__list { grid-template-columns: repeat(3, 1fr); } .pc-capbar__list li { border: 0; border-bottom: 1px solid rgba(255,255,255,.2); justify-content: flex-start; font-size: .85rem; } }
-@media (max-width: 575.98px) { .pc-capbar__list { grid-template-columns: 1fr 1fr; } .pc-capbar__list li { padding: .9rem .5rem; gap: .5rem; } .pc-capbar__list li:last-child { grid-column: 1 / -1; } }
+@media (max-width: 991.98px) { .pc-capbar__list { grid-template-columns: repeat(6, 1fr); } .pc-capbar__list li { grid-column: span 2; border: 0; border-bottom: 1px solid rgba(255,255,255,.2); justify-content: flex-start; font-size: .85rem; } .pc-capbar__list li:nth-child(n+4) { grid-column: span 3; } }
+@media (max-width: 575.98px) { .pc-capbar__list { grid-template-columns: 1fr 1fr; } .pc-capbar__list li, .pc-capbar__list li:nth-child(n+4) { grid-column: auto; padding: .9rem .5rem; gap: .5rem; } .pc-capbar__list li:last-child { grid-column: 1 / -1; } }
 
 // Systems (6 cards)
 .pc-systems { background: var(--pc-concrete-3); }
