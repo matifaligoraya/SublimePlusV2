@@ -66,6 +66,8 @@
       // Native validation first
       var invalid = form.querySelector(':invalid');
       if (invalid) { invalid.focus(); show('Please complete the required fields marked *.', false); return; }
+      var pi = form.querySelectorAll('input[name="products[]"]');
+      if (pi.length && !form.querySelector('input[name="products[]"]:checked')) { pi[0].focus(); show('Please select at least one product under Product Interest.', false); return; }
       var bad = files.some(function (f) { return ALLOWED.indexOf(f.name.split('.').pop().toLowerCase()) === -1 || f.size > maxBytes; });
       if (bad) { show('One or more files are not allowed or exceed the size limit. Remove them and try again.', false); return; }
 

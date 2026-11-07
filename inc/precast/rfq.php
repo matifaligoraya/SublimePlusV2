@@ -40,20 +40,53 @@ function sp_rfq_max_bytes(): int {
     return min($ini, 30 * MB_IN_BYTES);
 }
 
-/** Field definitions shared by renderer + handler. */
+/**
+ * Field definitions shared by renderer + handler.
+ * Mirrors the reference site's quote form (precastuae.ae/contact/): 3 steps —
+ * Contact / Project / Details — plus a drawing upload for "Send Drawing" links.
+ */
 function sp_rfq_fields(): array {
     return [
-        'company'   => ['label' => 'Company Name',          'type' => 'text',  'required' => true],
-        'contact'   => ['label' => 'Contact Person',        'type' => 'text',  'required' => true],
-        'phone'     => ['label' => 'Phone Number',          'type' => 'tel',   'required' => true],
-        'email'     => ['label' => 'Email Address',         'type' => 'email', 'required' => true],
-        'project'   => ['label' => 'Project Name',          'type' => 'text',  'required' => false],
-        'location'  => ['label' => 'Project Location',      'type' => 'select','required' => false, 'options' => ['Abu Dhabi', 'Dubai', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain', 'Al Ain', 'Western Region', 'Other / Outside UAE']],
-        'product'   => ['label' => 'Product Required',      'type' => 'text',  'required' => true],
-        'quantity'  => ['label' => 'Quantity',              'type' => 'text',  'required' => false],
-        'delivery'  => ['label' => 'Required Delivery Date','type' => 'date',  'required' => false],
-        'message'   => ['label' => 'Message',               'type' => 'textarea', 'required' => false],
+        'contact'  => ['step' => 1, 'label' => 'Contact Name',     'type' => 'text',  'required' => true,  'ph' => 'Your Name'],
+        'phone'    => ['step' => 1, 'label' => 'Mobile Number',    'type' => 'tel',   'required' => true,  'ph' => '+971 50 ...'],
+        'email'    => ['step' => 1, 'label' => 'Email Address',    'type' => 'email', 'required' => true,  'ph' => 'name@company.com'],
+        'quantity' => ['step' => 2, 'label' => 'Quantity',         'type' => 'select','required' => false, 'ph' => 'Estimated quantity...', 'options' => ['1–25 Units', '25–50 Units', '50–100 Units', '100–500 Units', '500+ Units']],
+        'emirate'  => ['step' => 2, 'label' => 'Emirate',          'type' => 'select','required' => false, 'ph' => 'Select Emirate...', 'options' => ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman', 'Ras Al Khaimah', 'Fujairah', 'Umm Al Quwain']],
+        'delivery' => ['step' => 2, 'label' => 'Delivery',         'type' => 'select','required' => false, 'ph' => 'When do you need it?', 'options' => ['ASAP (24–48h)', 'Within 7 Days', 'Within 2 Weeks', 'Flexible']],
+        'location' => ['step' => 2, 'label' => 'Project Location', 'type' => 'text',  'required' => false, 'ph' => 'Delivery location...'],
+        'message'  => ['step' => 3, 'label' => 'Message / Details','type' => 'textarea', 'required' => true, 'ph' => 'Please describe your requirement (Quantity, Dimensions, Delivery Location)...'],
     ];
+}
+
+/** "Product Interest" cards: product slug => [label, image attachment ID]. */
+function sp_rfq_products(): array {
+    return [
+        'jersey-barrier'  => ['Concrete Barriers',       8],
+        'precast-bunker'  => ['Bunkers & Shelters',      13],
+        't-wall'          => ['T-Walls / Blast Walls',   208],
+        'manhole'         => ['Manholes & Chambers',     212],
+        'box-culvert'     => ['Box Culverts & Channels', 211],
+        'custom-precast'  => ['Custom Precast',          15],
+        'wheel-stopper'   => ['Wheel Stoppers',          18],
+        'masonry-block'   => ['Masonry Blocks',          23],
+        'hoarding-block'  => ['Hoarding Blocks',         28],
+        'plastic-barrier' => ['Plastic Barriers',        33],
+    ];
+}
+
+/** Map a free-text product name (from ?product=) to a Product Interest card. */
+function sp_rfq_match_product(string $text): string {
+    $t = strtolower($text);
+    if ($t === '') return '';
+    $map = [
+        'plastic' => 'plastic-barrier', 'water' => 'plastic-barrier', 'wheel' => 'wheel-stopper', 'hoarding' => 'hoarding-block',
+        'masonry' => 'masonry-block', 'block' => 'masonry-block', 't-wall' => 't-wall', 'blast' => 't-wall',
+        'bunker' => 'precast-bunker', 'shelter' => 'precast-bunker', 'manhole' => 'manhole', 'chamber' => 'manhole',
+        'culvert' => 'box-culvert', 'channel' => 'box-culvert', 'c-type' => 'box-culvert', 'trough' => 'manhole', 'slab' => 'manhole',
+        'barrier' => 'jersey-barrier', 'jersey' => 'jersey-barrier', 'custom' => 'custom-precast', 'heavy' => 'custom-precast',
+    ];
+    foreach ($map as $k => $slug) if (strpos($t, $k) !== false) return $slug;
+    return 'custom-precast';
 }
 function sp_rfq_checkboxes(): array {
     return [
@@ -84,8 +117,14 @@ function sp_rfq_submit_handler() {
         $val = $f['type'] === 'textarea' ? sanitize_textarea_field($raw) : ($f['type'] === 'email' ? sanitize_email($raw) : sanitize_text_field($raw));
         if ($f['required'] && $val === '') $errors[] = $f['label'] . ' is required.';
         if ($f['type'] === 'email' && $val && !is_email($val)) $errors[] = 'Please enter a valid email address.';
+        if ($f['type'] === 'select' && $val !== '' && !in_array($val, $f['options'], true)) $val = '';
         $data[$key] = $val;
     }
+    // Product Interest (one or more cards)
+    $cards  = sp_rfq_products();
+    $picked = array_values(array_intersect(array_map('sanitize_key', (array) wp_unslash($_POST['products'] ?? [])), array_keys($cards)));
+    if (!$picked) $errors[] = 'Please select at least one product.';
+    $data['product'] = implode(', ', array_map(fn($s) => $cards[$s][0], $picked));
     if ($errors) wp_send_json_error(['message' => implode(' ', $errors)]);
 
     $checks = [];
@@ -139,7 +178,7 @@ function sp_rfq_submit_handler() {
     }
 
     // ── Store submission ─────────────────────────────────────────────────────
-    $lines = [];
+    $lines = ['Product Interest: ' . $data['product']];
     foreach ($fields as $key => $f) {
         if ($data[$key] !== '') $lines[] = $f['label'] . ': ' . $data[$key];
     }
@@ -157,7 +196,7 @@ function sp_rfq_submit_handler() {
     $post_id = wp_insert_post([
         'post_type'    => 'sp_rfq',
         'post_status'  => 'private',
-        'post_title'   => sprintf('%s — %s (%s)', $data['company'], $data['product'], date_i18n('d M Y H:i')),
+        'post_title'   => sprintf('%s — %s (%s)', $data['contact'], $data['product'], date_i18n('d M Y H:i')),
         'post_content' => $body_txt,
     ]);
     if ($post_id) {
@@ -169,7 +208,7 @@ function sp_rfq_submit_handler() {
     // ── Emails ───────────────────────────────────────────────────────────────
     $c  = sp_company();
     $to = array_unique(array_filter([$c['email'], get_option('admin_email')]));
-    $subject = sprintf('[RFQ] %s — %s%s', $data['company'], $data['product'], $data['quantity'] ? ' × ' . $data['quantity'] : '');
+    $subject = sprintf('[RFQ] %s — %s%s', $data['contact'], $data['product'], $data['quantity'] ? ' × ' . $data['quantity'] : '');
     $headers = ['Content-Type: text/plain; charset=UTF-8', 'From: Precast Al Turab Website <' . $c['email'] . '>', 'Reply-To: ' . $data['contact'] . ' <' . $data['email'] . '>'];
     $admin_body  = "New quotation request from precastalturab.ae\n\n" . $body_txt . "\n\n";
     if ($post_id) $admin_body .= 'View in WordPress: ' . admin_url('post.php?post=' . $post_id . '&action=edit') . "\n";
