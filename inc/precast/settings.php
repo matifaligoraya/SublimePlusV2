@@ -125,6 +125,9 @@ function sp_icon(string $name, int $size = 22): string {
         'users'     => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
         'calendar'  => '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
         'cert'      => '<circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 8 5-3 5 3-1.5-8"/>',
+        'weight'    => '<path d="M6.5 8h11l2.5 12H4z"/><circle cx="12" cy="5" r="2.5"/>',
+        'height'    => '<path d="M12 3v18"/><path d="m8 7 4-4 4 4"/><path d="m8 17 4 4 4-4"/>',
+        'length'    => '<path d="M3 12h18"/><path d="m7 8-4 4 4 4"/><path d="m17 8 4 4-4 4"/>',
     ];
     $path = $icons[$name] ?? $icons['box'];
     $fill = ($name === 'whatsapp') ? 'currentColor' : 'none';

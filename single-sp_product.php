@@ -79,6 +79,7 @@ while (have_posts()) : the_post();
           <?php endif; ?>
           <h1 class="pc-product__title"><?php echo esc_html($h1); ?></h1>
           <p class="pc-product__excerpt"><?php echo esc_html($excerpt); ?></p>
+          <?php echo sp_pc_card_specs_html($id); ?>
           <ul class="pc-product__quick">
             <?php foreach (array_slice($rows, 0, 4) as [$k, $v]) : ?><li><span><?php echo esc_html($k); ?></span><strong><?php echo esc_html($v); ?></strong></li><?php endforeach; ?>
           </ul>

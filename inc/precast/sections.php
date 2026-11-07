@@ -130,6 +130,40 @@ function sp_pc_product_by_slug(string $slug) {
     return $p ?: null;
 }
 
+/**
+ * Product card details (weight / height / strength + stock + lead time), from the
+ * `_sp_card` product meta: {"specs":[[label,value],...],"stock":"In Stock","lead":"5–10 Days"}.
+ */
+function sp_pc_card_data(int $product_id): array {
+    if (!$product_id) return [];
+    $d = json_decode((string) get_post_meta($product_id, '_sp_card', true), true);
+    return is_array($d) ? $d : [];
+}
+function sp_pc_card_specs_html(int $product_id): string {
+    $d = sp_pc_card_data($product_id);
+    if (!$d) return '';
+    $icons = ['weight' => 'weight', 'height' => 'height', 'strength' => 'box', 'length' => 'length', 'concrete' => 'box', 'wall' => 'layers'];
+    $out = '';
+    if (!empty($d['specs'])) {
+        $out .= '<dl class="pc-cardspec">';
+        foreach (array_slice($d['specs'], 0, 3) as $s) {
+            $key = strtolower(strtok((string) $s[0], ' '));
+            $out .= '<div><span class="pc-cardspec__ic">' . sp_icon($icons[$key] ?? 'box', 18) . '</span><dt>' . esc_html($s[0]) . '</dt><dd>' . esc_html($s[1]) . '</dd></div>';
+        }
+        $out .= '</dl>';
+    }
+    if (!empty($d['stock']) || !empty($d['lead'])) {
+        $out .= '<div class="pc-cardchips">';
+        if (!empty($d['stock'])) {
+            $cls = stripos($d['stock'], 'stock') !== false ? 'is-stock' : 'is-order';
+            $out .= '<span class="pc-cardchip ' . $cls . '"><i aria-hidden="true"></i>' . esc_html($d['stock']) . '</span>';
+        }
+        if (!empty($d['lead'])) $out .= '<span class="pc-cardchip">' . sp_icon('truck', 14) . esc_html($d['lead']) . '</span>';
+        $out .= '</div>';
+    }
+    return $out;
+}
+
 /** Fallback image for a product-type card (concrete pattern + icon). */
 function sp_pc_placeholder(string $icon = 'box', string $label = ''): string {
     return '<div class="pc-ph" aria-hidden="true"><span class="pc-ph__icon">' . sp_icon($icon, 44) . '</span>' . ($label ? '<span class="pc-ph__label">' . esc_html($label) . '</span>' : '') . '</div>';
@@ -187,6 +221,7 @@ function sp_pc_product_card(int $pid, string $icon = 'box'): string {
     $out .= '</a><div class="pc-prod-card__body">';
     $out .= '<h3 class="pc-prod-card__title"><a href="' . esc_url(get_permalink($pid)) . '">' . esc_html(get_the_title($pid)) . '</a></h3>';
     if ($ex) $out .= '<p>' . esc_html(wp_trim_words($ex, 22)) . '</p>';
+    $out .= sp_pc_card_specs_html($pid);
     $out .= '<div class="pc-prod-card__actions"><a class="pc-btn pc-btn--sm pc-btn--dark" href="' . esc_url(get_permalink($pid)) . '">View Product</a><a class="pc-btn pc-btn--sm pc-btn--accent" href="' . esc_url(sp_rfq_url(get_the_title($pid))) . '" data-track="rfq_click">Get Quote</a></div>';
     $out .= '</div></article>';
     return $out;

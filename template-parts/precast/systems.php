@@ -36,7 +36,7 @@ if (!$cards) {
         elseif ($d['cat'] && ($term = get_term_by('slug', $d['cat'], 'sp_product_cat'))) $link = get_term_link($term);
         elseif ($p)                      $link = get_permalink($p);
         else                             $link = get_post_type_archive_link('sp_product');
-        $cards[] = ['title' => $d['title'], 'desc' => $d['desc'], 'btn' => $d['btn'], 'link' => $link, 'img' => $img ?: '', 'icon' => $d['icon']];
+        $cards[] = ['title' => $d['title'], 'desc' => $d['desc'], 'btn' => $d['btn'], 'link' => $link, 'img' => $img ?: '', 'icon' => $d['icon'], 'pid' => $p ? (int) $p->ID : 0, 'quote' => $d['title']];
     }
 }
 ?>
@@ -56,7 +56,11 @@ if (!$cards) {
           <span class="pc-sys-card__icon"><?php echo sp_icon($c['icon'], 26); ?></span>
           <h3 class="pc-sys-card__title"><a href="<?php echo esc_url($c['link']); ?>"><?php echo esc_html($c['title']); ?></a></h3>
           <p><?php echo esc_html($c['desc']); ?></p>
-          <a class="pc-btn pc-btn--dark pc-btn--sm" href="<?php echo esc_url($c['link']); ?>"><?php echo esc_html($c['btn']); ?> <?php echo sp_icon('arrow', 16); ?></a>
+          <?php echo sp_pc_card_specs_html((int) ($c['pid'] ?? 0)); ?>
+          <div class="pc-sys-card__actions">
+            <a class="pc-btn pc-btn--accent pc-btn--sm" href="<?php echo esc_url(sp_rfq_url($c['quote'] ?? $c['title'])); ?>" data-track="rfq_click"><?php echo sp_icon('quote', 15); ?> Get Quote</a>
+            <a class="pc-btn pc-btn--dark pc-btn--sm" href="<?php echo esc_url($c['link']); ?>"><?php echo esc_html($c['btn']); ?> <?php echo sp_icon('arrow', 16); ?></a>
+          </div>
         </div>
       </article>
       <?php endforeach; ?>

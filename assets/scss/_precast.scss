@@ -211,7 +211,22 @@ body.pc-site .container { max-width: 1240px; }
 .pc-sys-card__title { font-size: 1.3rem; margin: 0; min-height: 2.24em; display: flex; align-items: flex-end; }
 .pc-sys-card__title a { text-decoration: none; color: inherit; }
 .pc-sys-card__body p { color: var(--pc-muted); margin: 0 0 .5rem; flex: 1; }
-.pc-sys-card .pc-btn { align-self: flex-start; }
+.pc-sys-card__actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+.pc-sys-card__actions .pc-btn { flex: 1 1 auto; }
+
+// Product card details: weight / height / strength + stock + lead time
+.pc-cardspec { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin: .25rem 0 .1rem; padding: .75rem 0; border-top: 1px solid var(--pc-line); border-bottom: 1px solid var(--pc-line); }
+.pc-cardspec > div { display: grid; grid-template-columns: auto 1fr; column-gap: .4rem; align-items: center; min-width: 0; }
+.pc-cardspec__ic { grid-row: span 2; color: var(--pc-charcoal-3); display: inline-flex; }
+.pc-cardspec dt { font-size: .72rem; font-weight: 500; color: var(--pc-muted); line-height: 1.2; }
+.pc-cardspec dd { margin: 0; font-size: .92rem; font-weight: 700; color: var(--pc-charcoal); line-height: 1.25; overflow-wrap: anywhere; }
+.pc-cardchips { display: flex; flex-wrap: wrap; gap: .4rem; margin: .1rem 0 .35rem; }
+.pc-cardchip { display: inline-flex; align-items: center; gap: .35rem; font-size: .8rem; font-weight: 600; padding: .3rem .7rem; border-radius: 999px; background: var(--pc-concrete-3); border: 1px solid var(--pc-line); color: var(--pc-charcoal-3); }
+.pc-cardchip i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pc-cardchip.is-stock { color: #15803d; background: #f0fdf4; border-color: #bbf7d0; }
+.pc-cardchip.is-order { color: #b45309; background: #fffbeb; border-color: #fde68a; }
+.pc-product__info .pc-cardspec { background: #fff; border: 1px solid var(--pc-line); border-radius: var(--pc-radius); padding: .75rem; margin-top: 1rem; }
+@media (max-width: 380px) { .pc-cardspec { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 991.98px) { .pc-systems__grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 575.98px) { .pc-systems__grid { grid-template-columns: 1fr; } }
 
