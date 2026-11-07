@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
 
 $c       = sp_company();
 $logo_id = get_theme_mod('custom_logo');
-$logo    = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
+$logo    = $logo_id ? wp_get_attachment_image_url($logo_id, 'full') : '';
 
 $product_links = [
     ['Precast Bunkers',   'precast-bunker'],

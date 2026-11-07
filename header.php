@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
 
 $c       = sp_company();
 $logo_id = get_theme_mod('custom_logo');
-$logo    = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
+$logo    = $logo_id ? wp_get_attachment_image_url($logo_id, 'full') : '';
 $wa      = is_singular('sp_product') ? sp_wa_url_for_product(get_queried_object_id()) : sp_wa_url();
 $rfq     = sp_rfq_url(is_singular('sp_product') ? get_the_title() : '');
 ?>

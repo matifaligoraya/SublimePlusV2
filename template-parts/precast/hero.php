@@ -18,17 +18,19 @@ $sub     = $a['subheading']  ?: 'Heavy-Duty Precast Manufacturing for Infrastruc
 $desc    = $a['description'] ?: 'Precast Al Turab manufactures reinforced precast concrete products engineered for demanding UAE projects. From protective bunkers and T-Walls to barriers, box culverts, chambers and custom structural elements, we support projects from drawing review and mould fabrication through production, lifting and delivery.';
 $formats = $a['formats']     ?: 'PDF • DWG • BOQ • Technical Specification';
 
-// 3D product models (same .glb files the original banner used), shown beside the heading.
-$models_dir = get_template_directory_uri() . '/assets/models/';
+// Client's branded 3D product images (Nov 2026), shown as a slider beside the heading.
 $models = [];
 foreach ([
-    ['jersey-barrier',  'concrete_road_barrier.glb', 'Concrete Jersey Barrier'],
-    ['wheel-stopper',   'wheel_stopper.glb',         'Wheel Stopper'],
-    ['plastic-barrier', 'plastic_barrier.glb',       'Water-Filled Barrier'],
-] as [$slug, $file, $label]) {
-    if (!file_exists(get_template_directory() . '/assets/models/' . $file)) continue;
+    ['precast-bunker',  'Bunkers & Shelters'],
+    ['t-wall',          'T-Walls'],
+    ['jersey-barrier',  'Road Barriers'],
+    ['manhole',         'Manholes'],
+    ['telecom-chamber', 'Telecom Chambers'],
+] as [$slug, $label]) {
     $p = sp_pc_product_by_slug($slug);
-    $models[] = ['src' => $models_dir . $file, 'label' => $label, 'link' => $p ? get_permalink($p) : get_post_type_archive_link('sp_product')];
+    if (!$p || !has_post_thumbnail($p->ID)) continue;
+    $tid = (int) get_post_thumbnail_id($p->ID);
+    $models[] = ['src' => sp_img_url($tid, 'large') ?: sp_img_url($tid, 'full'), 'alt' => get_post_meta($tid, '_wp_attachment_image_alt', true) ?: $label, 'label' => $label, 'link' => get_permalink($p)];
 }
 ?>
 <section class="pc-hero" id="hero">
@@ -48,16 +50,17 @@ foreach ([
     </div>
     <?php if ($models) : ?>
     <div class="pc-hero__3d" data-hero-3d>
-      <model-viewer class="pc-hero__model" src="<?php echo esc_url($models[0]['src']); ?>" alt="<?php echo esc_attr($models[0]['label']); ?> 3D model"
-        auto-rotate rotation-per-second="25deg" camera-controls disable-zoom interaction-prompt="none"
-        camera-orbit="-30deg 80deg 110%" shadow-intensity="1" shadow-softness="0.6" exposure="1.1">
-        <div slot="progress-bar"></div>
-      </model-viewer>
+      <div class="pc-hero__slides">
+        <?php foreach ($models as $i => $m) : ?>
+        <a class="pc-hero__slide<?php echo $i === 0 ? ' is-active' : ''; ?>" href="<?php echo esc_url($m['link']); ?>" aria-hidden="<?php echo $i === 0 ? 'false' : 'true'; ?>" tabindex="<?php echo $i === 0 ? '0' : '-1'; ?>">
+          <img src="<?php echo esc_url($m['src']); ?>" alt="<?php echo esc_attr($m['alt']); ?>" loading="<?php echo $i === 0 ? 'eager' : 'lazy'; ?>" decoding="async">
+        </a>
+        <?php endforeach; ?>
+      </div>
       <div class="pc-hero__3d-bar">
-        <span class="pc-hero__3d-hint"><?php echo sp_icon('layers', 14); ?> 3D view · drag to rotate</span>
         <div class="pc-hero__3d-tabs" role="tablist">
           <?php foreach ($models as $i => $m) : ?>
-          <button type="button" role="tab" class="<?php echo $i === 0 ? 'is-active' : ''; ?>" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" data-src="<?php echo esc_url($m['src']); ?>" data-label="<?php echo esc_attr($m['label']); ?>" data-link="<?php echo esc_url($m['link']); ?>"><?php echo esc_html($m['label']); ?></button>
+          <button type="button" role="tab" class="<?php echo $i === 0 ? 'is-active' : ''; ?>" aria-selected="<?php echo $i === 0 ? 'true' : 'false'; ?>" data-link="<?php echo esc_url($m['link']); ?>"><?php echo esc_html($m['label']); ?></button>
           <?php endforeach; ?>
         </div>
         <a class="pc-hero__3d-link" href="<?php echo esc_url($models[0]['link']); ?>">View product <?php echo sp_icon('arrow', 14); ?></a>
@@ -67,19 +70,17 @@ foreach ([
     </div>
   </div>
 </section>
-<?php if ($models) : ?>
+<?php if (count($models) > 1) : ?>
 <script>
 (function(){
   var box=document.querySelector('[data-hero-3d]'); if(!box) return;
-  // Load the 3D viewer only after the page has loaded, so it never delays the hero text or photo.
-  function load(){ if(window.customElements && customElements.get('model-viewer')) return; var s=document.createElement('script'); s.type='module'; s.src='https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js'; document.head.appendChild(s); }
-  if(document.readyState==='complete') load(); else window.addEventListener('load', load);
-  var mv=box.querySelector('model-viewer'), tabs=[].slice.call(box.querySelectorAll('[data-src]')), link=box.querySelector('.pc-hero__3d-link'), i=0, timer, touched=false;
-  function show(n){ i=n; var t=tabs[n]; mv.setAttribute('src', t.getAttribute('data-src')); mv.setAttribute('alt', t.getAttribute('data-label')+' 3D model'); link.href=t.getAttribute('data-link');
-    tabs.forEach(function(b,k){ b.classList.toggle('is-active',k===n); b.setAttribute('aria-selected',k===n?'true':'false'); }); }
+  var slides=[].slice.call(box.querySelectorAll('.pc-hero__slide')), tabs=[].slice.call(box.querySelectorAll('.pc-hero__3d-tabs button')), link=box.querySelector('.pc-hero__3d-link'), i=0, timer, touched=false;
+  function show(n){ i=n; slides.forEach(function(s,k){ var on=k===n; s.classList.toggle('is-active',on); s.setAttribute('aria-hidden',on?'false':'true'); s.tabIndex=on?0:-1; });
+    tabs.forEach(function(b,k){ b.classList.toggle('is-active',k===n); b.setAttribute('aria-selected',k===n?'true':'false'); }); link.href=tabs[n].getAttribute('data-link'); }
   tabs.forEach(function(b,k){ b.addEventListener('click',function(){ touched=true; clearInterval(timer); show(k); }); });
-  mv.addEventListener('pointerdown',function(){ touched=true; clearInterval(timer); });
-  timer=setInterval(function(){ if(!touched) show((i+1)%tabs.length); }, 7000);
+  box.addEventListener('mouseenter',function(){ clearInterval(timer); });
+  box.addEventListener('mouseleave',function(){ if(!touched) timer=setInterval(function(){ show((i+1)%slides.length); }, 5000); });
+  timer=setInterval(function(){ if(!touched) show((i+1)%slides.length); }, 5000);
 })();
 </script>
 <?php endif; ?>
