@@ -20,7 +20,7 @@ class Precast {
     protected $version;
 
     public function __construct() {
-        $this->version = defined('PRECAST_VERSION') ? PRECAST_VERSION : '1.1.0';
+        $this->version = defined('PRECAST_VERSION') ? PRECAST_VERSION : '1.2.0';
         $this->load_dependencies();
         $this->define_shared_hooks();
         $this->define_admin_hooks();

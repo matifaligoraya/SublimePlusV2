@@ -3,7 +3,7 @@ Contributors: bitandbytelab
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,12 @@ Settings, Sections). Template helper functions are in the matching
 settings.php / seo.php / meta.php / rfq.php / site.php / sections.php files.
 
 == Changelog ==
+
+= 1.2.0 — 2026-11-07 =
+* New "Foundation Blocks" product category listed after Manholes & Utility
+  Structures on the products page.
+* Quote form: "Foundation Blocks" product card; foundation / footing product
+  names pre-select it.
 
 = 1.1.0 — 2026-11-07 =
 * Refactor: all Precast hooks registered through Precast_Loader in the core

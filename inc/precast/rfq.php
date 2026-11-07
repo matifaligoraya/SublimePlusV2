@@ -46,6 +46,7 @@ function sp_rfq_products(): array {
         't-wall'          => ['T-Walls / Blast Walls',   208],
         'manhole'         => ['Manholes & Chambers',     212],
         'box-culvert'     => ['Box Culverts & Channels', 211],
+        'column-foundation-block' => ['Foundation Blocks', sp_rfq_product_thumb('column-foundation-block')],
         'custom-precast'  => ['Custom Precast',          15],
         'wheel-stopper'   => ['Wheel Stoppers',          18],
         'masonry-block'   => ['Masonry Blocks',          23],
@@ -54,11 +55,18 @@ function sp_rfq_products(): array {
     ];
 }
 
+/** Featured image ID of a product, by slug (0 when the product does not exist). */
+function sp_rfq_product_thumb(string $slug): int {
+    $p = get_page_by_path($slug, OBJECT, 'sp_product');
+    return $p ? (int) get_post_thumbnail_id($p) : 0;
+}
+
 /** Map a free-text product name (from ?product=) to a Product Interest card. */
 function sp_rfq_match_product(string $text): string {
     $t = strtolower($text);
     if ($t === '') return '';
     $map = [
+        'foundation' => 'column-foundation-block', 'footing' => 'column-foundation-block',
         'plastic' => 'plastic-barrier', 'water' => 'plastic-barrier', 'wheel' => 'wheel-stopper', 'hoarding' => 'hoarding-block',
         'masonry' => 'masonry-block', 'block' => 'masonry-block', 't-wall' => 't-wall', 'blast' => 't-wall',
         'bunker' => 'precast-bunker', 'shelter' => 'precast-bunker', 'manhole' => 'manhole', 'chamber' => 'manhole',

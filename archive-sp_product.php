@@ -13,7 +13,7 @@ $active_slug = ($active instanceof WP_Term) ? $active->slug : '';
 $cats = get_terms(['taxonomy' => 'sp_product_cat', 'hide_empty' => true, 'orderby' => 'term_order', 'meta_key' => '', 'parent' => 0]);
 if (is_wp_error($cats)) $cats = [];
 // Sort: heavy/protective first, accessories last
-$priority = ['heavy-precast' => 1, 'protective-structures' => 2, 'culverts-channels' => 3, 'concrete-barriers' => 4, 'manholes-utility-structures' => 5, 'custom-precast' => 6];
+$priority = ['heavy-precast' => 1, 'protective-structures' => 2, 'culverts-channels' => 3, 'concrete-barriers' => 4, 'manholes-utility-structures' => 5, 'foundation-blocks' => 6, 'custom-precast' => 7];
 usort($cats, fn($a, $b) => ($priority[$a->slug] ?? 50) <=> ($priority[$b->slug] ?? 50));
 
 $heading = $active_slug ? $active->name : 'Precast Concrete Products';
