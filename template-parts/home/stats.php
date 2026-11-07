@@ -48,13 +48,12 @@ if ($bg === 'accent') $bg_class = 'sp-stats--accent';
         $suffix = $stat['suffix'] ?? '';
         $prefix = $stat['prefix'] ?? '';
         $label  = $stat['label']  ?? '';
+        // Years ("Established 2015") are shown as-is: no thousands separator, no count-up.
+        $plain  = !empty($stat['plain']) || preg_match('/establish|founded|since/i', $label);
+        $shown  = $plain || !is_numeric($num) ? $num : number_format((float) $num);
       ?>
         <div class="sp-stats__card">
-          <div class="sp-stats__number" data-target="<?= esc_attr($num) ?>">
-            <span class="sp-stats__prefix"><?= esc_html($prefix) ?></span>
-            <span class="sp-stats__count">0</span>
-            <span class="sp-stats__suffix"><?= esc_html($suffix) ?></span>
-          </div>
+          <div class="sp-stats__number" data-target="<?= esc_attr($num) ?>"<?= $plain ? ' data-plain="1"' : '' ?>><span class="sp-stats__prefix"><?= esc_html($prefix) ?></span><span class="sp-stats__count"><?= esc_html($shown) ?></span><span class="sp-stats__suffix"><?= esc_html($suffix) ?></span></div>
           <?php if ($label) : ?>
             <p class="sp-stats__label"><?= esc_html($label) ?></p>
           <?php endif; ?>
@@ -69,7 +68,10 @@ if ($bg === 'accent') $bg_class = 'sp-stats--accent';
 (function () {
   function animateCount(el) {
     var card   = el.closest('.sp-stats__card');
-    var target = parseInt(card.querySelector('[data-target]').dataset.target, 10);
+    var numEl  = card.querySelector('[data-target]');
+    if (numEl.dataset.plain) return;
+    var target = parseInt(numEl.dataset.target, 10);
+    if (isNaN(target)) return;
     var count  = card.querySelector('.sp-stats__count');
     var start  = 0;
     var duration = 1600;

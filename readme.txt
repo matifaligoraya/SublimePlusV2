@@ -3,7 +3,7 @@ Contributors: bitandbytelab
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,13 @@ Settings, Sections). Template helper functions are in the matching
 settings.php / seo.php / meta.php / rfq.php / site.php / sections.php files.
 
 == Changelog ==
+
+= 1.2.2 — 2026-11-07 =
+* Stats section fills the row for any number of cards; years (e.g.
+  "Established 2015") show without a thousands separator or count-up; real
+  numbers are in the HTML before the animation runs.
+* Precast Text Block: new "layout" option (full width / centred) for blocks
+  without an image.
 
 = 1.2.1 — 2026-11-07 =
 * Product category pages use the products layout (category filter, product

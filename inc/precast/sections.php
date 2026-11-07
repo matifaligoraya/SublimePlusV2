@@ -61,7 +61,7 @@ function sp_pc_shortcode_definitions(): array {
     'sublime_featured_projects' => ['tpl' => 'featured-projects', 'atts' => ['heading' => '', 'subtext' => '', 'count' => '4']],
     'sublime_partners'       => ['tpl' => 'partners',        'atts' => ['heading' => '', 'subtext' => '', 'logos' => '']],
     'sublime_about_capabilities' => ['tpl' => 'about-capabilities', 'atts' => ['heading' => '', 'items' => '']],
-    'sublime_text_block'     => ['tpl' => 'text-block',      'atts' => ['eyebrow' => '', 'heading' => '', 'image_id' => '', 'img_pos' => 'right', 'cta_text' => '', 'cta_url' => '']],
+    'sublime_text_block'     => ['tpl' => 'text-block',      'atts' => ['eyebrow' => '', 'heading' => '', 'image_id' => '', 'img_pos' => 'right', 'layout' => '', 'cta_text' => '', 'cta_url' => '']],
     ];
 }
 

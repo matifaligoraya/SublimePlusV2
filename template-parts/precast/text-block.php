@@ -14,10 +14,13 @@ $img      = $img_id ? sp_img_url($img_id, 'large') : '';
 $img_pos  = ($args['img_pos'] ?? 'right') === 'left' ? 'pc-textblock--left' : '';
 $cta_text = $args['cta_text'] ?? '';
 $cta_url  = $args['cta_url'] ?? '';
+// Without an image: '' = reading width, 'wide' = full container width, 'center' = centred column.
+$layout   = in_array($args['layout'] ?? '', ['wide', 'center'], true) ? $args['layout'] : '';
+$grid_cls = $img ? '' : ' pc-textblock__grid--single' . ($layout ? ' pc-textblock__grid--' . $layout : '');
 ?>
 <section class="pc-section pc-textblock <?php echo esc_attr($img_pos); ?>">
   <div class="container">
-    <div class="pc-textblock__grid<?php echo $img ? '' : ' pc-textblock__grid--single'; ?>">
+    <div class="pc-textblock__grid<?php echo esc_attr($grid_cls); ?>">
       <div class="pc-textblock__text">
         <?php if ($eyebrow) : ?><span class="pc-eyebrow"><?php echo esc_html($eyebrow); ?></span><?php endif; ?>
         <?php if ($heading) : ?><h2 class="pc-h2"><?php echo esc_html($heading); ?></h2><?php endif; ?>

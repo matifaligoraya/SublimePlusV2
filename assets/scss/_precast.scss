@@ -553,6 +553,10 @@ font[style] { background: none !important; box-shadow: none !important; }
 @media (max-width: 767.98px) { .pc-aboutcap__grid { grid-template-columns: 1fr; } }
 .pc-textblock__grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 3rem; align-items: center; }
 .pc-textblock__grid--single { grid-template-columns: 1fr; max-width: 860px; }
+.pc-textblock__grid--wide { max-width: none; }
+.pc-textblock__grid--center { margin-inline: auto; text-align: center; }
+.pc-textblock__grid--center .pc-eyebrow { padding-left: 0; }
+.pc-textblock__grid--center .pc-eyebrow::before { display: none; }
 .pc-textblock--left .pc-textblock__media { order: -1; }
 .pc-textblock__media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--pc-radius); }
 @media (max-width: 991.98px) { .pc-textblock__grid { grid-template-columns: 1fr; } .pc-textblock--left .pc-textblock__media { order: 0; } }
