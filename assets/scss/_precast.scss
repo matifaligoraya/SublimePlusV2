@@ -755,3 +755,24 @@ body.pc-site p, body.pc-site li {
   word-break: normal;
   overflow-wrap: break-word;
 }
+
+// Full-site responsive review: prevent intrinsic button widths from widening
+// mobile page heroes and the capability grid beyond their containers.
+.pc-btn { max-width: 100%; white-space: normal; }
+.pc-btn > span { min-width: 0; }
+.pc-qaqc__grid > * { min-width: 0; }
+@media (max-width: 575.98px) {
+  .pc-phero__cta { width: 100%; min-width: 0; flex-shrink: 1; }
+}
+
+// Keep the footer navigation lists free of inherited browser markers.
+body.pc-site .pc-foot__col ul > li { list-style: none; }
+
+body.pc-site .pc-chips > li { list-style: none; }
+// Long drawing filenames must wrap without widening the entire quotation form.
+.pc-rfq__step, .pc-rfq__field, .pc-rfq__files { min-width: 0; }
+.pc-rfq__filelist li { min-width: 0; align-items: flex-start; }
+.pc-rfq__filelist li > span:first-child { min-width: 0; overflow-wrap: anywhere; flex: 1; }
+.pc-rfq__filelist li > span:last-child { flex-shrink: 0; white-space: nowrap; }
+
+body.pc-site .pc-summary__links > li { list-style: none; }
