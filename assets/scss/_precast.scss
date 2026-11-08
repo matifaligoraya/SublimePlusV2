@@ -739,3 +739,19 @@ font[style] { background: none !important; box-shadow: none !important; }
 .vc_row.no-pad-row > .vc_column_container > .vc_column-inner { padding: 0 !important; }
 .vc_row[data-vc-full-width] { overflow: visible !important; }
 .pc-why--white { background: #fff; }
+
+// Layout corrections (2026-11-08): retain the existing theme and icon style.
+// Legacy button padding squeezed the hamburger SVG to zero width.
+.pc-hdr__toggle { padding: 0; flex: 0 0 46px; }
+.pc-hdr__toggle svg { width: 26px; height: 26px; flex: none; }
+.pc-offcanvas__close { padding: .5rem; flex-shrink: 0; }
+.pc-offcanvas__close svg { width: 24px; height: 24px; flex: none; }
+// Legacy li rules reintroduced a second marker alongside the orange square.
+body.pc-site .pc-prose ul.pc-ticks > li { list-style: none; }
+// Wrap at spaces rather than splitting ordinary words on narrow screens.
+body.pc-site p, body.pc-site li {
+  -webkit-hyphens: none;
+  hyphens: none;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
